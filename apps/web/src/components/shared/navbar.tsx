@@ -124,7 +124,7 @@ export function HeroNav({
 					Donate
 				</NavLink>
 
-				<NavLink linkStyles={linkStyles} href="/contact">
+				<NavLink linkStyles={linkStyles} href="#contact_footer">
 					Contact
 				</NavLink>
 

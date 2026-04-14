@@ -328,7 +328,8 @@ export default function Page() {
 					</div>
 				</div>
 			</section>
-			<Footer />
+			<Footer orgName="" email=""/>
+			{/* Those parameters are temporary and need to be removed and fixed */}
 		</>
 	);
 }
