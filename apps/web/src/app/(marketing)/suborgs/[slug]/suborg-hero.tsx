@@ -253,7 +253,10 @@ export default function SuborgHero(suborg: Suborg) {
 					</div>
 
 					<div className=" p-20 text-7xl text-white">
-						<span className="hover:underline cursor-pointer">{"Check Out Our Events >"}</span></div>
+						<a href = "/events" target = "_blank" className="hover:underline cursor-pointer">
+							{"Check Out Our Events >"}
+						</a>
+						</div>
 
 				</div>
 			</div>
