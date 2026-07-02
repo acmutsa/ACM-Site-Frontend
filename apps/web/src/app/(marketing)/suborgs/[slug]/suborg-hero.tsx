@@ -215,7 +215,7 @@ export default function SuborgHero(suborg: Suborg) {
 				<div
 					className="relative col-span-2 flex flex-col items-start justify-center"
 				>
-					<a href="https://portal.acmutsa.org/register" target="_blank"
+					<a href="https://portal.acmutsa.org/" target="_blank"
 						className="hover:underline cursor-pointer absolute bottom-0 right-0 font-calsans text-8xl font-bold tracking-wide text-white"
 					>
 						{"Become a Member >"}
