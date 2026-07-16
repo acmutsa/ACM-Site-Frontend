@@ -50,7 +50,7 @@ export default function SponsorHero() {
                                 </a>
                             </h1>
                             <div className="p-10"></div>
-                            <a href="mailto:team@acmutsa.org?subject=Sponsorship%20Inquiry" className="absolute bottom-5 right-10 p-3 font-chillax">
+                            <a href="mailto:publicrelations@acmutsa.org?subject=Sponsorship%20Inquiry" className="absolute bottom-5 right-10 p-3 font-chillax">
                                 <Button variant="styleized-blue-white-text">
                                     Contact Us
                                 </Button></a>
