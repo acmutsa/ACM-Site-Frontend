@@ -10,7 +10,7 @@ export default function Page() {
 
   return (
     <div className="w-full flex flex-col items-center text-white">
-      <div className="bg-fit relative flex w-full flex-col items-center justify-center overflow-hidden bg-acm-darker-blue bg-[url('/img/landing/noise.png')] bg-center p-16">
+      <div className="bg-fit relative flex w-full flex-col items-center justify-center overflow-hidden bg-acm-darker-blue bg-[url('/img/landing/noise.png')] bg-center p-12">
         <HeroNav />
       </div>
       <SponsorHero />
