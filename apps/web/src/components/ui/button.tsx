@@ -17,6 +17,7 @@ const variantItems = {
 	"styleized-blue-darker": "text-white bg-acm-darker-blue",
 	"styleized-blue-light": "text-white bg-acm-light-blue",
 	"styleized-white-blue-text": "text-acm-darker-blue bg-white hover:white/90",
+	"styleized-blue-white-text": "text-white bg-acm-darker-blue hover:acm-darker-blue/90",
 };
 
 const buttonVariants = cva(

@@ -1,14 +1,19 @@
+// page.tsx
+import { SUBORGS } from "@/site.config";
 import { HeroNav } from "@/components/shared/navbar";
-import SponsorshipClient from "./sponsorship.client";
+import { notFound } from "next/navigation";
+import { useColorSlider } from "react-aria";
+import { UploadPartCopyOutput$ } from "@aws-sdk/client-s3";
+import SponsorHero from "./sponsor-hero";
 
-export default function SponsorshipPage() {
-	return (
-		<>
-			<HeroNav navVariant="blueForeground" />
-			{/* matches spacing you used on /team so content isn't under the absolute HeroNav */}
-			<div className="h-28 w-full" />
+export default function Page() {
 
-			<SponsorshipClient />
-		</>
-	);
+  return (
+    <div className="w-full flex flex-col items-center text-white">
+      <div className="bg-fit relative flex w-full flex-col items-center justify-center overflow-hidden bg-acm-darker-blue bg-[url('/img/landing/noise.png')] bg-center p-16">
+        <HeroNav />
+      </div>
+      <SponsorHero />
+    </div>
+  );
 }
