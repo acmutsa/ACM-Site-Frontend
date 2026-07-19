@@ -20,7 +20,7 @@ export default function SponsorHero() {
                                 Why Sponsor?
                             </h1>
                         </div>
-                        <div className="w-full grid grid-cols-3 gap-4 border text-center font-chillax text-2xl font-bold ">
+                        <div className="w-full grid grid-cols-3 gap-4 border text-center font-chillax text-lg sm:text-xl md:text-2xl font-bold ">
                             <div className="border-r p-10">
                                 <p>Support a large and growing community of future innovators through activation events and workshops</p>
                             </div>
@@ -59,48 +59,51 @@ export default function SponsorHero() {
                 </div>
             </div>
             <div className="h-10 w-full border-0 border-acm-darker-blue/50" />
-            <div className="grid grid-cols-4 grid-rows-2 border-2 border-acm-darker-blue/50">
-                <div className="relative col-span-4 flex flex-col items-center justify-center p-10">
-                    <h1 className="text-center font-calsans text-8xl font-bold leading-none tracking-wide text-acm-darker-blue">
-                        Sponsors
-                    </h1>
-                    <h2 className="text-md max-w-[600px] text-balance pt-10 text-center font-mono font-semibold text-acm-darker-blue">
-                        We are able to operate at no cost to our members
-                        through the generous support of our sponsors
-                    </h2>
-                </div>
-                {SPONSORS.map((sponsor, index) => (
-                    <Link
-                        key={sponsor.name}
-                        href={sponsor.link}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className={`flex aspect-square flex-col items-center justify-center border-t-2 border-acm-darker-blue/50 p-10 transition-all hover:bg-acm-darker-blue/5 ${index > 0 ? "border-l-2" : ""
-                            }`}
-                    >
-                        <Image
-                            src={sponsor.logo}
-                            alt={`${sponsor.name} Logo`}
-                            width={150}
-                            height={150}
-                            className="object-contain"
-                        />
-                    </Link>
-                ))}
-                <Link
-                    href="/sponsor-us"
-                    className="flex aspect-square flex-col items-center justify-center border-l-2 border-t-2 border-acm-darker-blue/50 p-10 transition-all hover:bg-acm-darker-blue/10"
-                >
-                    <div className="flex flex-col items-center justify-center gap-4">
-                        <HeartHandshake
-                            className="text-acm-darker-blue"
-                            size={75}
-                        />
-                        <span className="text-center font-calsans text-xl font-bold text-acm-darker-blue">
-                            Become a Sponsor
-                        </span>
+            <div className="mx-auto grid max-w-screen-xl min-h-[70vh] w-full py-12">
+                <div className="grid w-full grid-cols-2 auto-rows-fr border-2 border-acm-darker-blue/50 sm:grid-cols-4">
+                    <div className="relative col-span-2 flex min-h-[220px] flex-col items-center justify-center p-10 sm:col-span-4">
+                        <h1 className="text-center font-calsans text-4xl font-bold leading-none tracking-wide text-acm-darker-blue sm:text-6xl lg:text-8xl">
+                            Sponsors
+                        </h1>
+                        <h2 className="text-md max-w-[600px] text-balance pt-10 text-center font-mono font-semibold text-acm-darker-blue">
+                            We are able to operate at no cost to our members
+                            through the generous support of our sponsors
+                        </h2>
                     </div>
-                </Link>
+                    {SPONSORS.map((sponsor, index) => (
+                        <Link
+                            key={sponsor.name}
+                            href={sponsor.link}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={`flex h-full min-h-[220px] w-full flex-col items-center justify-center border-t-2 border-acm-darker-blue/50 p-10 transition-all hover:bg-acm-darker-blue/5 ${index > 0 ? "border-l-2" : ""
+                                }`}
+                        >
+                            <Image
+                                src={sponsor.logo}
+                                alt={`${sponsor.name} Logo`}
+                                width={150}
+                                height={150}
+                                className="object-contain"
+                            />
+                        </Link>
+                    ))}
+                    <Link
+                        href="/sponsor-us"
+                        className="flex h-full min-h-[220px] w-full flex-col items-center justify-center border-l-2 border-t-2 border-acm-darker-blue/50 p-10 transition-all hover:bg-acm-darker-blue/10"
+                    >
+                        <div className="flex flex-col items-center justify-center gap-4">
+                            <HeartHandshake
+                                className="text-acm-darker-blue"
+                                size={75}
+                            />
+                            <span className="text-center font-calsans text-xl font-bold text-acm-darker-blue">
+                                Become a Sponsor
+                            </span>
+                            {/* What should the Link for Become a sponsor link to? */}
+                        </div>
+                    </Link>
+                </div>
             </div>
             <div className="p-10"></div>
             <Footer />
