@@ -1,10 +1,8 @@
-import { HeroNav } from "@/components/shared/navbar";
 import MeetTheTeamClient from "@/components/team/meet-the-team.client";
 
 export default function TeamPage() {
 	return (
 		<>
-			<HeroNav navVariant="blueForeground" />
 			<div className="h-28 w-full" />
 
 			<main className="mx-auto w-full max-w-screen-xl px-10 pb-24">

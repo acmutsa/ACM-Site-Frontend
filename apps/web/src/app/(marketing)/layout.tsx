@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { HeroNav } from "@/components/shared/navbar";
 
 export const metadata: Metadata = {
 	title: "ACM UTSA",
@@ -11,5 +12,11 @@ export default function MarketingLayout({
 }: {
 	children: React.ReactNode;
 }) {
-	return <>{children}</>;
+	return (
+		<>
+			<HeroNav navVariant="blueForeground" />
+			<div className="h-36 w-full" />
+			{children}
+		</>
+	);
 }

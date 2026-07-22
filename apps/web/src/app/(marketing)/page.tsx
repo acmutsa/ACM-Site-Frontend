@@ -1,5 +1,4 @@
 import Globe from "@/components/landing/globe";
-import { HeroNav } from "@/components/shared/navbar";
 import Image from "next/image";
 import { WeArePhotoGrid } from "./client";
 import { Suspense, cloneElement, Fragment } from "react";
@@ -34,7 +33,6 @@ export default function Page() {
 	return (
 		<>
 			<main className="bg-fit relative flex h-full min-h-[calc(100vh-100px)] w-full flex-col items-center justify-center overflow-hidden bg-acm-darker-blue bg-[url('/img/landing/noise.png')] bg-center text-white">
-				<HeroNav />
 				<div className="flex h-full w-full flex-col items-center justify-start">
 					<h1 className="text-center font-chillax text-9xl font-black">
 						acm utsa
