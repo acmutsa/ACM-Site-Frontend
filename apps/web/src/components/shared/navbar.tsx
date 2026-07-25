@@ -234,8 +234,8 @@ function ResourcesDropdown({
 		}`;
 
 	const resources = [
-		{ name: "Feedback", href: "/feedback", },
-		{ name: "Elections", href: "/elections", }
+		{ name: "Feedback", href: "/feedback" },
+		{ name: "Elections", href: "https://wiki.acmutsa.org/ACM-2026-ACM-Officer-Election-335c7f3b3742802d93abff81c5a1002f", isExternal: true }
 	];
 
 	const panelClass =
@@ -269,16 +269,29 @@ function ResourcesDropdown({
 				role="menu"
 				aria-label="Resources"
 			>
-				{resources.map((r) => (
-					<Link
-						key={r.name}
-						href={r.href}
-						className={`block rounded-lg px-3 py-2 text-sm ${itemHoverClass}`}
-						style={isCustomColor ? { color: linkStyles } : undefined}
-					>
-						{r.name}
-					</Link>
-				))}
+				{resources.map((r) => 
+					r.isExternal ? (
+						<a
+							key={r.name}
+							href={r.href}
+							target="_blank"
+							rel="noopener noreferrer"
+							className={`block rounded-lg px-3 py-2 text-sm ${itemHoverClass}`}
+							style={isCustomColor ? { color: linkStyles } : undefined}
+						>
+							{r.name}
+						</a>
+					) : (
+						<Link
+							key={r.name}
+							href={r.href}
+							className={`block rounded-lg px-3 py-2 text-sm ${itemHoverClass}`}
+							style={isCustomColor ? { color: linkStyles } : undefined}
+						>
+							{r.name}
+						</Link>
+					)
+				)}
 			</div>
 		</div>
 	)
