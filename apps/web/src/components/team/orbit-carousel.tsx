@@ -163,7 +163,7 @@ export default function OrbitCarousel({ people = [], initialIndex = 0 }: OrbitCa
 
     const merTs = [0.32, 0.5, 0.68];
     const mer: GridSeg[] = merTs.map((t, i) => {
-      const end = arcPoint(arc, t); // ✅ hits main arc
+      const end = arcPoint(arc, t);
       const start: Pt = {
         x: i === 0 ? 260 : i === 1 ? 600 : 940,
         y: 698,

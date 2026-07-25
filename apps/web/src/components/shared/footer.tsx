@@ -1,53 +1,69 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-// This is for the parameters that need to be taken in for the Footer component for each suborg page
+
+// props
 type FooterProps = {
-	email: string;
+	email?: string; // now optional
 	orgName: string;
 };
 
 export default function Footer({ email, orgName }: FooterProps) {
 	return (
 		<div className="p-10 pt-0">
-			<footer className="grid min-h-[50vh] grid-cols-[auto_1fr] gap-10 rounded-xl bg-acm-darker-blue bg-[url('/img/landing/noise.png')] bg-center p-10">				<div className="flex flex-col items-start justify-start">
-				<h1 className="text-balance text-left font-calsans text-6xl font-black leading-none tracking-wide text-white">
-					The Association
-					<br />
-					for Computing
-					<br />
-					Machinery
-					<br />
-					at UTSA
-				</h1>
+			<footer className="grid min-h-[50vh] grid-cols-[auto_1fr] gap-10 rounded-xl bg-acm-darker-blue bg-[url('/img/landing/noise.png')] bg-center p-10">
+				<div className="flex flex-col items-start justify-start">
+					<h1 className="text-balance text-left font-calsans text-6xl font-black leading-none tracking-wide text-white">
+						The Association
+						<br />
+						for Computing
+						<br />
+						Machinery
+						<br />
+						at UTSA
+					</h1>
 
-				<Image
-					src="/img/logos/acm.svg"
-					alt="ACM Logo"
-					width={50}
-					height={50}
-					className="mt-auto justify-self-end"
-				/>
-			</div>
+					<Image
+						src="/img/logos/acm.svg"
+						alt="ACM Logo"
+						width={50}
+						height={50}
+						className="mt-auto justify-self-end"
+					/>
+				</div>
+
 				<div className="grid grid-cols-4 gap-10">
+					{/* Contacts */}
 					<div className="flex flex-col items-start justify-start">
 						<h3 id="contact_footer" className="pb-3 font-mono text-xl font-bold text-white">
 							Contacts
-						</h3><br />
-						
-						<p className="p-0 text-left font-calsans text-white">ACM UTSA Email:</p>
+						</h3>
+						<br />
+
+						<p className="p-0 text-left font-calsans text-white">
+							ACM UTSA Email:
+						</p>
 						<FooterLink
 							text="team@acmutsa.org"
-							href={`mailto:team@acmutsa.org?subject=Inquiry about ACM UTSA Suborg`}
+							href={`mailto:team@acmutsa.org?subject=Inquiry about ACM UTSA`}
 						/>
-						<p className="p-0 text-left font-calsans text-white mt-4">{orgName} Email:</p>
-						<FooterLink
-							text={email}
-							href={`mailto:${email}?subject=Inquiry about ${orgName} Suborg`}
-						/>
-					</div>
-					<div className="flex flex-col items-start justify-start">
 
+						{/* optional suborg email */}
+						{email && (
+							<>
+								<p className="p-0 mt-4 text-left font-calsans text-white">
+									{orgName} Email:
+								</p>
+								<FooterLink
+									text={email}
+									href={`mailto:${email}?subject=Inquiry about ${orgName}`}
+								/>
+							</>
+						)}
+					</div>
+
+					{/* Resources */}
+					<div className="flex flex-col items-start justify-start">
 						<h3 className="pb-3 font-mono text-xl font-bold text-white">
 							Resources &<br />
 							Important Links
@@ -69,11 +85,14 @@ export default function Footer({ email, orgName }: FooterProps) {
 							target="_blank"
 						/>
 					</div>
+
+					{/* Suborgs */}
 					<div className="flex flex-col items-start justify-start">
 						<h3 className="pb-3 font-mono text-xl font-bold text-white">
 							Suborgs &<br />
 							Hackathons
 						</h3>
+
 						<FooterLink text="ACM-W" href="/suborgs/acmw" />
 						<FooterLink text="Coding in Color" href="/suborgs/codingincolor" />
 						<FooterLink text="ICPC" href="/suborgs/acmicpc" />
@@ -82,12 +101,15 @@ export default function Footer({ email, orgName }: FooterProps) {
 						<FooterLink text="Code Quantum" href="https://cqhacks.org" />
 						<FooterLink text="Rowdy Datathon" href="https://rowdydatathon.org" />
 					</div>
+
+					{/* Social */}
 					<div className="flex flex-col items-start justify-start">
 						<h3 className="pb-3 font-mono text-xl font-bold text-white">
 							Social
 							<br />
 							Media
 						</h3>
+
 						<FooterLink
 							text="Instagram"
 							href="https://www.instagram.com/acmutsa"
@@ -132,7 +154,7 @@ function FooterLink({
 	return (
 		<Link href={href} target={target}>
 			<Button
-				variant={"link"}
+				variant="link"
 				className="p-0 text-left font-calsans text-white"
 			>
 				{text}
