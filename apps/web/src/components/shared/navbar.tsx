@@ -4,7 +4,7 @@ import { Button, variantItems } from "@/components/ui/button";
 
 import c from "config";
 import { Menu } from "lucide-react";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 
 type NavbarProps = {
 	siteRegion?: string;
@@ -105,34 +105,68 @@ export function HeroNav({
 					/>
 				</Link>
 
-				<NavLink linkStyles={linkStyles} href="/events">
-					Events
-				</NavLink>
+				<div className="hidden items-center gap-x-5 md:flex">
+					<NavLink linkStyles={linkStyles} href="/events">
+						Events
+					</NavLink>
 
-				<NavLink linkStyles={linkStyles} href="/team">
-					Team
-				</NavLink>
+					<NavLink linkStyles={linkStyles} href="/team">
+						Team
+					</NavLink>
 
-				{/* Sub-orgs dropdown */}
-				<SuborgsDropdown linkStyles={linkStyles} navVariant={navVariant} />
+					{/* Sub-orgs dropdown */}
+					<SuborgsDropdown linkStyles={linkStyles} navVariant={navVariant} />
 
-				<NavLink linkStyles={linkStyles} href="/sponsorship">
-					Sponsor
-				</NavLink>
+					<NavLink linkStyles={linkStyles} href="/sponsorship">
+						Sponsor
+					</NavLink>
 
-				<NavLink linkStyles={linkStyles} href="/donate">
-					Donate
-				</NavLink>
+					<NavLink linkStyles={linkStyles} href="/donate">
+						Donate
+					</NavLink>
 
-				<NavLink linkStyles={linkStyles} href="/contact">
-					Contact
-				</NavLink>
+					<NavLink linkStyles={linkStyles} href="#contact_footer">
+						Contact
+					</NavLink>
 
-				<ResourcesDropdown linkStyles={linkStyles} navVariant={navVariant}/>
-			</div>
+					<ResourcesDropdown linkStyles={linkStyles} navVariant={navVariant} />
+				</div>
 
-			<div className="flex items-center justify-end gap-x-3">
-				<PortalButton navVariant={navVariant} customColor={customColor} />
+				<div className="flex items-center justify-end gap-x-3">
+					<PortalButton navVariant={navVariant} customColor={customColor} />
+				</div>
+
+				<div className="flex items-center justify-end gap-2 md:hidden">
+					<Sheet>
+						<SheetTrigger asChild>
+							<button type="button" aria-label="Open menu">
+								<Menu />
+							</button>
+						</SheetTrigger>
+						<SheetContent className="h-[100dvh] w-[90%] max-w-sm overflow-y-auto">
+							<div className="mt-8 flex flex-col items-start gap-y-4 pr-2">							<SheetTitle className="sr-only">NavBar</SheetTitle>
+							<NavLink linkStyles="text-acm-darker-blue" href="/events">
+								Events
+							</NavLink>
+							<NavLink linkStyles="text-acm-darker-blue" href="/team">
+								Team
+							</NavLink>
+							<SuborgsDropdown linkStyles="text-acm-darker-blue" navVariant={navVariant} />
+							<NavLink linkStyles="text-acm-darker-blue" href="/sponsorship">
+								Sponsor
+							</NavLink>
+							<NavLink linkStyles="text-acm-darker-blue" href="/donate">
+								Donate
+							</NavLink>
+							<NavLink linkStyles="text-acm-darker-blue" href="#contact_footer">
+								Contact
+							</NavLink>
+							<ResourcesDropdown linkStyles="text-acm-darker-blue" navVariant={navVariant} />
+							</div>
+						</SheetContent>
+					</Sheet>
+				</div>
+
 			</div>
 		</div>
 	);
@@ -148,6 +182,7 @@ async function PortalButton({
 	return (
 		<Link href={process.env.PORTAL_URL || "https://portal.acmutsa.org"}>
 			<Button
+				className="text-md"
 				variant={variant[navVariant].buttonVariant}
 				style={customColor ? { backgroundColor: customColor } : undefined}
 			>
@@ -174,9 +209,8 @@ function NavLink({
 	return (
 		<Link
 			href={href}
-			className={`text-md font-semibold hover:underline ${
-				isCustomColor ? "" : linkStyles
-			}`}
+			className={`text-md lg:text-lg font-semibold hover:underline ${isCustomColor ? "" : linkStyles
+				}`}
 			style={isCustomColor ? { color: linkStyles } : undefined}
 		>
 			{children}
@@ -196,22 +230,21 @@ function ResourcesDropdown({
 		linkStyles.startsWith("#") ||
 		linkStyles.startsWith("hsl");
 
-	const triggerClass = `text-md font-semibold hover:underline ${
-		isCustomColor ? "" : linkStyles
-	}`;
+	const triggerClass = `text-md lg:text-lg whitespace-nowrap font-semibold hover:underline ${isCustomColor ? "" : linkStyles
+		}`;
 
 	const resources = [
-		{ name: "Feedback", href: "/feedback",},
-		{ name: "Elections", href: "/elections",}
+		{ name: "Feedback", href: "/feedback", },
+		{ name: "Elections", href: "/elections", }
 	];
 
 	const panelClass =
 		navVariant === "default"
-			? "border-white/10 bg-white text-black"
+			? "border-white/10 bg-white text-acm-darker-blue"
 			: "border bg-white text-acm-darker-blue";
 
 	const itemHoverClass =
-		navVariant === "default" ? "hover:bg-white/10" : "hover:bg-muted";
+		navVariant === "default" ? "hover:bg-muted/70" : "hover:bg-muted";
 
 	return (
 		<div className="relative group">
@@ -246,7 +279,7 @@ function ResourcesDropdown({
 						{r.name}
 					</Link>
 				))}
-			</div>	
+			</div>
 		</div>
 	)
 }
@@ -263,9 +296,8 @@ function SuborgsDropdown({
 		linkStyles.startsWith("#") ||
 		linkStyles.startsWith("hsl");
 
-	const triggerClass = `text-md font-semibold hover:underline ${
-		isCustomColor ? "" : linkStyles
-	}`;
+	const triggerClass = `text-md lg:text-lg whitespace-nowrap font-semibold hover:underline ${isCustomColor ? "" : linkStyles
+		}`;
 
 	// Only slugs matter since routes are /suborgs/[suborg]
 	const suborgs: Array<{ name: string; slug: string }> = [
@@ -273,19 +305,16 @@ function SuborgsDropdown({
 		{ name: "Rowdy Creators", slug: "rowdycreators" },
 		{ name: "Coding In Color", slug: "codingincolor" },
 		{ name: "ICPC", slug: "acmicpc" },
-		{ name: "Rowdy Hacks", slug: "rowdyhacks"},
+		{ name: "Rowdy Hacks", slug: "rowdyhacks" },
 	];
 
-	// ✅ Fix: home page was showing white because bg-background resolves to light theme there.
-	// We force the dropdown panel to be dark for the default hero nav,
-	// and light for the blueForeground variant.
 	const panelClass =
 		navVariant === "default"
-			? "border-white/10 bg-white text-black"
+			? "border-white/10 bg-white text-acm-darker-blue"
 			: "border bg-white text-acm-darker-blue";
 
 	const itemHoverClass =
-		navVariant === "default" ? "hover:bg-white/10" : "hover:bg-muted";
+		navVariant === "default" ? "hover:bg-muted/70" : "hover:bg-muted";
 
 	return (
 		<div className="relative group">

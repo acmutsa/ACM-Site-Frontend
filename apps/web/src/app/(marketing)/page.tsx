@@ -174,7 +174,8 @@ export default function Page() {
 							<p className="font-mono text-xs">Fig. 6</p>
 							<Link
 								className="font-calsans text-4xl transition-all hover:underline"
-								href={"/register"}
+								href={"https://portal.acmutsa.org/"}
+								target="_blank"
 							>
 								Become a Member {">"}
 							</Link>
@@ -199,38 +200,38 @@ export default function Page() {
 								specific areas of interest and communities.
 							</h2>
 						</div>
-						<div className="flex aspect-square flex-col items-center justify-center border-t-2 border-acm-darker-blue/50 p-10">
+						<Link href="/suborgs/acmw" rel="noopener noreferrer" className="flex aspect-square flex-col items-center justify-center border-t-2 border-acm-darker-blue/50 p-10 transition-all hover:bg-acm-darker-blue/5">
 							<Image
 								src="/img/logos/suborgs/acmw-blue.png"
 								alt="ACM Logo"
 								width={150}
 								height={150}
 							/>
-						</div>
-						<div className="flex aspect-square flex-col items-center justify-center border-l-2 border-t-2 border-acm-darker-blue/50 p-10">
+						</Link>
+						<Link href="/suborgs/codingincolor" rel="noopener noreferrer" className="flex aspect-square flex-col items-center justify-center border-t-2 border-l-2 border-acm-darker-blue/50 p-10 transition-all hover:bg-acm-darker-blue/5">
 							<Image
 								src="/img/logos/suborgs/cnc-blue.png"
 								alt="ACM Logo"
 								width={175}
 								height={175}
 							/>
-						</div>
-						<div className="flex aspect-square flex-col items-center justify-center border-l-2 border-t-2 border-acm-darker-blue/50 p-10">
+						</Link>
+						<Link href="/suborgs/acmicpc" rel="noopener noreferrer" className="flex aspect-square flex-col items-center justify-center border-t-2 border-l-2 border-acm-darker-blue/50 p-10 transition-all hover:bg-acm-darker-blue/5">
 							<Image
 								src="/img/logos/suborgs/icpc-blue.png"
 								alt="ACM Logo"
 								width={175}
 								height={175}
 							/>
-						</div>
-						<div className="flex aspect-square flex-col items-center justify-center border-l-2 border-t-2 border-acm-darker-blue/50 p-10">
+						</Link>
+						<Link href="/suborgs/rowdycreators" rel="noopener noreferrer" className="flex aspect-square flex-col items-center justify-center border-t-2 border-l-2 border-acm-darker-blue/50 p-10 transition-all hover:bg-acm-darker-blue/5">
 							<Image
 								src="/img/logos/suborgs/rc-blue.png"
 								alt="ACM Logo"
 								width={175}
 								height={175}
 							/>
-						</div>
+						</Link>
 					</div>
 					<div className="h-10 w-full border-x-2 border-acm-darker-blue/50" />
 					<div className="grid grid-cols-4 grid-rows-2 border-2 border-acm-darker-blue/50">
@@ -244,22 +245,22 @@ export default function Page() {
 								country to innovate and build.
 							</h2>
 						</div>
-						<div className="flex aspect-square flex-col items-center justify-center border-t-2 border-acm-darker-blue/50 p-10">
+						<Link href="/suborgs/rowdyhacks" rel="noopener noreferrer" className="flex aspect-square flex-col items-center justify-center border-t-2 border-acm-darker-blue/50 p-10 transition-all hover:bg-acm-darker-blue/5">
 							<Image
 								src="/img/logos/hackathons/rh-blue.png"
 								alt="ACM Logo"
 								width={150}
 								height={150}
 							/>
-						</div>
-						<div className="flex aspect-square flex-col items-center justify-center border-l-2 border-t-2 border-acm-darker-blue/50 p-10">
+						</Link>
+						<Link href="https://cqhacks.org/" rel="noopener noreferrer" className="flex aspect-square flex-col items-center justify-center border-t-2 border-l-2 border-acm-darker-blue/50 p-10 transition-all hover:bg-acm-darker-blue/5">
 							<Image
 								src="/img/logos/hackathons/cq-blue.png"
 								alt="ACM Logo"
 								width={150}
 								height={150}
 							/>
-						</div>
+						</Link>
 						<div className="flex aspect-square flex-col items-center justify-center border-l-2 border-t-2 border-acm-darker-blue/50 p-10">
 							<Image
 								src="/img/logos/hackathons/rd-blue.png"
@@ -268,12 +269,14 @@ export default function Page() {
 								height={150}
 							/>
 						</div>
-						<div className="flex aspect-square flex-col items-center justify-center border-l-2 border-t-2 border-acm-darker-blue/50 p-10">
-							<MapIcon
-								className="text-acm-darker-blue"
-								size={150}
+						<Link href="https://www.rowdycybercon.org/" rel="noopener noreferrer" className="flex aspect-square flex-col items-center justify-center border-l-2 border-t-2 border-acm-darker-blue/50 p-10 transition-all hover:bg-acm-darker-blue/5">
+							<Image
+								src="/img/logos/hackathons/rcc-blue.png"
+								alt="ACM Logo"
+								width={200}
+								height={200}
 							/>
-						</div>
+						</Link>
 					</div>
 					<div className="h-10 w-full border-0 border-acm-darker-blue/50" />
 					<Suspense>
@@ -310,7 +313,7 @@ export default function Page() {
 							</Link>
 						))}
 						<Link
-							href="/sponsor-us"
+							href="/sponsorship"
 							className="flex aspect-square flex-col items-center justify-center border-l-2 border-t-2 border-acm-darker-blue/50 p-10 transition-all hover:bg-acm-darker-blue/10"
 						>
 							<div className="flex flex-col items-center justify-center gap-4">
