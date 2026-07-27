@@ -1,0 +1,180 @@
+/* Scoped styles for /sponsorship only */
+
+.page {
+  margin: 0;
+  font-family: "Open Sans", ui-sans-serif, system-ui, -apple-system, Segoe UI,
+    Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+  min-height: 100vh;
+  background-color: white;
+}
+
+/* keeps the top section blue only */
+.topSection {
+  background-color: rgba(38, 106, 224);
+  padding-bottom: 24px;
+}
+
+.h1 {
+  text-align: center;
+  font-size: 60px;
+  margin: 0;
+  padding: 5px 0 10px 0;
+  font-weight: 800;
+  color: white;
+  background-color: rgba(38, 106, 224);
+}
+
+.h2 {
+  font-size: 45px;
+  padding: 10px;
+  margin: 0;
+  color: white;
+  text-align: left;
+}
+
+.h3 {
+  font-size: 22px;
+  padding: 0;
+  margin: 0;
+  color: white;
+}
+
+.h4 {
+  color: rgba(38, 106, 224);
+  font-size: 25px;
+  text-align: center;
+  margin: 20px auto;
+}
+
+.p {
+  font-size: 20px;
+  margin: 3px 0 5px 0;
+  text-align: center;
+}
+
+.link {
+  color: rgba(38, 106, 224);
+}
+
+.container {
+  width: 95%;
+  display: flex;
+  justify-content: left;
+  flex-wrap: wrap;
+  padding: 0;
+  margin: 0 2.5% 30px 2.5%;
+  border-style: solid;
+  border-color: white;
+  border-width: 2px;
+  background-color: rgba(38, 106, 224);
+}
+
+.top {
+  text-align: center;
+  padding: 0;
+  position: relative;
+  width: 100%;
+  border-style: solid;
+  border-color: white;
+  border-width: 0 0 2px 0;
+}
+
+.box {
+  width: 30.9%;
+  min-height: 100px;
+  text-align: center;
+  padding: 0;
+  margin: 0;
+  position: relative;
+  border-style: solid;
+  border-color: white;
+  border-radius: 0;
+}
+
+.box1 {
+  padding: 3% 1%;
+  border-width: 0 1px 0 0;
+}
+
+.box2 {
+  padding: 3% 1%;
+  border-width: 0 1px 0 1px;
+}
+
+.box3 {
+  padding: 3% 1%;
+  border-width: 0 0 0 1px;
+}
+
+.containerf {
+  width: 100%;
+  display: flex;
+  justify-content: left;
+  flex-wrap: wrap;
+  padding: 0;
+  margin: 0;
+  background-color: white;
+}
+
+.interested {
+  color: rgba(38, 106, 224);
+  background-color: white;
+  width: 100%;
+  text-align: right;
+  padding: 10px 10px 10px 0;
+  margin: 30px 2.5% 0 2.5%;
+  border-style: solid;
+  border-color: rgba(38, 106, 224);
+  border-width: 2px;
+  font-size: 45px;
+}
+
+.belowInterested {
+  color: rgba(38, 106, 224);
+  background-color: white;
+  width: 100%;
+  text-align: right;
+  padding: 10px;
+  margin: 0 2.5%;
+  border-style: solid;
+  border-color: rgba(38, 106, 224);
+  border-width: 0 2px 2px 2px;
+}
+
+.wantToSponsor {
+  font-size: 25px;
+  padding: 15px 0;
+  margin: 0;
+  color: black;
+}
+
+/* shared button base */
+.button {
+  border: none;
+  padding: 12px 24px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  width: 15%;
+  min-width: 150px;
+}
+
+/* email button */
+.emailBtn {
+  background-color: white;
+  border-style: solid;
+  border-color: rgba(38, 106, 224);
+  border-width: 1px;
+  color: rgb(236, 142, 0);
+  margin-right: 25px;
+}
+
+/* contact button */
+.contactUs {
+  color: white;
+  background-color: rgba(38, 106, 224);
+}
