@@ -10,9 +10,14 @@ export const SPONSORS = [
 		link: "https://www.dell.com",
 	},
 	{
+		name:"Union Pacific",
+		logo: "/img/logos/sponsor/unionPacific.png",
+		link: "https://www.up.com",
+	},
+	{
 		name: "UTSA CS",
 		logo: "/img/logos/sponsor/utsacs.png",
-		link: "https://cs.utsa.edu/",
+		link: "https://caicc.utsa.edu/computer-science/",
 	},
 ];
 

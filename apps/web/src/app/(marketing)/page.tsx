@@ -34,7 +34,7 @@ export default function Page() {
 		<>
 			<main className="bg-fit relative flex h-full min-h-[calc(100vh-100px)] w-full flex-col items-center justify-center overflow-hidden bg-acm-darker-blue bg-[url('/img/landing/noise.png')] bg-center text-white">
 				<div className="flex h-full w-full flex-col items-center justify-start">
-					<h1 className="text-center font-chillax text-9xl font-black">
+					<h1 className="text-center font-chillax text-9xl max-sm:text-7xl font-black">
 						acm utsa
 					</h1>
 					<h2 className="text-md max-w-[600px] text-center font-mono font-semibold">
@@ -51,7 +51,7 @@ export default function Page() {
 				<div className="mx-auto flex max-w-screen-xl flex-col px-10 pt-36">
 					<div className=" grid grid-cols-4 border border-acm-darker-blue/50">
 						<div className="col-span-2 row-span-2 flex flex-col border border-acm-darker-blue/50 p-10">
-							<h1 className="text-left font-calsans text-5xl font-bold leading-tight tracking-wide text-acm-darker-blue">
+							<h1 className="text-left font-calsans text-5xl max-sm:text-4xl font-bold leading-tight tracking-wide text-acm-darker-blue">
 								We are the Association for Computing Machinery
 								at{" "}
 								<span className="rounded-md bg-[#0C2340] pl-3 pr-4 font-inter font-bold leading-[60px] tracking-[-0.1em] text-[#F15A22]">
@@ -101,7 +101,7 @@ export default function Page() {
 							/>
 						</div>
 						<div className="col-span-4 flex flex-col gap-y-5 border border-acm-darker-blue/50 p-10">
-							<h2 className="text-left font-calsans text-5xl font-bold leading-tight tracking-wide text-acm-darker-blue">
+							<h2 className="text-left font-calsans text-5xl max-sm:text-4xl font-bold leading-tight tracking-wide text-acm-darker-blue">
 								Mission
 							</h2>
 							<p className="text-balance text-left font-calsans text-2xl font-bold leading-loose tracking-wide text-acm-darker-blue">
@@ -135,35 +135,35 @@ export default function Page() {
 					</div>
 					<div className="h-10 w-full border border-x-2 border-acm-darker-blue/50" />
 					<div className=" grid grid-cols-3 border border-acm-darker-blue/50">
-						<div className="relative flex aspect-square flex-col items-center justify-center border border-acm-darker-blue/50 p-10 font-calsans text-acm-darker-blue">
-							<h3 className="text-7xl font-bold">1000+</h3>
+						<div className="relative flex aspect-square flex-col items-center justify-center border border-acm-darker-blue/50 p-10 font-calsans text-acm-darker-blue overflow-hidden">
+							<h3 className="text-7xl max-sm:text-5xl font-bold">1000+</h3>
 							<h4 className="text-xl font-bold">Members</h4>
-							<p className="absolute bottom-10 right-10 font-mono text-xs">
+							<p className="absolute bottom-10 right-10 max-sm:bottom-4 max-sm:right-4 font-mono text-xs">
 								Fig. 3
 							</p>
 						</div>
-						<div className="relative flex aspect-square flex-col items-center justify-center border border-acm-darker-blue/50 p-10 font-calsans text-acm-darker-blue">
-							<h3 className="text-7xl font-bold">4</h3>
+						<div className="relative flex aspect-square flex-col items-center justify-center border border-acm-darker-blue/50 p-10 font-calsans text-acm-darker-blue overflow-hidden">
+							<h3 className="text-7xl max-sm:text-5xl font-bold">4</h3>
 							<h4 className="text-xl font-bold">
 								Sub-organizations
 							</h4>
-							<p className="absolute bottom-10 right-10 font-mono text-xs">
+							<p className="absolute bottom-10 right-10 max-sm:bottom-4 max-sm:right-4 font-mono text-xs">
 								Fig. 4
 							</p>
 						</div>
-						<div className="relative flex aspect-square flex-col items-center justify-center border border-acm-darker-blue/50 p-10 font-calsans text-acm-darker-blue">
-							<h3 className="text-7xl font-bold">3</h3>
+						<div className="relative flex aspect-square flex-col items-center justify-center border border-acm-darker-blue/50 p-10 font-calsans text-acm-darker-blue overflow-hidden">
+							<h3 className="text-7xl max-sm:text-5xl font-bold">3</h3>
 							<h4 className="text-xl font-bold">
 								Annual Hackathons
 							</h4>
-							<p className="absolute bottom-10 right-10 font-mono text-xs">
+							<p className="absolute bottom-10 right-10 max-sm:bottom-4 max-sm:right-4 font-mono text-xs">
 								Fig. 5
 							</p>
 						</div>
 					</div>
 					<div className="h-10 w-full border-t border-acm-darker-blue/50" />
 					<div className="flex h-96 flex-col bg-acm-darker-blue p-10 text-white">
-						<h1 className="pb-5 font-calsans text-8xl font-black">
+						<h1 className="pb-5 font-calsans text-8xl max-sm:text-7xl font-black">
 							acm is for{" "}
 							<span className="underline">everyone.</span>
 						</h1>
@@ -189,9 +189,9 @@ export default function Page() {
 						</p>
 					</div>
 					<div className="h-10 w-full border-acm-darker-blue/50" />
-					<div className="grid grid-cols-4 grid-rows-2 border-2 border-acm-darker-blue/50">
-						<div className="relative col-span-4 flex flex-col justify-center p-10">
-							<h1 className="text-left font-calsans text-8xl font-bold leading-none tracking-wide text-acm-darker-blue">
+					<div className="grid min-h-[32rem] grid-cols-4 grid-rows-[auto_minmax(0,1fr)] border-2 border-acm-darker-blue/50">
+						<div className="relative col-span-4 flex h-full flex-col justify-center p-10">
+							<h1 className="text-left font-calsans text-8xl max-sm:text-7xl font-bold leading-none tracking-wide text-acm-darker-blue">
 								Suborgs
 							</h1>
 							<h2 className="text-md text-balance pt-10 text-start font-mono font-semibold text-acm-darker-blue">
@@ -200,7 +200,7 @@ export default function Page() {
 								specific areas of interest and communities.
 							</h2>
 						</div>
-						<Link href="/suborgs/acmw" rel="noopener noreferrer" className="flex aspect-square flex-col items-center justify-center border-t-2 border-acm-darker-blue/50 p-10 transition-all hover:bg-acm-darker-blue/5">
+						<Link href="/suborgs/acmw" rel="noopener noreferrer" className="flex h-full min-h-[12rem] flex-col items-center justify-center border-t-2 border-acm-darker-blue/50 p-10 transition-all hover:bg-acm-darker-blue/5">
 							<Image
 								src="/img/logos/suborgs/acmw-blue.png"
 								alt="ACM Logo"
@@ -208,7 +208,7 @@ export default function Page() {
 								height={150}
 							/>
 						</Link>
-						<Link href="/suborgs/codingincolor" rel="noopener noreferrer" className="flex aspect-square flex-col items-center justify-center border-t-2 border-l-2 border-acm-darker-blue/50 p-10 transition-all hover:bg-acm-darker-blue/5">
+						<Link href="/suborgs/codingincolor" rel="noopener noreferrer" className="flex h-full min-h-[12rem] flex-col items-center justify-center border-t-2 border-l-2 border-acm-darker-blue/50 p-10 transition-all hover:bg-acm-darker-blue/5">
 							<Image
 								src="/img/logos/suborgs/cnc-blue.png"
 								alt="ACM Logo"
@@ -216,7 +216,7 @@ export default function Page() {
 								height={175}
 							/>
 						</Link>
-						<Link href="/suborgs/acmicpc" rel="noopener noreferrer" className="flex aspect-square flex-col items-center justify-center border-t-2 border-l-2 border-acm-darker-blue/50 p-10 transition-all hover:bg-acm-darker-blue/5">
+						<Link href="/suborgs/acmicpc" rel="noopener noreferrer" className="flex h-full min-h-[12rem] flex-col items-center justify-center border-t-2 border-l-2 border-acm-darker-blue/50 p-10 transition-all hover:bg-acm-darker-blue/5">
 							<Image
 								src="/img/logos/suborgs/icpc-blue.png"
 								alt="ACM Logo"
@@ -224,7 +224,7 @@ export default function Page() {
 								height={175}
 							/>
 						</Link>
-						<Link href="/suborgs/rowdycreators" rel="noopener noreferrer" className="flex aspect-square flex-col items-center justify-center border-t-2 border-l-2 border-acm-darker-blue/50 p-10 transition-all hover:bg-acm-darker-blue/5">
+						<Link href="/suborgs/rowdycreators" rel="noopener noreferrer" className="flex h-full min-h-[12rem] flex-col items-center justify-center border-t-2 border-l-2 border-acm-darker-blue/50 p-10 transition-all hover:bg-acm-darker-blue/5">
 							<Image
 								src="/img/logos/suborgs/rc-blue.png"
 								alt="ACM Logo"
@@ -234,9 +234,9 @@ export default function Page() {
 						</Link>
 					</div>
 					<div className="h-10 w-full border-x-2 border-acm-darker-blue/50" />
-					<div className="grid grid-cols-4 grid-rows-2 border-2 border-acm-darker-blue/50">
-						<div className="relative col-span-4 flex flex-col items-end justify-center p-10">
-							<h1 className="text-right font-calsans text-8xl font-bold leading-none tracking-wide text-acm-darker-blue">
+					<div className="grid min-h-[32rem] grid-cols-4 grid-rows-[auto_minmax(0,1fr)] border-2 border-acm-darker-blue/50">
+						<div className="relative col-span-4 flex h-full flex-col items-end justify-center p-10">
+							<h1 className="text-right font-calsans text-8xl max-sm:text-7xl font-bold leading-none tracking-wide text-acm-darker-blue">
 								Hackathons
 							</h1>
 							<h2 className="text-md text-balance pt-10 text-right font-mono font-semibold text-acm-darker-blue">
@@ -245,7 +245,7 @@ export default function Page() {
 								country to innovate and build.
 							</h2>
 						</div>
-						<Link href="/suborgs/rowdyhacks" rel="noopener noreferrer" className="flex aspect-square flex-col items-center justify-center border-t-2 border-acm-darker-blue/50 p-10 transition-all hover:bg-acm-darker-blue/5">
+						<Link href="/suborgs/rowdyhacks" rel="noopener noreferrer" className="flex h-full min-h-[12rem] flex-col items-center justify-center border-t-2 border-acm-darker-blue/50 p-10 transition-all hover:bg-acm-darker-blue/5">
 							<Image
 								src="/img/logos/hackathons/rh-blue.png"
 								alt="ACM Logo"
@@ -253,7 +253,7 @@ export default function Page() {
 								height={150}
 							/>
 						</Link>
-						<Link href="https://cqhacks.org/" rel="noopener noreferrer" className="flex aspect-square flex-col items-center justify-center border-t-2 border-l-2 border-acm-darker-blue/50 p-10 transition-all hover:bg-acm-darker-blue/5">
+						<Link href="https://cqhacks.org/" rel="noopener noreferrer" target="_blank" className="flex h-full min-h-[12rem] flex-col items-center justify-center border-t-2 border-l-2 border-acm-darker-blue/50 p-10 transition-all hover:bg-acm-darker-blue/5">
 							<Image
 								src="/img/logos/hackathons/cq-blue.png"
 								alt="ACM Logo"
@@ -261,7 +261,7 @@ export default function Page() {
 								height={150}
 							/>
 						</Link>
-						<div className="flex aspect-square flex-col items-center justify-center border-l-2 border-t-2 border-acm-darker-blue/50 p-10">
+						<div className="flex h-full min-h-[12rem] flex-col items-center justify-center border-l-2 border-t-2 border-acm-darker-blue/50 p-10">
 							<Image
 								src="/img/logos/hackathons/rd-blue.png"
 								alt="ACM Logo"
@@ -269,7 +269,7 @@ export default function Page() {
 								height={150}
 							/>
 						</div>
-						<Link href="https://www.rowdycybercon.org/" rel="noopener noreferrer" className="flex aspect-square flex-col items-center justify-center border-l-2 border-t-2 border-acm-darker-blue/50 p-10 transition-all hover:bg-acm-darker-blue/5">
+						<Link href="https://www.rowdycybercon.org/" rel="noopener noreferrer" target="_blank" className="flex h-full min-h-[12rem] flex-col items-center justify-center border-l-2 border-t-2 border-acm-darker-blue/50 p-10 transition-all hover:bg-acm-darker-blue/5">
 							<Image
 								src="/img/logos/hackathons/rcc-blue.png"
 								alt="ACM Logo"
@@ -283,9 +283,9 @@ export default function Page() {
 						<UpcomingEvents />
 					</Suspense>
 					<div className="h-10 w-full border-0 border-acm-darker-blue/50" />
-					<div className="grid grid-cols-4 grid-rows-2 border-2 border-acm-darker-blue/50">
-						<div className="relative col-span-4 flex flex-col items-center justify-center p-10">
-							<h1 className="text-center font-calsans text-8xl font-bold leading-none tracking-wide text-acm-darker-blue">
+					<div className="grid min-h-[32rem] grid-cols-5 grid-rows-[auto_minmax(0,1fr)] border-2 border-acm-darker-blue/50">
+						<div className="relative col-span-5 flex h-full flex-col items-center justify-center p-10">
+							<h1 className="text-center font-calsans text-8xl max-sm:text-7xl font-bold leading-none tracking-wide text-acm-darker-blue">
 								Sponsors
 							</h1>
 							<h2 className="text-md max-w-[600px] text-balance pt-10 text-center font-mono font-semibold text-acm-darker-blue">
@@ -299,7 +299,7 @@ export default function Page() {
 								href={sponsor.link}
 								target="_blank"
 								rel="noopener noreferrer"
-								className={`flex aspect-square flex-col items-center justify-center border-t-2 border-acm-darker-blue/50 p-10 transition-all hover:bg-acm-darker-blue/5 ${
+								className={`flex h-full min-h-[12rem] flex-col items-center justify-center border-t-2 border-acm-darker-blue/50 p-10 transition-all hover:bg-acm-darker-blue/5 ${
 									index > 0 ? "border-l-2" : ""
 								}`}
 							>
@@ -314,7 +314,7 @@ export default function Page() {
 						))}
 						<Link
 							href="/sponsorship"
-							className="flex aspect-square flex-col items-center justify-center border-l-2 border-t-2 border-acm-darker-blue/50 p-10 transition-all hover:bg-acm-darker-blue/10"
+							className="flex h-full min-h-[12rem] flex-col items-center justify-center border-l-2 border-t-2 border-acm-darker-blue/50 p-10 transition-all hover:bg-acm-darker-blue/10"
 						>
 							<div className="flex flex-col items-center justify-center gap-4">
 								<HeartHandshake
@@ -369,14 +369,14 @@ async function UpcomingEvents() {
 	}
 
 	return (
-		<div className="flex h-96 items-start justify-center bg-acm-darker-blue text-white">
-			<div className="flex h-full min-w-[min(100vw,550px)] flex-col items-start justify-center border-r-2 border-dashed border-white p-10">
-				<h1 className="p-5 text-left font-calsans text-8xl font-bold leading-none tracking-wide text-white">
+		<div className="flex min-h-[24rem] flex-col items-start justify-center bg-acm-darker-blue text-white sm:h-96 sm:flex-row">
+			<div className="flex h-full w-full max-w-full flex-col items-start justify-center border-b-2 border-dashed border-white p-6 sm:w-[min(100%,32rem)] sm:max-w-[32rem] sm:border-b-0 sm:border-r-2 sm:p-10">
+				<h1 className="max-w-full break-words text-left font-calsans text-5xl font-bold leading-none tracking-wide text-white md:text-6xl">
 					{event.type === "future" ? "Up Next" : "Recently"}
 					<br />@ ACM
 				</h1>
 			</div>
-			<div className="flex h-full w-full flex-col items-start justify-center p-10">
+			<div className="flex h-full w-full flex-col items-start justify-center p-6 sm:p-10">
 				<div className="flex h-[45px] w-[45px] items-center justify-center pb-5">
 					<Image
 						src={event.event.thumbnailUrl}
@@ -386,7 +386,7 @@ async function UpcomingEvents() {
 						className="rounded-lg"
 					/>
 				</div>
-				<h1 className="pb-2 font-calsans text-4xl font-bold">
+				<h1 className="pb-2 font-calsans text-2xl font-bold sm:text-4xl">
 					{event.event.name}
 				</h1>
 				<div>
@@ -405,7 +405,7 @@ async function UpcomingEvents() {
 						{event.event.location}
 					</p>
 				</div>
-				<div className="flex items-center gap-x-1 pt-10">
+				<div className="flex flex-wrap items-center gap-x-1 gap-y-3 pt-10">
 					<Link href={`/events/${event.event.id}`}>
 						<Button variant={"styleized-white-blue-text"}>
 							View Event
