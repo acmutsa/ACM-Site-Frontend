@@ -35,7 +35,7 @@ export function SponsorsSection() {
 				</Link>
 			))}
 			<Link
-				href="/sponsorship"
+				href="/sponsor"
 				className="flex h-full min-h-[12rem] flex-col items-center justify-center border-l-2 border-t-2 border-acm-darker-blue/50 p-10 transition-all hover:bg-acm-darker-blue/10"
 			>
 				<div className="flex flex-col items-center justify-center gap-4">

@@ -117,7 +117,7 @@ export function HeroNav({
 					{/* Sub-orgs dropdown */}
 					<SuborgsDropdown linkStyles={linkStyles} navVariant={navVariant} />
 
-					<NavLink linkStyles={linkStyles} href="/sponsorship">
+					<NavLink linkStyles={linkStyles} href="/sponsor">
 						Sponsor
 					</NavLink>
 
