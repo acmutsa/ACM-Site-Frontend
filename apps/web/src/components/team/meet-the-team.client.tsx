@@ -1,7 +1,10 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import OrbitCarousel, { type OrbitPerson } from "@/components/team/orbit-carousel";
+
+import OrbitCarousel, {
+  type OrbitPerson,
+} from "@/components/team/orbit-carousel";
 import { TEAM_GROUPS } from "@/components/team/team.data";
 
 const TABS = [
@@ -20,39 +23,48 @@ type Tab = (typeof TABS)[number];
 export default function MeetTheTeamClient() {
   const [activeTab, setActiveTab] = useState<Tab>("acm");
 
-  const people: OrbitPerson[] = useMemo(() => {
-    const group = TEAM_GROUPS.find((g) => g.label === activeTab);
-    if (!group) return [];
+  const people = useMemo<OrbitPerson[]>(() => {
+    const group = TEAM_GROUPS.find(
+      (teamGroup) => teamGroup.label === activeTab
+    );
 
-    return group.members.map((m) => ({
-      id: m.id,
-      name: m.name,
-      role: m.role,
+    if (!group) {
+      return [];
+    }
+
+    return group.members.map((member) => ({
+      id: member.id,
+      name: member.name,
+      role: member.role,
       org: group.label,
-      imageUrl: m.imageUrl,
-
-      // ✅ THIS is the missing piece
-      socials: m.socials,
+      imageUrl: member.imageUrl,
+      socials: member.socials,
     }));
   }, [activeTab]);
 
   return (
-    <div className="mx-auto w-full max-w-screen-xl pb-24 pt-16">
-      <div className="mt-8 flex flex-wrap items-center gap-x-3 gap-y-2 font-calsans text-2xl font-bold">
-        {TABS.map((tab, idx) => (
+    <div className="mx-auto w-full max-w-screen-xl px-4 pb-24 pt-10 sm:px-6 sm:pt-16">
+      <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-2 font-calsans text-lg font-bold sm:mt-8 sm:text-2xl">
+        {TABS.map((tab, index) => (
           <button
             key={tab}
             type="button"
             onClick={() => setActiveTab(tab)}
-            className={`transition ${
+            className={`transition-colors ${
               activeTab === tab
                 ? "text-acm-blue"
                 : "text-acm-darker-blue/35 hover:text-acm-darker-blue/60"
             }`}
           >
             {tab}
-            {idx < TABS.length - 1 ? (
-              <span className="ml-3 text-acm-darker-blue/25">|</span>
+
+            {index < TABS.length - 1 ? (
+              <span
+                aria-hidden="true"
+                className="ml-3 text-acm-darker-blue/25"
+              >
+                |
+              </span>
             ) : null}
           </button>
         ))}
@@ -60,19 +72,29 @@ export default function MeetTheTeamClient() {
 
       <div className="mt-8 h-px w-full bg-acm-darker-blue/15" />
 
-      <div className="mt-10">
-        {people.length ? (
-          <OrbitCarousel people={people} initialIndex={0} />
+      <div className="mt-8 sm:mt-10">
+        {people.length > 0 ? (
+          <OrbitCarousel
+            key={activeTab}
+            people={people}
+            initialIndex={0}
+          />
         ) : (
-          <div className="rounded-3xl border border-acm-darker-blue/10 bg-white p-10">
+          <div className="rounded-3xl border border-acm-darker-blue/10 bg-white p-8 sm:p-10">
             <div className="font-calsans text-2xl font-black text-acm-darker-blue">
               No members yet
             </div>
+
             <div className="mt-2 font-mono text-sm font-semibold text-acm-darker-blue/60">
               Add people to the{" "}
-              <span className="text-acm-darker-blue/80">{activeTab}</span> group
-              in{" "}
-              <span className="text-acm-darker-blue/80">team.data.ts</span>.
+              <span className="text-acm-darker-blue/80">
+                {activeTab}
+              </span>{" "}
+              group in{" "}
+              <span className="text-acm-darker-blue/80">
+                team.data.ts
+              </span>
+              .
             </div>
           </div>
         )}

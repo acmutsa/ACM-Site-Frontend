@@ -115,7 +115,7 @@ export const SUBORGS: Record<string, Suborg> = {
 		},
 		name: "Coding In Color",
 		shortDesc: "A safe space for black people in the technology world",
-		logoUrl: "/img/logos/suborgs/cnc-gray.png",
+		logoUrl: "/img/logos/suborgs/cnc-blue.png",
 		leadingSentence:
 			"Coding in Color, a safe community for black people to advance together in the technical world",
 		missionHead: "Connect",
