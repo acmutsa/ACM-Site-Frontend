@@ -27,6 +27,20 @@ function clampIndex(i: number, n: number) {
   return ((i % n) + n) % n;
 }
 
+function getCircularOffset(index: number, activeIndex: number, total: number) {
+  let offset = index - activeIndex;
+
+  if (offset > total / 2) {
+    offset -= total;
+  }
+
+  if (offset < -total / 2) {
+    offset += total;
+  }
+
+  return offset;
+}
+
 function lerp(a: number, b: number, t: number) {
   return a + (b - a) * t;
 }
@@ -108,12 +122,7 @@ export default function OrbitCarousel({ people = [], initialIndex = 0 }: OrbitCa
     );
   }
 
-  const prev = clampIndex(active - 1, n);
-  const next = clampIndex(active + 1, n);
-
   const activePerson = people[active];
-  const prevPerson = people[prev];
-  const nextPerson = people[next];
 
   const W = 1200;
   const H = 700;
@@ -229,45 +238,103 @@ export default function OrbitCarousel({ people = [], initialIndex = 0 }: OrbitCa
   }, [grid]);
 
   const BASE = 170;
+  const MOBILE_BASE = 132;
   const sideScale = 120 / 170;
+  const mobileSideScale = 0.58;
 
   const bubbleTargets = useMemo(() => {
-    return [
-      {
-        idx: prev,
-        person: prevPerson,
-        pt: pLeft,
-        scale: sideScale,
+    return people.map((person, idx) => {
+      const offset = getCircularOffset(idx, active, n);
+
+      if (offset === 0) {
+        return {
+          idx,
+          person,
+          pt: pMid,
+          mobilePt: { x: 600, y: 382 },
+          scale: 1,
+          mobileScale: 1,
+          opacity: 1,
+          emphasize: true,
+          z: 30,
+        };
+      }
+
+      if (offset === -1) {
+        return {
+          idx,
+          person,
+          pt: pLeft,
+          mobilePt: { x: -35, y: 430 },
+          scale: sideScale,
+          mobileScale: mobileSideScale,
+          opacity: 0.9,
+          emphasize: false,
+          z: 20,
+        };
+      }
+
+      if (offset === 1) {
+        return {
+          idx,
+          person,
+          pt: pRight,
+          mobilePt: { x: 1235, y: 430 },
+          scale: sideScale,
+          mobileScale: mobileSideScale,
+          opacity: 0.9,
+          emphasize: false,
+          z: 20,
+        };
+      }
+
+      if (offset < -1) {
+        return {
+          idx,
+          person,
+          pt: { x: -140, y: pLeft.y },
+          mobilePt: { x: -360, y: 430 },
+          scale: sideScale * 0.85,
+          mobileScale: mobileSideScale * 0.85,
+          opacity: 0,
+          emphasize: false,
+          z: 10,
+        };
+      }
+
+      return {
+        idx,
+        person,
+        pt: { x: W + 140, y: pRight.y },
+        mobilePt: { x: 1560, y: 430 },
+        scale: sideScale * 0.85,
+        mobileScale: mobileSideScale * 0.85,
+        opacity: 0,
         emphasize: false,
-        z: 20,
-      },
-      {
-        idx: active,
-        person: activePerson,
-        pt: pMid,
-        scale: 1,
-        emphasize: true,
-        z: 30,
-      },
-      {
-        idx: next,
-        person: nextPerson,
-        pt: pRight,
-        scale: sideScale,
-        emphasize: false,
-        z: 20,
-      },
-    ];
-  }, [prev, active, next, prevPerson, activePerson, nextPerson, pLeft.x, pLeft.y, pMid.x, pMid.y, pRight.x, pRight.y]);
+        z: 10,
+      };
+    });
+  }, [
+    people,
+    active,
+    n,
+    pLeft.x,
+    pLeft.y,
+    pMid.x,
+    pMid.y,
+    pRight.x,
+    pRight.y,
+    sideScale,
+  ]);
 
   return (
-    <div className="relative isolate overflow-hidden rounded-[44px] bg-gradient-to-br from-[#2f7cff] to-[#2d5cff] shadow-[0_25px_60px_rgba(0,0,0,0.15)]">
+    <div className="relative isolate overflow-hidden rounded-[28px] bg-gradient-to-br md:rounded-[44px] from-[#2f7cff] to-[#2d5cff] shadow-[0_25px_60px_rgba(0,0,0,0.15)]">
       <svg
         className="pointer-events-none absolute inset-0 z-0"
         viewBox={`0 0 ${W} ${H}`}
         fill="none"
         aria-hidden="true"
-        preserveAspectRatio="xMidYMid meet"
+        preserveAspectRatio="xMidYMid slice"
       >
         <defs>
           <radialGradient
@@ -337,28 +404,28 @@ export default function OrbitCarousel({ people = [], initialIndex = 0 }: OrbitCa
         />
       </svg>
 
-      <div className="relative z-10 h-[620px] p-12">
-        <div className="flex items-start justify-between">
-          <div>
-            <div className="font-mono text-xs font-semibold tracking-[0.35em] text-white/80">
+      <div className="relative z-10 h-[500px] p-5 sm:h-[540px] sm:p-7 md:h-[620px] md:p-12">
+        <div className="flex items-start justify-between gap-3">
+          <div className="min-w-0 max-w-[68%] md:max-w-none">
+            <div className="font-mono text-[10px] md:text-xs font-semibold tracking-[0.35em] text-white/80">
               {(activePerson?.org ?? "ACM").toUpperCase()}
             </div>
-            <div className="mt-2 font-calsans text-4xl font-black text-white">{activePerson.name}</div>
+            <div className="mt-1 break-words font-calsans text-2xl font-black leading-[0.95] text-white sm:text-3xl md:mt-2 md:text-4xl">{activePerson.name}</div>
             {activePerson.role ? (
-              <div className="mt-1 font-mono text-sm font-semibold text-white/80">{activePerson.role}</div>
+              <div className="mt-1 font-mono text-xs font-semibold text-white/80 md:text-sm">{activePerson.role}</div>
             ) : null}
           </div>
 
-          <div className="rounded-2xl bg-white/12 px-6 py-5 text-center backdrop-blur">
-            <div className="font-mono text-xs font-semibold tracking-[0.35em] text-white/80">PEOPLE</div>
-            <div className="mt-1 font-calsans text-4xl font-black text-white">{n}</div>
+          <div className="shrink-0 rounded-xl bg-white/12 px-3 py-3 text-center backdrop-blur md:rounded-2xl md:px-6 md:py-5">
+            <div className="font-mono text-[9px] font-semibold tracking-[0.25em] text-white/80 md:text-xs md:tracking-[0.35em]">PEOPLE</div>
+            <div className="mt-0.5 font-calsans text-2xl font-black text-white md:mt-1 md:text-4xl">{n}</div>
           </div>
         </div>
 
         <button
           type="button"
           onClick={goPrev}
-          className="absolute left-10 top-1/2 z-40 -translate-y-1/2 rounded-full p-3 text-white/70 transition hover:bg-white/10 hover:text-white"
+          className="absolute left-1 top-[59%] z-40 -translate-y-1/2 rounded-full p-3 sm:left-3 md:left-10 md:top-1/2 text-white/70 transition hover:bg-white/10 hover:text-white"
           aria-label="Previous person"
         >
           <span className="text-3xl leading-none">‹</span>
@@ -367,7 +434,7 @@ export default function OrbitCarousel({ people = [], initialIndex = 0 }: OrbitCa
         <button
           type="button"
           onClick={goNext}
-          className="absolute right-10 top-1/2 z-40 -translate-y-1/2 rounded-full p-3 text-white/70 transition hover:bg-white/10 hover:text-white"
+          className="absolute right-1 top-[59%] z-40 -translate-y-1/2 rounded-full p-3 sm:right-3 md:right-10 md:top-1/2 text-white/70 transition hover:bg-white/10 hover:text-white"
           aria-label="Next person"
         >
           <span className="text-3xl leading-none">›</span>
@@ -381,8 +448,13 @@ export default function OrbitCarousel({ people = [], initialIndex = 0 }: OrbitCa
               person={v.person}
               x={v.pt.x}
               y={v.pt.y}
+              mobileX={v.mobilePt.x}
+              mobileY={v.mobilePt.y}
               baseSize={BASE}
+              mobileBaseSize={MOBILE_BASE}
               scale={v.scale}
+              mobileScale={v.mobileScale}
+              opacity={v.opacity}
               emphasize={v.emphasize}
               zIndex={v.z}
               onClick={() => setActive(v.idx)}
@@ -390,8 +462,8 @@ export default function OrbitCarousel({ people = [], initialIndex = 0 }: OrbitCa
           ))}
         </div>
 
-        <div className="absolute left-1/2 top-[470px] z-30 w-[420px] -translate-x-1/2 rounded-[22px] bg-white/10 px-10 py-6 text-center backdrop-blur-md flex flex-col">
-          <div className="font-calsans text-xl font-black text-white">{activePerson.name}</div>
+        <div className="absolute bottom-5 left-1/2 z-30 flex w-[calc(100%-2rem)] -translate-x-1/2 flex-col rounded-[18px] bg-white/10 px-5 py-4 text-center backdrop-blur-md sm:bottom-6 sm:w-[calc(100%-3rem)] md:bottom-auto md:top-[470px] md:w-[420px] md:rounded-[22px] md:px-10 md:py-6">
+          <div className="font-calsans text-lg font-black text-white md:text-xl">{activePerson.name}</div>
           {activePerson.role ? (
             <div className="mt-1 font-mono text-sm font-semibold text-white/80">{activePerson.role}</div>
           ) : null}
@@ -407,8 +479,13 @@ function PersonBubble({
   person,
   x,
   y,
+  mobileX,
+  mobileY,
   baseSize,
+  mobileBaseSize,
   scale,
+  mobileScale,
+  opacity,
   emphasize,
   zIndex,
   onClick,
@@ -416,8 +493,13 @@ function PersonBubble({
   person: OrbitPerson;
   x: number;
   y: number;
+  mobileX: number;
+  mobileY: number;
   baseSize: number;
+  mobileBaseSize: number;
   scale: number;
+  mobileScale: number;
+  opacity: number;
   emphasize?: boolean;
   zIndex?: number;
   onClick?: () => void;
@@ -427,23 +509,31 @@ function PersonBubble({
       type="button"
       onClick={onClick}
       className={[
-        "absolute -translate-x-1/2 -translate-y-1/2 rounded-full",
-        "transition-[left,top,transform,opacity] duration-700 ease-[cubic-bezier(.22,.61,.36,1)]",
+        "absolute rounded-full [left:var(--mobile-left)] [top:var(--mobile-top)] md:[left:var(--desktop-left)] md:[top:var(--desktop-top)]",
+        "transition-[left,top,transform,opacity,width,height] duration-700 ease-[cubic-bezier(.22,.61,.36,1)]",
+        "h-[var(--mobile-size)] w-[var(--mobile-size)] md:h-[var(--desktop-size)] md:w-[var(--desktop-size)]",
+        "[transform:translate(-50%,-50%)_scale(var(--mobile-scale))] md:[transform:translate(-50%,-50%)_scale(var(--desktop-scale))]",
         emphasize ? "" : "hover:scale-[1.02]",
       ].join(" ")}
-      style={{
-        left: `${(x / 1200) * 100}%`,
-        top: `${(y / 700) * 100}%`,
-        width: `${baseSize}px`,
-        height: `${baseSize}px`,
-        transform: `translate(-50%, -50%) scale(${scale})`,
-        opacity: emphasize ? 1 : 0.9,
-        zIndex,
-      }}
+      style={
+        {
+          "--desktop-left": `${(x / 1200) * 100}%`,
+          "--desktop-top": `${(y / 700) * 100}%`,
+          "--mobile-left": `${(mobileX / 1200) * 100}%`,
+          "--mobile-top": `${(mobileY / 700) * 100}%`,
+          "--desktop-size": `${baseSize}px`,
+          "--mobile-size": `${mobileBaseSize}px`,
+          "--desktop-scale": scale,
+          "--mobile-scale": mobileScale,
+          opacity,
+          pointerEvents: opacity === 0 ? "none" : "auto",
+          zIndex,
+        } as React.CSSProperties
+      }
       aria-label={person.name}
     >
-      <div className="relative h-full w-full overflow-hidden rounded-full border-[6px] border-white/85 shadow-[0_20px_50px_rgba(0,0,0,0.30)]">
-        <Image alt={person.name} src={person.imageUrl} fill className="object-cover" sizes="200px" priority={emphasize} />
+      <div className="relative h-full w-full overflow-hidden rounded-full border-[4px] border-white/85 md:border-[6px] shadow-[0_20px_50px_rgba(0,0,0,0.30)]">
+        <Image alt={person.name} src={person.imageUrl} fill className="object-cover" sizes="(max-width: 767px) 132px, 200px" priority={emphasize} />
       </div>
 
       <div className="pointer-events-none absolute inset-0 rounded-full shadow-[0_0_0_10px_rgba(255,255,255,0.06)]" />
