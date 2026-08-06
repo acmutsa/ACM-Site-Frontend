@@ -1,14 +1,13 @@
 import { HeroNav } from "@/components/shared/navbar";
 import Footer from "@/components/shared/footer";
-import { DUMMY_EVENTS } from "@/components/events/dummy-events";
-import EventCalendar from "@/components/events/EventCalendar";
 import EventsClientWrapper from "@/components/events/events-client-wrapper";
+import { getPortalEvents } from "@/lib/portal-api";
+import { portalEventToEventType } from "@/lib/adapters/portal-event";
 
-// TODO: maybe add ONGOING sticker for events that are currently happening?
-// FIXEME: edit spacing between all the stuff
+export default async function EventsPage() {
+	const portalEvents = await getPortalEvents();
+	const events = portalEvents.map(portalEventToEventType);
 
-// TODO: fix stuff for phone layout
-export default function EventsPage() {
 	return (
 		<>
 			<HeroNav navVariant="blueForeground" />
@@ -16,9 +15,6 @@ export default function EventsPage() {
 
 			<div className="mx-auto w-full max-w-screen-xl px-10 pb-24">
 				<h1 className="font-chillax text-6xl font-black tracking-tight text-acm-darker-blue md:text-8xl">
-					{/* change header text?
-					 * i kind of like 'explore our events.' but open to suggestions
-					 */}
 					see what's happening.
 				</h1>
 
@@ -27,10 +23,9 @@ export default function EventsPage() {
 					community-driven events.
 				</p>
 
-				<div className="mx-auto mt-12 flex w-full max-w-screen-xl flex-col gap-8 pb-24 lg:flex-row lg:items-stretch">
-					<EventsClientWrapper allEvents={DUMMY_EVENTS} />
-				</div>
+				<EventsClientWrapper allEvents={events} />
 			</div>
+
 			<Footer orgName="ACM UTSA" />
 		</>
 	);
