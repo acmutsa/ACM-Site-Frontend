@@ -585,6 +585,7 @@ export default function OrbitCarousel({
               stopOpacity="0"
             />
           </radialGradient>
+        </defs>
 
           <filter
             id={orbitGlowId}

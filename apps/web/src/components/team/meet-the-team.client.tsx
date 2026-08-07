@@ -70,7 +70,7 @@ export default function MeetTheTeamClient() {
         ))}
       </div>
 
-      <div className="mt-8 h-px w-full bg-acm-darker-blue/15" />
+      <div className="mt-2 h-px w-full bg-acm-darker-blue/15 md:mt-8" />
 
       <div className="mt-8 sm:mt-10">
         {people.length > 0 ? (
