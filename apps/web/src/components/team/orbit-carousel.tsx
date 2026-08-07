@@ -1,7 +1,13 @@
 "use client";
 
-import Image from "next/image";
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useId,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 
 export type OrbitPerson = {
   id: string;
@@ -22,691 +28,899 @@ export type OrbitCarouselProps = {
   initialIndex?: number;
 };
 
-function clampIndex(i: number, n: number) {
-  if (n <= 0) return 0;
-  return ((i % n) + n) % n;
-}
+type Point = {
+  x: number;
+  y: number;
+};
 
-function getCircularOffset(index: number, activeIndex: number, total: number) {
-  let offset = index - activeIndex;
-
-  if (offset > total / 2) {
-    offset -= total;
-  }
-
-  if (offset < -total / 2) {
-    offset += total;
-  }
-
-  return offset;
-}
-
-function lerp(a: number, b: number, t: number) {
-  return a + (b - a) * t;
-}
-
-function degToRad(deg: number) {
-  return (deg * Math.PI) / 180;
-}
-
-type Pt = { x: number; y: number };
-
-function ellipsePoint(cx: number, cy: number, rx: number, ry: number, theta: number): Pt {
-  return {
-    x: cx + rx * Math.cos(theta),
-    y: cy + ry * Math.sin(theta),
-  };
-}
-
-function arcPoint(arc: { cx: number; cy: number; rx: number; ry: number }, t: number) {
-  const thetaStart = degToRad(200);
-  const thetaEnd = degToRad(340);
-  const theta = lerp(thetaStart, thetaEnd, t);
-  return ellipsePoint(arc.cx, arc.cy, arc.rx, arc.ry, theta);
-}
-
-function arcPathD(arc: { cx: number; cy: number; rx: number; ry: number }) {
-  const a = arcPoint(arc, 0);
-  const b = arcPoint(arc, 1);
-  return `M ${a.x.toFixed(2)} ${a.y.toFixed(2)} A ${arc.rx} ${arc.ry} 0 0 1 ${b.x.toFixed(
-    2
-  )} ${b.y.toFixed(2)}`;
-}
-
-function cubicPath(a: Pt, c1: Pt, c2: Pt, b: Pt) {
-  return `M ${a.x.toFixed(2)} ${a.y.toFixed(2)} C ${c1.x.toFixed(2)} ${c1.y.toFixed(
-    2
-  )} ${c2.x.toFixed(2)} ${c2.y.toFixed(2)} ${b.x.toFixed(2)} ${b.y.toFixed(2)}`;
-}
-
-function ellipseArcD(
-  cx: number,
-  cy: number,
-  rx: number,
-  ry: number,
-  startDeg: number,
-  endDeg: number,
-  sweep: 0 | 1 = 1
-) {
-  const a = ellipsePoint(cx, cy, rx, ry, degToRad(startDeg));
-  const b = ellipsePoint(cx, cy, rx, ry, degToRad(endDeg));
-  const largeArc: 0 | 1 = Math.abs(endDeg - startDeg) >= 180 ? 1 : 0;
-  return `M ${a.x.toFixed(2)} ${a.y.toFixed(2)} A ${rx} ${ry} 0 ${largeArc} ${sweep} ${b.x.toFixed(
-    2
-  )} ${b.y.toFixed(2)}`;
-}
-
-type GridSeg = {
+type GridLine = {
   id: string;
   d: string;
   opacity: number;
-  strokeW: number;
+  strokeWidth: number;
+  dotCount: number;
+  dotSpeed: number;
+  dotOffset: number;
 };
 
-export default function OrbitCarousel({ people = [], initialIndex = 0 }: OrbitCarouselProps) {
-  const n = people.length;
-  const [active, setActive] = useState(() => clampIndex(initialIndex, n || 1));
+type PositionedPerson = {
+  person: OrbitPerson;
+  personIndex: number;
+  distance: number;
+  point: Point;
+  scale: number;
+  opacity: number;
+  isActive: boolean;
+  isVisible: boolean;
+};
+
+const VIEWBOX_WIDTH = 1200;
+const VIEWBOX_HEIGHT = 700;
+
+/**
+ * This one object controls:
+ *
+ * - the glowing white line
+ * - profile-picture positions
+ * - connector endpoints
+ *
+ * That guarantees that all three stay attached.
+ */
+const MAIN_ORBIT = {
+  cx: 600,
+  cy: 640,
+  rx: 980,
+  ry: 260,
+  startDegrees: 200,
+  endDegrees: 340,
+};
+
+function clampIndex(index: number, length: number) {
+  if (length <= 0) {
+    return 0;
+  }
+
+  return ((index % length) + length) % length;
+}
+
+function lerp(
+  start: number,
+  end: number,
+  amount: number
+) {
+  return start + (end - start) * amount;
+}
+
+function degreesToRadians(degrees: number) {
+  return (degrees * Math.PI) / 180;
+}
+
+function getOrbitPoint(progress: number): Point {
+  const startAngle = degreesToRadians(
+    MAIN_ORBIT.startDegrees
+  );
+
+  const endAngle = degreesToRadians(
+    MAIN_ORBIT.endDegrees
+  );
+
+  const angle = lerp(
+    startAngle,
+    endAngle,
+    progress
+  );
+
+  return {
+    x:
+      MAIN_ORBIT.cx +
+      MAIN_ORBIT.rx * Math.cos(angle),
+    y:
+      MAIN_ORBIT.cy +
+      MAIN_ORBIT.ry * Math.sin(angle),
+  };
+}
+
+function getOrbitPath() {
+  const start = getOrbitPoint(0);
+  const end = getOrbitPoint(1);
+
+  return [
+    `M ${start.x.toFixed(2)} ${start.y.toFixed(2)}`,
+    `A ${MAIN_ORBIT.rx} ${MAIN_ORBIT.ry}`,
+    "0 0 1",
+    `${end.x.toFixed(2)} ${end.y.toFixed(2)}`,
+  ].join(" ");
+}
+
+function createCubicPath(
+  start: Point,
+  control1: Point,
+  control2: Point,
+  end: Point
+) {
+  return [
+    `M ${start.x.toFixed(2)} ${start.y.toFixed(2)}`,
+    `C ${control1.x.toFixed(2)} ${control1.y.toFixed(2)}`,
+    `${control2.x.toFixed(2)} ${control2.y.toFixed(2)}`,
+    `${end.x.toFixed(2)} ${end.y.toFixed(2)}`,
+  ].join(" ");
+}
+
+function getCircularDistance(
+  personIndex: number,
+  activeIndex: number,
+  length: number
+) {
+  if (length <= 1) {
+    return 0;
+  }
+
+  let distance = personIndex - activeIndex;
+  const half = length / 2;
+
+  while (distance > half) {
+    distance -= length;
+  }
+
+  while (distance < -half) {
+    distance += length;
+  }
+
+  return distance;
+}
+
+/**
+ * The connector endpoints are exact points on MAIN_ORBIT.
+ *
+ * They are intentionally placed at uneven intervals and use
+ * different control points so they resemble the reference image
+ * without becoming perfectly symmetrical.
+ */
+function buildGridLines(): GridLine[] {
+  const leftConnectorPoint = getOrbitPoint(0.27);
+  const centerConnectorPoint = getOrbitPoint(0.48);
+  const rightConnectorPoint = getOrbitPoint(0.7);
+
+  return [
+    {
+      id: "upper-sweep",
+      d: createCubicPath(
+        { x: -100, y: 650 },
+        { x: 190, y: 555 },
+        { x: 690, y: 555 },
+        { x: 1300, y: 680 }
+      ),
+      opacity: 0.15,
+      strokeWidth: 2.1,
+      dotCount: 2,
+      dotSpeed: 0.000034,
+      dotOffset: 0.08,
+    },
+    {
+      id: "middle-sweep",
+      d: createCubicPath(
+        { x: -140, y: 704 },
+        { x: 250, y: 590 },
+        { x: 800, y: 605 },
+        { x: 1340, y: 732 }
+      ),
+      opacity: 0.13,
+      strokeWidth: 2,
+      dotCount: 2,
+      dotSpeed: 0.000029,
+      dotOffset: 0.32,
+    },
+    {
+      id: "lower-sweep",
+      d: createCubicPath(
+        { x: -175, y: 762 },
+        { x: 210, y: 650 },
+        { x: 850, y: 662 },
+        { x: 1375, y: 792 }
+      ),
+      opacity: 0.11,
+      strokeWidth: 2,
+      dotCount: 2,
+      dotSpeed: 0.000031,
+      dotOffset: 0.59,
+    },
+    {
+      id: "bottom-sweep",
+      d: createCubicPath(
+        { x: -220, y: 825 },
+        { x: 280, y: 704 },
+        { x: 900, y: 720 },
+        { x: 1420, y: 850 }
+      ),
+      opacity: 0.08,
+      strokeWidth: 2,
+      dotCount: 1,
+      dotSpeed: 0.000025,
+      dotOffset: 0.82,
+    },
+
+    {
+      id: "crossing-left",
+      d: createCubicPath(
+        { x: -90, y: 742 },
+        { x: 190, y: 618 },
+        { x: 430, y: 635 },
+        { x: 710, y: 760 }
+      ),
+      opacity: 0.11,
+      strokeWidth: 2,
+      dotCount: 1,
+      dotSpeed: 0.000027,
+      dotOffset: 0.22,
+    },
+    {
+      id: "crossing-right",
+      d: createCubicPath(
+        { x: 460, y: 758 },
+        { x: 710, y: 620 },
+        { x: 980, y: 620 },
+        { x: 1315, y: 724 }
+      ),
+      opacity: 0.11,
+      strokeWidth: 2,
+      dotCount: 2,
+      dotSpeed: 0.000026,
+      dotOffset: 0.53,
+    },
+
+    /**
+     * These three lines reach the glowing orbit.
+     *
+     * They are drawn first, and the glowing orbit is drawn over
+     * their endpoints for a clean connection.
+     */
+    {
+      id: "connector-left",
+      d: createCubicPath(
+        { x: 145, y: 760 },
+        { x: 205, y: 684 },
+        {
+          x: leftConnectorPoint.x - 54,
+          y: leftConnectorPoint.y + 82,
+        },
+        leftConnectorPoint
+      ),
+      opacity: 0.17,
+      strokeWidth: 2.1,
+      dotCount: 2,
+      dotSpeed: 0.000038,
+      dotOffset: 0.13,
+    },
+    {
+      id: "connector-center",
+      d: createCubicPath(
+        { x: 450, y: 775 },
+        { x: 490, y: 680 },
+        {
+          x: centerConnectorPoint.x - 20,
+          y: centerConnectorPoint.y + 78,
+        },
+        centerConnectorPoint
+      ),
+      opacity: 0.15,
+      strokeWidth: 2,
+      dotCount: 2,
+      dotSpeed: 0.000033,
+      dotOffset: 0.46,
+    },
+    {
+      id: "connector-right",
+      d: createCubicPath(
+        { x: 1075, y: 750 },
+        { x: 1022, y: 675 },
+        {
+          x: rightConnectorPoint.x + 45,
+          y: rightConnectorPoint.y + 74,
+        },
+        rightConnectorPoint
+      ),
+      opacity: 0.17,
+      strokeWidth: 2.1,
+      dotCount: 2,
+      dotSpeed: 0.000037,
+      dotOffset: 0.72,
+    },
+  ];
+}
+
+export default function OrbitCarousel({
+  people = [],
+  initialIndex = 0,
+}: OrbitCarouselProps) {
+  const personCount = people.length;
+
+  const [activeIndex, setActiveIndex] = useState(
+    () => clampIndex(initialIndex, personCount || 1)
+  );
+
+  const [gridDots, setGridDots] = useState<
+    Record<string, Point[]>
+  >({});
+
+  const gridPathRefs = useRef<
+    Record<string, SVGPathElement | null>
+  >({});
+
+  const animationFrameRef = useRef<number | null>(
+    null
+  );
+
+  const generatedId = useId().replace(/:/g, "");
+  const orbitGlowId = `orbit-glow-${generatedId}`;
+  const dotGlowId = `dot-glow-${generatedId}`;
+  const backgroundLeftId = `background-left-${generatedId}`;
+  const backgroundRightId = `background-right-${generatedId}`;
+
+  const gridLines = useMemo(
+    () => buildGridLines(),
+    []
+  );
 
   useEffect(() => {
-    setActive((v) => clampIndex(v, n || 1));
-  }, [n]);
+    setActiveIndex((currentIndex) =>
+      clampIndex(currentIndex, personCount || 1)
+    );
+  }, [personCount]);
 
-  if (!people || people.length === 0) {
+  const goPrevious = useCallback(() => {
+    setActiveIndex((currentIndex) =>
+      clampIndex(currentIndex - 1, personCount)
+    );
+  }, [personCount]);
+
+  const goNext = useCallback(() => {
+    setActiveIndex((currentIndex) =>
+      clampIndex(currentIndex + 1, personCount)
+    );
+  }, [personCount]);
+
+  useEffect(() => {
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === "ArrowLeft") {
+        goPrevious();
+      }
+
+      if (event.key === "ArrowRight") {
+        goNext();
+      }
+    }
+
+    window.addEventListener(
+      "keydown",
+      handleKeyDown
+    );
+
+    return () => {
+      window.removeEventListener(
+        "keydown",
+        handleKeyDown
+      );
+    };
+  }, [goNext, goPrevious]);
+
+  useEffect(() => {
+    function animateDots(timestamp: number) {
+      const nextDots: Record<string, Point[]> = {};
+
+      for (const line of gridLines) {
+        const path = gridPathRefs.current[line.id];
+
+        if (!path || line.dotCount <= 0) {
+          continue;
+        }
+
+        const pathLength = path.getTotalLength();
+
+        nextDots[line.id] = Array.from(
+          { length: line.dotCount },
+          (_, dotIndex) => {
+            const spacing = 1 / line.dotCount;
+
+            const progress =
+              (
+                timestamp * line.dotSpeed +
+                line.dotOffset +
+                dotIndex * spacing
+              ) % 1;
+
+            const point = path.getPointAtLength(
+              pathLength * progress
+            );
+
+            return {
+              x: point.x,
+              y: point.y,
+            };
+          }
+        );
+      }
+
+      setGridDots(nextDots);
+
+      animationFrameRef.current =
+        requestAnimationFrame(animateDots);
+    }
+
+    animationFrameRef.current =
+      requestAnimationFrame(animateDots);
+
+    return () => {
+      if (animationFrameRef.current !== null) {
+        cancelAnimationFrame(
+          animationFrameRef.current
+        );
+      }
+
+      animationFrameRef.current = null;
+    };
+  }, [gridLines]);
+
+  const positionedPeople = useMemo<
+    PositionedPerson[]
+  >(() => {
+    return people.map((person, personIndex) => {
+      const distance = getCircularDistance(
+        personIndex,
+        activeIndex,
+        personCount
+      );
+
+      const progress = 0.5 + distance * 0.265;
+      const point = getOrbitPoint(progress);
+
+      const isActive = distance === 0;
+      const isNeighbor = Math.abs(distance) === 1;
+      const isOuter = Math.abs(distance) === 2;
+
+      let scale = 0.52;
+      let opacity = 0;
+
+      if (isActive) {
+        scale = 1;
+        opacity = 1;
+      } else if (isNeighbor) {
+        scale = 0.66;
+        opacity = 0.96;
+      } else if (isOuter) {
+        scale = 0.61;
+        opacity = 0.86;
+      }
+
+      return {
+        person,
+        personIndex,
+        distance,
+        point,
+        scale,
+        opacity,
+        isActive,
+        isVisible: Math.abs(distance) <= 2,
+      };
+    });
+  }, [activeIndex, people, personCount]);
+
+  const activePerson = people[activeIndex];
+
+  if (!activePerson || personCount === 0) {
     return (
-      <div className="relative isolate overflow-hidden rounded-[44px] border border-black/5 bg-white shadow-[0_25px_60px_rgba(0,0,0,0.12)]">
-        <div className="p-10">
-          <div className="font-calsans text-xl font-bold text-black/80">No team members yet</div>
-          <div className="mt-1 font-mono text-sm text-black/50">Pass people into OrbitCarousel.</div>
+      <div className="rounded-[28px] border border-black/5 bg-white p-8 shadow-[0_25px_60px_rgba(0,0,0,0.12)] sm:rounded-[44px] sm:p-10">
+        <div className="font-calsans text-xl font-bold text-black/80">
+          No team members yet
+        </div>
+
+        <div className="mt-1 font-mono text-sm text-black/50">
+          Pass people into OrbitCarousel.
         </div>
       </div>
     );
   }
 
-  const activePerson = people[active];
-
-  const W = 1200;
-  const H = 700;
-
-  const arc = {
-    cx: 600,
-    cy: 640,
-    rx: 980,
-    ry: 260,
-  };
-
-  const tLeft = 0.24;
-  const tMid = 0.5;
-  const tRight = 0.76;
-
-  const pLeft = arcPoint(arc, tLeft);
-  const pMid = arcPoint(arc, tMid);
-  const pRight = arcPoint(arc, tRight);
-
-  // Mobile portrait centers are measured in pixels from the top of the card.
-  // The center is the highest point of the arc, while the side portraits sit lower.
-  // This creates the visible top edge of a very large circle.
-  const mobilePLeft: Pt = { x: 0, y: 300 };
-  const mobilePMid: Pt = { x: 600, y: 245 };
-  const mobilePRight: Pt = { x: 1200, y: 300 };
-
-  function goPrev() {
-    setActive((v) => clampIndex(v - 1, n));
-  }
-  function goNext() {
-    setActive((v) => clampIndex(v + 1, n));
-  }
-
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "ArrowLeft") goPrev();
-      if (e.key === "ArrowRight") goNext();
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [n]);
-
-  const grid = useMemo(() => {
-    // Loose globe / wireframe grid.
-    // Intentionally sparse and asymmetric so it feels designed rather than perfectly generated.
-    const meridians: GridSeg[] = [
-      {
-        id: "meridian-left",
-        d: "M 235 402 C 355 470 438 575 472 700",
-        opacity: 0.085,
-        strokeW: 2.9,
-      },
-      {
-        id: "meridian-right",
-        d: "M 1015 414 C 848 492 785 590 760 700",
-        opacity: 0.095,
-        strokeW: 3.0,
-      },
-    ];
-
-    const latitudes: GridSeg[] = [
-      {
-        id: "latitude-upper",
-        d: "M -65 510 Q 545 451 1260 523",
-        opacity: 0.07,
-        strokeW: 2.7,
-      },
-      {
-        id: "latitude-middle",
-        d: "M -20 592 Q 655 518 1218 604",
-        opacity: 0.058,
-        strokeW: 2.55,
-      },
-      {
-        id: "latitude-lower",
-        d: "M 55 667 Q 520 612 1280 682",
-        opacity: 0.05,
-        strokeW: 2.45,
-      },
-    ];
-
-    return { all: [...meridians, ...latitudes] };
-  }, []);
-
-  // Dots: one per grid line, animated along its own path
-  const pathRefs = useRef<Record<string, SVGPathElement | null>>({});
-  const [gridDots, setGridDots] = useState<Record<string, Pt>>({});
-
-  const rafRef = useRef<number | null>(null);
-  const startRef = useRef<number | null>(null);
-
-  useEffect(() => {
-    // make this smaller = faster overall
-    const baseDurationMs = 100;
-
-    const tick = (ts: number) => {
-      if (startRef.current == null) startRef.current = ts;
-      const elapsed = ts - startRef.current;
-
-      const nextDots: Record<string, Pt> = {};
-
-      for (let i = 0; i < grid.all.length; i++) {
-        const seg = grid.all[i];
-        const el = pathRefs.current[seg.id];
-        if (!el) continue;
-
-        const len = el.getTotalLength();
-
-        const speed = 0.85 + (i % 3) * 0.18; // subtle variety
-        const phase = (i * 0.17) % 1;
-
-        const u = ((elapsed / (baseDurationMs / speed)) + phase * baseDurationMs) / baseDurationMs;
-        const uu = ((u % 1) + 1) % 1;
-
-        const pt = el.getPointAtLength(len * uu);
-        nextDots[seg.id] = { x: pt.x, y: pt.y };
-      }
-
-      setGridDots(nextDots);
-      rafRef.current = requestAnimationFrame(tick);
-    };
-
-    rafRef.current = requestAnimationFrame(tick);
-    return () => {
-      if (rafRef.current) cancelAnimationFrame(rafRef.current);
-      rafRef.current = null;
-      startRef.current = null;
-    };
-  }, [grid]);
-
-  const BASE = 170;
-  const MOBILE_BASE = 132;
-  const sideScale = 120 / 170;
-  const mobileSideScale = 0.58;
-
-  const bubbleTargets = useMemo(() => {
-    return people.map((person, idx) => {
-      const offset = getCircularOffset(idx, active, n);
-
-      if (offset === 0) {
-        return {
-          idx,
-          person,
-          pt: pMid,
-          mobilePt: mobilePMid,
-          scale: 1,
-          mobileScale: 1,
-          opacity: 1,
-          emphasize: true,
-          z: 30,
-        };
-      }
-
-      if (offset === -1) {
-        return {
-          idx,
-          person,
-          pt: pLeft,
-          mobilePt: mobilePLeft,
-          scale: sideScale,
-          mobileScale: mobileSideScale,
-          opacity: 0.9,
-          emphasize: false,
-          z: 20,
-        };
-      }
-
-      if (offset === 1) {
-        return {
-          idx,
-          person,
-          pt: pRight,
-          mobilePt: mobilePRight,
-          scale: sideScale,
-          mobileScale: mobileSideScale,
-          opacity: 0.9,
-          emphasize: false,
-          z: 20,
-        };
-      }
-
-      if (offset < -1) {
-        return {
-          idx,
-          person,
-          pt: { x: -140, y: pLeft.y },
-          mobilePt: { x: -140, y: mobilePLeft.y },
-          scale: sideScale * 0.85,
-          mobileScale: mobileSideScale * 0.85,
-          opacity: 0,
-          emphasize: false,
-          z: 10,
-        };
-      }
-
-      return {
-        idx,
-        person,
-        pt: { x: W + 140, y: pRight.y },
-        mobilePt: { x: W + 140, y: mobilePRight.y },
-        scale: sideScale * 0.85,
-        mobileScale: mobileSideScale * 0.85,
-        opacity: 0,
-        emphasize: false,
-        z: 10,
-      };
-    });
-  }, [
-    people,
-    active,
-    n,
-    pLeft.x,
-    pLeft.y,
-    pMid.x,
-    pMid.y,
-    pRight.x,
-    pRight.y,
-    mobilePLeft.x,
-    mobilePLeft.y,
-    mobilePMid.x,
-    mobilePMid.y,
-    mobilePRight.x,
-    mobilePRight.y,
-    sideScale,
-  ]);
-
   return (
-    <div className="relative isolate overflow-hidden rounded-[28px] bg-gradient-to-br md:rounded-[44px] from-[#2f7cff] to-[#2d5cff] shadow-[0_25px_60px_rgba(0,0,0,0.15)]">
-      {/* Background glow is shared by mobile and desktop. */}
+    <section
+      aria-label="Team member carousel"
+      className={[
+        "relative isolate w-full overflow-hidden",
+        "h-[540px] sm:h-auto sm:aspect-[12/7]",
+        "rounded-[28px] sm:rounded-[44px]",
+        "bg-gradient-to-br from-[#3685ff] to-[#275bff]",
+        "shadow-[0_25px_60px_rgba(0,0,0,0.15)]",
+      ].join(" ")}
+    >
+      {/*
+       * Grid, orbit, dots, and profile photos all use this same
+       * responsive SVG coordinate system.
+       *
+       * On phones, slice crops the far-left and far-right parts
+       * instead of shrinking the entire design.
+       */}
       <svg
-        className="pointer-events-none absolute inset-0 z-0 h-full w-full"
-        viewBox={`0 0 ${W} ${H}`}
+        viewBox={`0 0 ${VIEWBOX_WIDTH} ${VIEWBOX_HEIGHT}`}
+        preserveAspectRatio="xMidYMid slice"
+        className="absolute inset-0 z-0 h-full w-full"
         fill="none"
         aria-hidden="true"
-        preserveAspectRatio="none"
       >
         <defs>
           <radialGradient
-            id="backgroundGlowLeft"
+            id={backgroundLeftId}
             cx="0"
             cy="0"
             r="1"
             gradientUnits="userSpaceOnUse"
-            gradientTransform="translate(250 180) rotate(20) scale(520 240)"
+            gradientTransform="translate(235 185) rotate(20) scale(540 260)"
           >
-            <stop stopColor="white" stopOpacity="0.18" />
-            <stop offset="1" stopColor="white" stopOpacity="0" />
-          </radialGradient>
-
-          <radialGradient
-            id="backgroundGlowRight"
-            cx="0"
-            cy="0"
-            r="1"
-            gradientUnits="userSpaceOnUse"
-            gradientTransform="translate(910 160) rotate(-12) scale(520 240)"
-          >
-            <stop stopColor="white" stopOpacity="0.14" />
-            <stop offset="1" stopColor="white" stopOpacity="0" />
-          </radialGradient>
-        </defs>
-
-        <rect x="0" y="0" width={W} height={H} fill="url(#backgroundGlowLeft)" />
-        <rect x="0" y="0" width={W} height={H} fill="url(#backgroundGlowRight)" />
-      </svg>
-
-      {/* The original desktop grid and orbit are completely removed on mobile. */}
-      <svg
-        className="pointer-events-none absolute inset-0 z-[1] hidden h-full w-full md:block"
-        viewBox={`0 0 ${W} ${H}`}
-        fill="none"
-        aria-hidden="true"
-        preserveAspectRatio="none"
-      >
-        <defs>
-          <filter id="arcGlow" x="-50%" y="-50%" width="200%" height="200%">
-            <feGaussianBlur stdDeviation="3" result="blur" />
-            <feMerge>
-              <feMergeNode in="blur" />
-              <feMergeNode in="SourceGraphic" />
-            </feMerge>
-          </filter>
-        </defs>
-
-        {grid.all.map((ln) => (
-          <path
-            key={ln.id}
-            ref={(el) => {
-              pathRefs.current[ln.id] = el;
-            }}
-            d={ln.d}
-            stroke="white"
-            strokeOpacity={ln.opacity}
-            strokeWidth={ln.strokeW}
-            strokeLinecap="round"
-          />
-        ))}
-
-
-        {grid.all.map((ln) => {
-          const pt = gridDots[ln.id];
-          if (!pt) return null;
-          return (
-            <circle
-                key={`dot-${ln.id}`}
-              cx={pt.x}
-              cy={pt.y}
-              r="7.5"
-              fill="white"
-              fillOpacity={ln.opacity}
+            <stop
+              stopColor="white"
+              stopOpacity="0.16"
             />
-          );
-        })}
 
-        <path
-          d={arcPathD(arc)}
-          stroke="white"
-          strokeOpacity="0.95"
-          strokeWidth="7"
-          strokeLinecap="round"
-          filter="url(#arcGlow)"
-        />
-      </svg>
+            <stop
+              offset="1"
+              stopColor="white"
+              stopOpacity="0"
+            />
+          </radialGradient>
 
-      {/* Mobile globe / wireframe grid.
-          Sparse and intentionally uneven: two differently angled meridians and
-          three latitude bands with offset starts, ends, and curvature. */}
-      <svg
-        className="pointer-events-none absolute inset-0 z-[4] h-full w-full md:hidden"
-        viewBox="0 0 1200 500"
-        fill="none"
-        aria-hidden="true"
-        preserveAspectRatio="none"
-      >
-        {/* Uneven meridians */}
-        <path
-          d="M 235 267 C 355 322 438 410 472 500"
-          stroke="white"
-          strokeOpacity="0.085"
-          strokeWidth="2.9"
-          strokeLinecap="round"
-        />
-        <path
-          d="M 1015 281 C 848 342 785 422 760 500"
-          stroke="white"
-          strokeOpacity="0.095"
-          strokeWidth="3"
-          strokeLinecap="round"
-        />
+          <radialGradient
+            id={backgroundRightId}
+            cx="0"
+            cy="0"
+            r="1"
+            gradientUnits="userSpaceOnUse"
+            gradientTransform="translate(920 170) rotate(-12) scale(540 255)"
+          >
+            <stop
+              stopColor="white"
+              stopOpacity="0.12"
+            />
 
-        {/* Uneven latitude bands */}
-        <path
-          d="M -65 335 Q 545 292 1260 348"
-          stroke="white"
-          strokeOpacity="0.07"
-          strokeWidth="2.7"
-          strokeLinecap="round"
-        />
-        <path
-          d="M -20 405 Q 655 352 1218 415"
-          stroke="white"
-          strokeOpacity="0.058"
-          strokeWidth="2.55"
-          strokeLinecap="round"
-        />
-        <path
-          d="M 55 468 Q 520 430 1280 480"
-          stroke="white"
-          strokeOpacity="0.05"
-          strokeWidth="2.45"
-          strokeLinecap="round"
-        />
+            <stop
+              offset="1"
+              stopColor="white"
+              stopOpacity="0"
+            />
+          </radialGradient>
+        </defs>
 
-        {/* A few deliberately unevenly placed dots. */}
-        <circle cx="322" cy="327" r="7" fill="white" fillOpacity="0.085" />
-        <circle cx="735" cy="360" r="7" fill="white" fillOpacity="0.085" />
-        <circle cx="1002" cy="414" r="7" fill="white" fillOpacity="0.085" />
-      </svg>
+          <filter
+            id={orbitGlowId}
+            x="-50%"
+            y="-50%"
+            width="200%"
+            height="200%"
+          >
+            <feGaussianBlur
+              stdDeviation="4"
+              result="blur"
+            />
 
-      {/* Mobile main portrait orbit. Kept separate from the full-height grid so
-          extending the grid cannot change the orbit's concavity or vertical position. */}
-      <svg
-        className="pointer-events-none absolute left-0 top-[215px] z-[5] h-[285px] w-full md:hidden"
-        viewBox="0 0 1200 500"
-        fill="none"
-        aria-hidden="true"
-        preserveAspectRatio="none"
-      >
-        <defs>
-          <filter id="mobileArcGlow" x="-50%" y="-100%" width="200%" height="300%">
-            <feGaussianBlur stdDeviation="3" result="blur" />
             <feMerge>
               <feMergeNode in="blur" />
               <feMergeNode in="SourceGraphic" />
             </feMerge>
           </filter>
+
+          <filter
+            id={dotGlowId}
+            x="-100%"
+            y="-100%"
+            width="300%"
+            height="300%"
+          >
+            <feGaussianBlur
+              stdDeviation="2"
+              result="blur"
+            />
+
+            <feMerge>
+              <feMergeNode in="blur" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+
+          {people.map((person) => (
+            <clipPath
+              key={person.id}
+              id={`profile-clip-${generatedId}-${person.id}`}
+            >
+              <circle cx="0" cy="0" r="76" />
+            </clipPath>
+          ))}
         </defs>
 
-        <path
-          d="M 0 149.12 Q 600 -43.86 1200 149.12"
-          stroke="white"
-          strokeOpacity="0.95"
-          strokeWidth="7"
-          strokeLinecap="round"
-          filter="url(#mobileArcGlow)"
+        <rect
+          width={VIEWBOX_WIDTH}
+          height={VIEWBOX_HEIGHT}
+          fill={`url(#${backgroundLeftId})`}
         />
-      </svg>
 
-      <div className="relative z-10 h-[500px] p-5 sm:h-[540px] sm:p-7 md:h-[620px] md:p-12">
-        <div className="flex items-start justify-between gap-3">
-          <div className="min-w-0 max-w-[68%] md:max-w-none">
-            <div className="font-mono text-[10px] md:text-xs font-semibold tracking-[0.35em] text-white/80">
-              {(activePerson?.org ?? "ACM").toUpperCase()}
-            </div>
-            <div className="mt-1 break-words font-calsans text-2xl font-black leading-[0.95] text-white sm:text-3xl md:mt-2 md:text-4xl">{activePerson.name}</div>
-            {activePerson.role ? (
-              <div className="mt-1 font-mono text-xs font-semibold text-white/80 md:text-sm">{activePerson.role}</div>
-            ) : null}
-          </div>
+        <rect
+          width={VIEWBOX_WIDTH}
+          height={VIEWBOX_HEIGHT}
+          fill={`url(#${backgroundRightId})`}
+        />
 
-          <div className="shrink-0 rounded-xl bg-white/12 px-3 py-3 text-center backdrop-blur md:rounded-2xl md:px-6 md:py-5">
-            <div className="font-mono text-[9px] font-semibold tracking-[0.25em] text-white/80 md:text-xs md:tracking-[0.35em]">PEOPLE</div>
-            <div className="mt-0.5 font-calsans text-2xl font-black text-white md:mt-1 md:text-4xl">{n}</div>
-          </div>
-        </div>
-
-        <button
-          type="button"
-          onClick={goPrev}
-          className="absolute left-1 top-[55%] z-40 -translate-y-1/2 rounded-full p-3 sm:left-3 md:left-10 md:top-1/2 text-white/70 transition hover:bg-white/10 hover:text-white"
-          aria-label="Previous person"
-        >
-          <span className="text-3xl leading-none">‹</span>
-        </button>
-
-        <button
-          type="button"
-          onClick={goNext}
-          className="absolute right-1 top-[55%] z-40 -translate-y-1/2 rounded-full p-3 sm:right-3 md:right-10 md:top-1/2 text-white/70 transition hover:bg-white/10 hover:text-white"
-          aria-label="Next person"
-        >
-          <span className="text-3xl leading-none">›</span>
-        </button>
-
-        {/* Bubbles */}
-        <div className="absolute inset-0 z-30">
-          {bubbleTargets.map((v) => (
-            <PersonBubble
-              key={v.person.id}
-              person={v.person}
-              x={v.pt.x}
-              y={v.pt.y}
-              mobileX={v.mobilePt.x}
-              mobileY={v.mobilePt.y}
-              baseSize={BASE}
-              mobileBaseSize={MOBILE_BASE}
-              scale={v.scale}
-              mobileScale={v.mobileScale}
-              opacity={v.opacity}
-              emphasize={v.emphasize}
-              zIndex={v.z}
-              onClick={() => setActive(v.idx)}
+        {/* Thin globe lines */}
+        <g>
+          {gridLines.map((line) => (
+            <path
+              key={line.id}
+              ref={(element) => {
+                gridPathRefs.current[line.id] =
+                  element;
+              }}
+              d={line.d}
+              stroke="white"
+              strokeOpacity={line.opacity}
+              strokeWidth={line.strokeWidth}
+              strokeLinecap="round"
             />
           ))}
-        </div>
+        </g>
 
-        <div className="absolute bottom-5 left-1/2 z-30 flex w-[calc(100%-2rem)] -translate-x-1/2 flex-col rounded-[18px] bg-white/[0.045] px-5 py-4 text-center sm:bottom-6 sm:w-[calc(100%-3rem)] md:bottom-auto md:top-[470px] md:w-[420px] md:rounded-[22px] md:bg-white/10 md:px-10 md:py-6 md:backdrop-blur-md">
-          <div className="font-calsans text-lg font-black text-white md:text-xl">{activePerson.name}</div>
+        {/* Moving dots appear only on thin grid lines */}
+        <g filter={`url(#${dotGlowId})`}>
+          {gridLines.flatMap((line) => {
+            const dots = gridDots[line.id] ?? [];
+
+            return dots.map(
+              (dot, dotIndex) => (
+                <circle
+                  key={`${line.id}-${dotIndex}`}
+                  cx={dot.x}
+                  cy={dot.y}
+                  r={
+                    dotIndex % 2 === 0
+                      ? 5
+                      : 3.8
+                  }
+                  fill="white"
+                  fillOpacity="0.95"
+                />
+              )
+            );
+          })}
+        </g>
+
+        {/*
+         * Drawn after the connectors so their endpoints disappear
+         * cleanly beneath the glowing white line.
+         */}
+        <path
+          d={getOrbitPath()}
+          stroke="white"
+          strokeOpacity="0.98"
+          strokeWidth="7"
+          strokeLinecap="round"
+          filter={`url(#${orbitGlowId})`}
+        />
+
+        {/* Profile photos remain attached to the orbit */}
+        <g>
+          {positionedPeople.map((profile) => (
+            <g
+              key={profile.person.id}
+              className={
+                profile.isVisible
+                  ? "cursor-pointer"
+                  : "pointer-events-none"
+              }
+              onClick={() => {
+                if (profile.isVisible) {
+                  setActiveIndex(
+                    profile.personIndex
+                  );
+                }
+              }}
+              style={{
+                transform: `translate(${profile.point.x}px, ${profile.point.y}px) scale(${profile.scale})`,
+                transformOrigin: "0 0",
+                opacity: profile.opacity,
+                transition:
+                  "transform 700ms cubic-bezier(.22,.61,.36,1), opacity 500ms ease",
+              }}
+            >
+              <circle
+                cx="0"
+                cy="0"
+                r="94"
+                fill="white"
+                fillOpacity="0.07"
+              />
+
+              <circle
+                cx="0"
+                cy="0"
+                r="85"
+                fill="#dce8ff"
+              />
+
+              <image
+                href={profile.person.imageUrl}
+                x="-76"
+                y="-76"
+                width="152"
+                height="152"
+                preserveAspectRatio="xMidYMid slice"
+                clipPath={`url(#profile-clip-${generatedId}-${profile.person.id})`}
+              />
+
+              <circle
+                cx="0"
+                cy="0"
+                r="79"
+                fill="none"
+                stroke="white"
+                strokeOpacity="0.94"
+                strokeWidth="6"
+              />
+
+              <circle
+                cx="0"
+                cy="0"
+                r="88"
+                fill="none"
+                stroke="white"
+                strokeOpacity="0.07"
+                strokeWidth="10"
+              />
+            </g>
+          ))}
+        </g>
+      </svg>
+
+      {/* Heading */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 z-20 flex items-start justify-between p-6 sm:p-12">
+        <div className="min-w-0 pr-4">
+          <div className="font-mono text-[10px] font-semibold tracking-[0.3em] text-white/80 sm:text-xs sm:tracking-[0.35em]">
+            {(activePerson.org ?? "ACM").toUpperCase()}
+          </div>
+
+          <div className="mt-2 max-w-[230px] font-calsans text-2xl font-black leading-none text-white sm:max-w-none sm:text-4xl">
+            {activePerson.name}
+          </div>
+
           {activePerson.role ? (
-            <div className="mt-1 font-mono text-sm font-semibold text-white/80">{activePerson.role}</div>
+            <div className="mt-2 max-w-[230px] font-mono text-xs font-semibold text-white/80 sm:max-w-none sm:text-sm">
+              {activePerson.role}
+            </div>
           ) : null}
+        </div>
 
-          <SocialLinks socials={activePerson.socials} />
+        <div className="shrink-0 text-center">
+          <div className="font-mono text-[10px] font-semibold tracking-[0.3em] text-white/80 sm:text-xs sm:tracking-[0.35em]">
+            PEOPLE
+          </div>
+
+          <div className="mt-1 font-calsans text-3xl font-black text-white sm:text-4xl">
+            {personCount}
+          </div>
         </div>
       </div>
-    </div>
-  );
-}
 
-function PersonBubble({
-  person,
-  x,
-  y,
-  mobileX,
-  mobileY,
-  baseSize,
-  mobileBaseSize,
-  scale,
-  mobileScale,
-  opacity,
-  emphasize,
-  zIndex,
-  onClick,
-}: {
-  person: OrbitPerson;
-  x: number;
-  y: number;
-  mobileX: number;
-  mobileY: number;
-  baseSize: number;
-  mobileBaseSize: number;
-  scale: number;
-  mobileScale: number;
-  opacity: number;
-  emphasize?: boolean;
-  zIndex?: number;
-  onClick?: () => void;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className={[
-        "absolute rounded-full [left:var(--mobile-left)] [top:var(--mobile-top)] md:[left:var(--desktop-left)] md:[top:var(--desktop-top)]",
-        "transition-[left,top,transform,opacity,width,height] duration-700 ease-[cubic-bezier(.22,.61,.36,1)]",
-        "h-[var(--mobile-size)] w-[var(--mobile-size)] md:h-[var(--desktop-size)] md:w-[var(--desktop-size)]",
-        "[transform:translate(-50%,-50%)_scale(var(--mobile-scale))] md:[transform:translate(-50%,-50%)_scale(var(--desktop-scale))]",
-        emphasize ? "" : "hover:scale-[1.02]",
-      ].join(" ")}
-      style={
-        {
-          "--desktop-left": `${(x / 1200) * 100}%`,
-          "--desktop-top": `${(y / 700) * 100}%`,
-          "--mobile-left": `${(mobileX / 1200) * 100}%`,
-          "--mobile-top": `${mobileY}px`,
-          "--desktop-size": `${baseSize}px`,
-          "--mobile-size": `${mobileBaseSize}px`,
-          "--desktop-scale": scale,
-          "--mobile-scale": mobileScale,
-          opacity,
-          pointerEvents: opacity === 0 ? "none" : "auto",
-          zIndex,
-        } as React.CSSProperties
-      }
-      aria-label={person.name}
-    >
-      <div className="relative h-full w-full overflow-hidden rounded-full border-[4px] border-white/85 md:border-[6px] shadow-[0_20px_50px_rgba(0,0,0,0.30)]">
-        <Image alt={person.name} src={person.imageUrl} fill className="object-cover" sizes="(max-width: 767px) 132px, 200px" priority={emphasize} />
+      {/* Previous */}
+      <button
+        type="button"
+        onClick={goPrevious}
+        className="absolute left-3 top-1/2 z-40 -translate-y-1/2 rounded-2xl bg-white/10 px-3 py-2 text-3xl leading-none text-white/90 backdrop-blur-sm transition hover:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white sm:left-8 sm:px-4 sm:py-3"
+        aria-label="Previous person"
+      >
+        ‹
+      </button>
+
+      {/* Next */}
+      <button
+        type="button"
+        onClick={goNext}
+        className="absolute right-3 top-1/2 z-40 -translate-y-1/2 rounded-2xl bg-white/10 px-3 py-2 text-3xl leading-none text-white/90 backdrop-blur-sm transition hover:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white sm:right-8 sm:px-4 sm:py-3"
+        aria-label="Next person"
+      >
+        ›
+      </button>
+
+      {/* Active-person card */}
+      <div
+        className={[
+          "absolute bottom-4 left-1/2 z-50",
+          "w-[calc(100%-2rem)] max-w-[420px]",
+          "-translate-x-1/2",
+          "rounded-[20px] bg-white/10",
+          "px-4 py-4 text-center backdrop-blur-md",
+          "sm:bottom-8 sm:rounded-[22px] sm:px-10 sm:py-6",
+        ].join(" ")}
+      >
+        <div className="font-calsans text-lg font-black text-white sm:text-xl">
+          {activePerson.name}
+        </div>
+
+        {activePerson.role ? (
+          <div className="mt-1 font-mono text-xs font-semibold text-white/80 sm:text-sm">
+            {activePerson.role}
+          </div>
+        ) : null}
+
+        <SocialLinks
+          socials={activePerson.socials}
+        />
       </div>
-
-      <div className="pointer-events-none absolute inset-0 rounded-full shadow-[0_0_0_10px_rgba(255,255,255,0.06)]" />
-    </button>
+    </section>
   );
 }
-
-/* ---------------- Socials (ONLY addition) ---------------- */
 
 function normalizeUrl(url: string) {
-  if (/^https?:\/\//i.test(url)) return url;
+  if (/^https?:\/\//i.test(url)) {
+    return url;
+  }
+
   return `https://${url}`;
 }
 
 function SocialLinks({
   socials,
 }: {
-  socials?: {
-    linkedin?: string;
-    github?: string;
-    instagram?: string;
-    website?: string;
-  };
+  socials?: OrbitPerson["socials"];
 }) {
-  const items = [
-    socials?.linkedin ? { k: "linkedin", href: socials.linkedin, label: "in" } : null,
-    socials?.github ? { k: "github", href: socials.github, label: "gh" } : null,
-    socials?.instagram ? { k: "instagram", href: socials.instagram, label: "ig" } : null,
-    socials?.website ? { k: "website", href: socials.website, label: "web" } : null,
-  ].filter(Boolean) as { k: string; href: string; label: string }[];
+  const socialItems = [
+    socials?.linkedin
+      ? {
+          key: "linkedin",
+          href: socials.linkedin,
+          label: "in",
+        }
+      : null,
+    socials?.github
+      ? {
+          key: "github",
+          href: socials.github,
+          label: "gh",
+        }
+      : null,
+    socials?.instagram
+      ? {
+          key: "instagram",
+          href: socials.instagram,
+          label: "ig",
+        }
+      : null,
+    socials?.website
+      ? {
+          key: "website",
+          href: socials.website,
+          label: "web",
+        }
+      : null,
+  ].filter(
+    (
+      item
+    ): item is {
+      key: string;
+      href: string;
+      label: string;
+    } => item !== null
+  );
 
-  if (items.length === 0) return null;
+  if (socialItems.length === 0) {
+    return null;
+  }
 
   return (
     <div className="mt-3 flex items-center justify-center gap-2.5">
-      {items.map((it) => (
+      {socialItems.map((item) => (
         <a
-          key={it.k}
-          href={normalizeUrl(it.href)}
+          key={item.key}
+          href={normalizeUrl(item.href)}
           target="_blank"
           rel="noreferrer"
-          className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-white/10 text-xs font-mono font-bold text-white/90 ring-1 ring-white/15 transition hover:bg-white/20"
-          aria-label={it.k}
-          title={it.k}
+          className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-white/10 font-mono text-xs font-bold text-white/90 ring-1 ring-white/15 transition hover:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
+          aria-label={item.key}
+          title={item.key}
         >
-          {it.label}
+          {item.label}
         </a>
       ))}
     </div>

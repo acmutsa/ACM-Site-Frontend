@@ -35,7 +35,7 @@ export default function Footer({ email, orgName }: FooterProps) {
 				<div className="grid grid-cols-4 gap-10">
 					{/* Contacts */}
 					<div className="flex flex-col items-start justify-start">
-						<h3 className="pb-3 font-mono text-xl font-bold text-white">
+						<h3 id="contact_footer" className="pb-3 font-mono text-xl font-bold text-white">
 							Contacts
 						</h3>
 						<br />

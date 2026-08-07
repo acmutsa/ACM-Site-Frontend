@@ -1,6 +1,5 @@
 import { SUBORGS } from "@/site.config";
 import SuborgHero from "./suborg-hero";
-import { HeroNav } from "@/components/shared/navbar";
 import { notFound } from "next/navigation";
 import { useColorSlider } from "react-aria";
 import { UploadPartCopyOutput$ } from "@aws-sdk/client-s3";
@@ -14,10 +13,6 @@ export default function Page({ params }: { params: { slug: string } }) {
 
 	return (
 		<>
-			<HeroNav
-				customColor={suborg.colors.poppy}
-				navVariant="blueForeground"
-			/>
 			<div className="h-36 w-full"></div>
 			<SuborgHero
 				name={suborg.name}

@@ -10,9 +10,14 @@ export const SPONSORS = [
 		link: "https://www.dell.com",
 	},
 	{
+		name:"Union Pacific",
+		logo: "/img/logos/sponsor/unionPacific.png",
+		link: "https://www.up.com",
+	},
+	{
 		name: "UTSA CS",
 		logo: "/img/logos/sponsor/utsacs.png",
-		link: "https://cs.utsa.edu/",
+		link: "https://caicc.utsa.edu/computer-science/",
 	},
 ];
 
@@ -110,7 +115,7 @@ export const SUBORGS: Record<string, Suborg> = {
 		},
 		name: "Coding In Color",
 		shortDesc: "A safe space for black people in the technology world",
-		logoUrl: "/img/logos/suborgs/cnc-gray.png",
+		logoUrl: "/img/logos/suborgs/cnc-blue.png",
 		leadingSentence:
 			"Coding in Color, a safe community for black people to advance together in the technical world",
 		missionHead: "Connect",
