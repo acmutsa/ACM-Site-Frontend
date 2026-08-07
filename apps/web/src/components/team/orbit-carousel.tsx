@@ -142,6 +142,13 @@ export default function OrbitCarousel({ people = [], initialIndex = 0 }: OrbitCa
   const pMid = arcPoint(arc, tMid);
   const pRight = arcPoint(arc, tRight);
 
+  // Mobile portrait centers are measured in pixels from the top of the card.
+  // The center is the highest point of the arc, while the side portraits sit lower.
+  // This creates the visible top edge of a very large circle.
+  const mobilePLeft: Pt = { x: 0, y: 300 };
+  const mobilePMid: Pt = { x: 600, y: 245 };
+  const mobilePRight: Pt = { x: 1200, y: 300 };
+
   function goPrev() {
     setActive((v) => clampIndex(v - 1, n));
   }
@@ -159,36 +166,45 @@ export default function OrbitCarousel({ people = [], initialIndex = 0 }: OrbitCa
   }, [n]);
 
   const grid = useMemo(() => {
-    const lat: GridSeg[] = [
-      { id: "lat-0", d: ellipseArcD(600, 735, 1200, 310, 205, 335, 1), opacity: 0.10, strokeW: 3.4 },
-      { id: "lat-1", d: ellipseArcD(585, 775, 1020, 300, 210, 330, 1), opacity: 0.08, strokeW: 3.0 },
-      { id: "lat-2", d: ellipseArcD(620, 820, 1320, 360, 215, 325, 1), opacity: 0.07, strokeW: 3.0 },
+    // Loose globe / wireframe grid.
+    // Intentionally sparse and asymmetric so it feels designed rather than perfectly generated.
+    const meridians: GridSeg[] = [
+      {
+        id: "meridian-left",
+        d: "M 235 402 C 355 470 438 575 472 700",
+        opacity: 0.085,
+        strokeW: 2.9,
+      },
+      {
+        id: "meridian-right",
+        d: "M 1015 414 C 848 492 785 590 760 700",
+        opacity: 0.095,
+        strokeW: 3.0,
+      },
     ];
 
-    const loops: GridSeg[] = [
-      { id: "loop-0", d: ellipseArcD(280, 835, 360, 180, 330, 150, 1), opacity: 0.08, strokeW: 3.2 },
-      { id: "loop-1", d: ellipseArcD(920, 830, 420, 190, 30, 210, 1), opacity: 0.08, strokeW: 3.2 },
+    const latitudes: GridSeg[] = [
+      {
+        id: "latitude-upper",
+        d: "M -65 510 Q 545 451 1260 523",
+        opacity: 0.07,
+        strokeW: 2.7,
+      },
+      {
+        id: "latitude-middle",
+        d: "M -20 592 Q 655 518 1218 604",
+        opacity: 0.058,
+        strokeW: 2.55,
+      },
+      {
+        id: "latitude-lower",
+        d: "M 55 667 Q 520 612 1280 682",
+        opacity: 0.05,
+        strokeW: 2.45,
+      },
     ];
 
-    const merTs = [0.32, 0.5, 0.68];
-    const mer: GridSeg[] = merTs.map((t, i) => {
-      const end = arcPoint(arc, t);
-      const start: Pt = {
-        x: i === 0 ? 260 : i === 1 ? 600 : 940,
-        y: 698,
-      };
-
-      const dir = i === 0 ? -1 : i === 1 ? 1 : 1;
-      const bend = i === 1 ? 340 : 420;
-
-      const c1: Pt = { x: start.x + dir * bend, y: start.y - 190 };
-      const c2: Pt = { x: end.x - dir * bend * 0.9, y: end.y + 260 };
-
-      return { id: `mer-${i}`, d: cubicPath(start, c1, c2, end), opacity: 0.09, strokeW: 3.6 };
-    });
-
-    const all = [...lat, ...loops, ...mer];
-    return { lat, loops, mer, all };
+    return { all: [...meridians, ...latitudes] };
   }, []);
 
   // Dots: one per grid line, animated along its own path
@@ -251,7 +267,7 @@ export default function OrbitCarousel({ people = [], initialIndex = 0 }: OrbitCa
           idx,
           person,
           pt: pMid,
-          mobilePt: { x: 600, y: 382 },
+          mobilePt: mobilePMid,
           scale: 1,
           mobileScale: 1,
           opacity: 1,
@@ -265,7 +281,7 @@ export default function OrbitCarousel({ people = [], initialIndex = 0 }: OrbitCa
           idx,
           person,
           pt: pLeft,
-          mobilePt: { x: -35, y: 430 },
+          mobilePt: mobilePLeft,
           scale: sideScale,
           mobileScale: mobileSideScale,
           opacity: 0.9,
@@ -279,7 +295,7 @@ export default function OrbitCarousel({ people = [], initialIndex = 0 }: OrbitCa
           idx,
           person,
           pt: pRight,
-          mobilePt: { x: 1235, y: 430 },
+          mobilePt: mobilePRight,
           scale: sideScale,
           mobileScale: mobileSideScale,
           opacity: 0.9,
@@ -293,7 +309,7 @@ export default function OrbitCarousel({ people = [], initialIndex = 0 }: OrbitCa
           idx,
           person,
           pt: { x: -140, y: pLeft.y },
-          mobilePt: { x: -360, y: 430 },
+          mobilePt: { x: -140, y: mobilePLeft.y },
           scale: sideScale * 0.85,
           mobileScale: mobileSideScale * 0.85,
           opacity: 0,
@@ -306,7 +322,7 @@ export default function OrbitCarousel({ people = [], initialIndex = 0 }: OrbitCa
         idx,
         person,
         pt: { x: W + 140, y: pRight.y },
-        mobilePt: { x: 1560, y: 430 },
+        mobilePt: { x: W + 140, y: mobilePRight.y },
         scale: sideScale * 0.85,
         mobileScale: mobileSideScale * 0.85,
         opacity: 0,
@@ -324,21 +340,28 @@ export default function OrbitCarousel({ people = [], initialIndex = 0 }: OrbitCa
     pMid.y,
     pRight.x,
     pRight.y,
+    mobilePLeft.x,
+    mobilePLeft.y,
+    mobilePMid.x,
+    mobilePMid.y,
+    mobilePRight.x,
+    mobilePRight.y,
     sideScale,
   ]);
 
   return (
     <div className="relative isolate overflow-hidden rounded-[28px] bg-gradient-to-br md:rounded-[44px] from-[#2f7cff] to-[#2d5cff] shadow-[0_25px_60px_rgba(0,0,0,0.15)]">
+      {/* Background glow is shared by mobile and desktop. */}
       <svg
-        className="pointer-events-none absolute inset-0 z-0"
+        className="pointer-events-none absolute inset-0 z-0 h-full w-full"
         viewBox={`0 0 ${W} ${H}`}
         fill="none"
         aria-hidden="true"
-        preserveAspectRatio="xMidYMid slice"
+        preserveAspectRatio="none"
       >
         <defs>
           <radialGradient
-            id="g1"
+            id="backgroundGlowLeft"
             cx="0"
             cy="0"
             r="1"
@@ -350,7 +373,7 @@ export default function OrbitCarousel({ people = [], initialIndex = 0 }: OrbitCa
           </radialGradient>
 
           <radialGradient
-            id="g2"
+            id="backgroundGlowRight"
             cx="0"
             cy="0"
             r="1"
@@ -360,7 +383,21 @@ export default function OrbitCarousel({ people = [], initialIndex = 0 }: OrbitCa
             <stop stopColor="white" stopOpacity="0.14" />
             <stop offset="1" stopColor="white" stopOpacity="0" />
           </radialGradient>
+        </defs>
 
+        <rect x="0" y="0" width={W} height={H} fill="url(#backgroundGlowLeft)" />
+        <rect x="0" y="0" width={W} height={H} fill="url(#backgroundGlowRight)" />
+      </svg>
+
+      {/* The original desktop grid and orbit are completely removed on mobile. */}
+      <svg
+        className="pointer-events-none absolute inset-0 z-[1] hidden h-full w-full md:block"
+        viewBox={`0 0 ${W} ${H}`}
+        fill="none"
+        aria-hidden="true"
+        preserveAspectRatio="none"
+      >
+        <defs>
           <filter id="arcGlow" x="-50%" y="-50%" width="200%" height="200%">
             <feGaussianBlur stdDeviation="3" result="blur" />
             <feMerge>
@@ -369,9 +406,6 @@ export default function OrbitCarousel({ people = [], initialIndex = 0 }: OrbitCa
             </feMerge>
           </filter>
         </defs>
-
-        <rect x="0" y="0" width={W} height={H} fill="url(#g1)" />
-        <rect x="0" y="0" width={W} height={H} fill="url(#g2)" />
 
         {grid.all.map((ln) => (
           <path
@@ -391,7 +425,16 @@ export default function OrbitCarousel({ people = [], initialIndex = 0 }: OrbitCa
         {grid.all.map((ln) => {
           const pt = gridDots[ln.id];
           if (!pt) return null;
-          return <circle key={`dot-${ln.id}`} cx={pt.x} cy={pt.y} r="7.5" fill="white" fillOpacity="0.95" />;
+          return (
+            <circle
+                key={`dot-${ln.id}`}
+              cx={pt.x}
+              cy={pt.y}
+              r="7.5"
+              fill="white"
+              fillOpacity={ln.opacity}
+            />
+          );
         })}
 
         <path
@@ -401,6 +444,90 @@ export default function OrbitCarousel({ people = [], initialIndex = 0 }: OrbitCa
           strokeWidth="7"
           strokeLinecap="round"
           filter="url(#arcGlow)"
+        />
+      </svg>
+
+      {/* Mobile globe / wireframe grid.
+          Sparse and intentionally uneven: two differently angled meridians and
+          three latitude bands with offset starts, ends, and curvature. */}
+      <svg
+        className="pointer-events-none absolute inset-0 z-[4] h-full w-full md:hidden"
+        viewBox="0 0 1200 500"
+        fill="none"
+        aria-hidden="true"
+        preserveAspectRatio="none"
+      >
+        {/* Uneven meridians */}
+        <path
+          d="M 235 267 C 355 322 438 410 472 500"
+          stroke="white"
+          strokeOpacity="0.085"
+          strokeWidth="2.9"
+          strokeLinecap="round"
+        />
+        <path
+          d="M 1015 281 C 848 342 785 422 760 500"
+          stroke="white"
+          strokeOpacity="0.095"
+          strokeWidth="3"
+          strokeLinecap="round"
+        />
+
+        {/* Uneven latitude bands */}
+        <path
+          d="M -65 335 Q 545 292 1260 348"
+          stroke="white"
+          strokeOpacity="0.07"
+          strokeWidth="2.7"
+          strokeLinecap="round"
+        />
+        <path
+          d="M -20 405 Q 655 352 1218 415"
+          stroke="white"
+          strokeOpacity="0.058"
+          strokeWidth="2.55"
+          strokeLinecap="round"
+        />
+        <path
+          d="M 55 468 Q 520 430 1280 480"
+          stroke="white"
+          strokeOpacity="0.05"
+          strokeWidth="2.45"
+          strokeLinecap="round"
+        />
+
+        {/* A few deliberately unevenly placed dots. */}
+        <circle cx="322" cy="327" r="7" fill="white" fillOpacity="0.085" />
+        <circle cx="735" cy="360" r="7" fill="white" fillOpacity="0.085" />
+        <circle cx="1002" cy="414" r="7" fill="white" fillOpacity="0.085" />
+      </svg>
+
+      {/* Mobile main portrait orbit. Kept separate from the full-height grid so
+          extending the grid cannot change the orbit's concavity or vertical position. */}
+      <svg
+        className="pointer-events-none absolute left-0 top-[215px] z-[5] h-[285px] w-full md:hidden"
+        viewBox="0 0 1200 500"
+        fill="none"
+        aria-hidden="true"
+        preserveAspectRatio="none"
+      >
+        <defs>
+          <filter id="mobileArcGlow" x="-50%" y="-100%" width="200%" height="300%">
+            <feGaussianBlur stdDeviation="3" result="blur" />
+            <feMerge>
+              <feMergeNode in="blur" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+        </defs>
+
+        <path
+          d="M 0 149.12 Q 600 -43.86 1200 149.12"
+          stroke="white"
+          strokeOpacity="0.95"
+          strokeWidth="7"
+          strokeLinecap="round"
+          filter="url(#mobileArcGlow)"
         />
       </svg>
 
@@ -425,7 +552,7 @@ export default function OrbitCarousel({ people = [], initialIndex = 0 }: OrbitCa
         <button
           type="button"
           onClick={goPrev}
-          className="absolute left-1 top-[59%] z-40 -translate-y-1/2 rounded-full p-3 sm:left-3 md:left-10 md:top-1/2 text-white/70 transition hover:bg-white/10 hover:text-white"
+          className="absolute left-1 top-[55%] z-40 -translate-y-1/2 rounded-full p-3 sm:left-3 md:left-10 md:top-1/2 text-white/70 transition hover:bg-white/10 hover:text-white"
           aria-label="Previous person"
         >
           <span className="text-3xl leading-none">‹</span>
@@ -434,7 +561,7 @@ export default function OrbitCarousel({ people = [], initialIndex = 0 }: OrbitCa
         <button
           type="button"
           onClick={goNext}
-          className="absolute right-1 top-[59%] z-40 -translate-y-1/2 rounded-full p-3 sm:right-3 md:right-10 md:top-1/2 text-white/70 transition hover:bg-white/10 hover:text-white"
+          className="absolute right-1 top-[55%] z-40 -translate-y-1/2 rounded-full p-3 sm:right-3 md:right-10 md:top-1/2 text-white/70 transition hover:bg-white/10 hover:text-white"
           aria-label="Next person"
         >
           <span className="text-3xl leading-none">›</span>
@@ -462,7 +589,7 @@ export default function OrbitCarousel({ people = [], initialIndex = 0 }: OrbitCa
           ))}
         </div>
 
-        <div className="absolute bottom-5 left-1/2 z-30 flex w-[calc(100%-2rem)] -translate-x-1/2 flex-col rounded-[18px] bg-white/10 px-5 py-4 text-center backdrop-blur-md sm:bottom-6 sm:w-[calc(100%-3rem)] md:bottom-auto md:top-[470px] md:w-[420px] md:rounded-[22px] md:px-10 md:py-6">
+        <div className="absolute bottom-5 left-1/2 z-30 flex w-[calc(100%-2rem)] -translate-x-1/2 flex-col rounded-[18px] bg-white/[0.045] px-5 py-4 text-center sm:bottom-6 sm:w-[calc(100%-3rem)] md:bottom-auto md:top-[470px] md:w-[420px] md:rounded-[22px] md:bg-white/10 md:px-10 md:py-6 md:backdrop-blur-md">
           <div className="font-calsans text-lg font-black text-white md:text-xl">{activePerson.name}</div>
           {activePerson.role ? (
             <div className="mt-1 font-mono text-sm font-semibold text-white/80">{activePerson.role}</div>
@@ -520,7 +647,7 @@ function PersonBubble({
           "--desktop-left": `${(x / 1200) * 100}%`,
           "--desktop-top": `${(y / 700) * 100}%`,
           "--mobile-left": `${(mobileX / 1200) * 100}%`,
-          "--mobile-top": `${(mobileY / 700) * 100}%`,
+          "--mobile-top": `${mobileY}px`,
           "--desktop-size": `${baseSize}px`,
           "--mobile-size": `${mobileBaseSize}px`,
           "--desktop-scale": scale,
