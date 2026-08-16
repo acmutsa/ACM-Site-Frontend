@@ -89,11 +89,7 @@ export default function MeetTheTeamClient() {
               <span className="text-acm-darker-blue/80">
                 {activeTab}
               </span>{" "}
-              group in{" "}
-              <span className="text-acm-darker-blue/80">
-                team.data.ts
-              </span>
-              .
+              group
             </div>
           </div>
         )}
