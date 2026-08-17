@@ -16,7 +16,7 @@ export default function EventGridClient({
 }: EventGridProps) {
 	const [currentPage, setCurrentPage] = useState(0);
 
-	// 4 per page (2x2) below lg, 6 per page (3x2) at lg and up - maybe add md later?
+	// 4 per page (2x2) below lg, 6 per page (3x2) at lg and up
 	const [eventsPerPage, setEventsPerPage] = useState(4);
 
 	const carouselRef = useRef<HTMLDivElement>(null);
@@ -40,6 +40,7 @@ export default function EventGridClient({
 			mediaQuery.removeEventListener("change", handleMediaChange);
 	}, []);
 
+	// jump back to the first page whenever the passed-in events change
 	useEffect(() => {
 		setCurrentPage(0);
 		carouselRef.current?.scrollTo({ left: 0, behavior: "auto" });
@@ -99,14 +100,15 @@ export default function EventGridClient({
 						aria-hidden="true"
 					>
 						<div className="relative flex min-h-0 w-full shrink-0 items-start">
-							<div className="mx-auto grid w-full max-w-sm grid-cols-2 content-start justify-items-center gap-4 lg:max-w-none lg:grid-cols-3 lg:gap-6">
+							{/* CHANGED: Removed max-w-sm, mx-auto, and justify-items-center so it scales perfectly with the calendar */}
+							<div className="grid w-full grid-cols-2 content-start gap-4 lg:grid-cols-3 lg:gap-6">
 								{Array.from({ length: eventsPerPage }).map(
 									(_, index) => (
 										<div
 											key={index}
 											className="flex w-full min-w-0 flex-col"
 										>
-											<div className="mx-auto flex w-full flex-col gap-1">
+											<div className="flex w-full flex-col gap-1">
 												<div className="relative aspect-square w-full rounded-2xl" />
 												<div className="flex flex-col">
 													<h2 className="truncate font-calsans font-bold">
@@ -145,7 +147,8 @@ export default function EventGridClient({
 									key={pageIndex}
 									className="w-full shrink-0 snap-center"
 								>
-									<div className="mx-auto grid w-full max-w-sm grid-cols-2 content-start justify-items-center gap-4 lg:max-w-none lg:grid-cols-3 lg:gap-6">
+									{/* CHANGED: Removed max-w-sm, mx-auto, and justify-items-center so it scales perfectly with the calendar */}
+									<div className="grid w-full grid-cols-2 content-start gap-4 lg:grid-cols-3 lg:gap-6">
 										{pageEvents.map((event) => (
 											<EventCard
 												key={event.id}
@@ -162,7 +165,7 @@ export default function EventGridClient({
 					</div>
 
 					{/* Carousel navigation */}
-					<div className="flex w-full shrink-0 items-end justify-center gap-4">
+					<div className="flex w-full shrink-0 items-end justify-center gap-4 pb-2 pt-8">
 						{pages.length > 1 && (
 							<>
 								<button

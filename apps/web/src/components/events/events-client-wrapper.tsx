@@ -68,13 +68,14 @@ export default function EventsClientWrapper({ allEvents }: Props) {
 
 	return (
 		<>
-			<div className="mx-auto mt-12 grid w-full max-w-screen-xl grid-cols-1 gap-8 pb-24 lg:grid-cols-2 lg:items-stretch">
-				{/* Left Column: Search & Calendar */}
-				<div className="flex w-full min-w-0 flex-col">
-					{/* Search Bar Container */}
-					<div className="mb-8 flex h-11 w-full shrink-0 items-center justify-start">
+			<div className="mx-auto mt-12 flex w-full max-w-screen-xl flex-col pb-24">
+				{/* Unified Responsive Header */}
+				{/* CHANGED: Flex row on mobile, 2-column Grid on desktop to match the layout below */}
+				<div className="mb-8 flex w-full flex-row items-center justify-between gap-2 sm:gap-4 lg:grid lg:grid-cols-2 lg:gap-8">
+					{/* Left: Search */}
+					{/* flex-1 on mobile allows it to push against the tabs, lg:flex-none prevents that on desktop */}
+					<div className="flex h-11 min-w-0 flex-1 items-center justify-start lg:flex-none">
 						<div
-							/* CHANGED: rounded-md to rounded-lg */
 							className={`relative flex h-full w-full items-center overflow-hidden rounded-lg bg-acm-darker-blue transition-[max-width] duration-300 ease-in-out ${
 								isSearchExpanded
 									? "max-w-[1000px]"
@@ -128,26 +129,14 @@ export default function EventsClientWrapper({ allEvents }: Props) {
 						</div>
 					</div>
 
-					<div className="flex min-h-0 w-full flex-1">
-						<EventCalendar
-							allEvents={allEvents}
-							onEventClick={setSelectedEvent}
-							currentDate={currentDate}
-							setCurrentDate={setCurrentDate}
-						/>
-					</div>
-				</div>
-
-				{/* Right Column: Tabs, Today Button, & Grid */}
-				<div className="flex w-full min-w-0 flex-col">
-					{/* Right Controls Container */}
-					<div className="mb-8 flex h-11 shrink-0 items-center justify-end gap-2 sm:gap-4">
+					{/* Right: Tabs & Today Button */}
+					<div className="flex h-11 shrink-0 items-center justify-end gap-2 sm:gap-4">
 						{/* Upcoming/Past Tabs */}
 						<div className="flex h-full shrink-0 overflow-hidden rounded-lg border-2 border-acm-darker-blue font-calsans text-sm font-bold">
 							<button
 								type="button"
 								onClick={() => setActiveTab("upcoming")}
-								className={`flex h-full items-center px-6 transition-colors ${
+								className={`flex h-full items-center px-4 transition-colors sm:px-6 ${
 									activeTab === "upcoming"
 										? "bg-acm-darker-blue text-white"
 										: "bg-white text-acm-darker-blue hover:bg-acm-darker-blue/10"
@@ -159,7 +148,7 @@ export default function EventsClientWrapper({ allEvents }: Props) {
 							<button
 								type="button"
 								onClick={() => setActiveTab("past")}
-								className={`flex h-full items-center px-6 transition-colors ${
+								className={`flex h-full items-center px-4 transition-colors sm:px-6 ${
 									activeTab === "past"
 										? "bg-acm-darker-blue text-white"
 										: "bg-white text-acm-darker-blue hover:bg-acm-darker-blue/10"
@@ -188,12 +177,30 @@ export default function EventsClientWrapper({ allEvents }: Props) {
 							</div>
 						</div>
 					</div>
+				</div>
 
-					<div className="flex min-h-0 w-full flex-1">
-						<EventGridClient
-							events={filteredEvents}
-							onEventClick={setSelectedEvent}
-						/>
+				{/* 2-Column Content Grid */}
+				<div className="grid w-full grid-cols-1 gap-8 lg:grid-cols-2 lg:items-stretch">
+					{/* Calendar */}
+					<div className="flex w-full min-w-0 flex-col">
+						<div className="flex min-h-0 w-full flex-1">
+							<EventCalendar
+								allEvents={allEvents}
+								onEventClick={setSelectedEvent}
+								currentDate={currentDate}
+								setCurrentDate={setCurrentDate}
+							/>
+						</div>
+					</div>
+
+					{/* Events Grid */}
+					<div className="flex w-full min-w-0 flex-col">
+						<div className="flex min-h-0 w-full flex-1">
+							<EventGridClient
+								events={filteredEvents}
+								onEventClick={setSelectedEvent}
+							/>
+						</div>
 					</div>
 				</div>
 			</div>
