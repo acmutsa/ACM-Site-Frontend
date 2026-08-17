@@ -42,12 +42,12 @@ export default function EventsClientWrapper({ allEvents }: Props) {
 
 	return (
 		<>
-			<div className="mx-auto mt-12 flex w-full max-w-screen-xl flex-col gap-8 pb-24 lg:flex-row lg:items-stretch">
+			<div className="mx-auto mt-12 grid w-full max-w-screen-xl grid-cols-1 gap-8 pb-24 lg:grid-cols-2 lg:items-stretch">
 				{/* calendar */}
-				<div className="flex w-full flex-col lg:w-1/2">
+				<div className="flex w-full min-w-0 flex-col">
 					<div className="mb-8 hidden h-10 w-full shrink-0 lg:block" />
 
-					<div className="flex w-full flex-1">
+					<div className="flex min-h-0 w-full flex-1">
 						<EventCalendar
 							allEvents={allEvents}
 							onEventClick={setSelectedEvent}
@@ -56,7 +56,7 @@ export default function EventsClientWrapper({ allEvents }: Props) {
 				</div>
 
 				{/* events grid */}
-				<div className="w-full lg:w-1/2">
+				<div className="w-full min-w-0">
 					<EventGridClient
 						allEvents={allEvents}
 						onEventClick={setSelectedEvent}

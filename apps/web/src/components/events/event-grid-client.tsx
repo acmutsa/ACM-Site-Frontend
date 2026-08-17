@@ -1,14 +1,9 @@
 "use client";
 
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import EventCard from "@/components/events/EventCard";
 import type { EventType } from "@/components/events/types";
-import {
-	ChevronLeft,
-	ChevronRight,
-	Search,
-	X,
-} from "lucide-react";
+import { ChevronLeft, ChevronRight, Search, X } from "lucide-react";
 
 interface EventGridProps {
 	allEvents: EventType[];
@@ -19,12 +14,11 @@ export default function EventGridClient({
 	allEvents,
 	onEventClick,
 }: EventGridProps) {
-	const [activeTab, setActiveTab] = useState<"upcoming" | "past">(
-		"upcoming",
-	);
+	const [activeTab, setActiveTab] = useState<"upcoming" | "past">("upcoming");
 	const [currentPage, setCurrentPage] = useState(0);
 
-	const eventsPerPage = 6;
+	// 4 per page (2x2) below lg, 6 per page (3x2) at lg and up - maybe add md later?
+	const [eventsPerPage, setEventsPerPage] = useState(4);
 
 	const carouselRef = useRef<HTMLDivElement>(null);
 
@@ -32,6 +26,25 @@ export default function EventGridClient({
 	const [isSearchExpanded, setIsSearchExpanded] = useState(false);
 	const [searchQuery, setSearchQuery] = useState("");
 	const searchInputRef = useRef<HTMLInputElement>(null);
+
+	// flip the page size at the lg breakpoint and snap back to the first page when it changes
+	useEffect(() => {
+		const mediaQuery = window.matchMedia("(min-width: 1024px)");
+
+		const handleMediaChange = (
+			event: MediaQueryList | MediaQueryListEvent,
+		) => {
+			setEventsPerPage(event.matches ? 6 : 4);
+			setCurrentPage(0);
+			carouselRef.current?.scrollTo({ left: 0, behavior: "auto" });
+		};
+
+		handleMediaChange(mediaQuery);
+		mediaQuery.addEventListener("change", handleMediaChange);
+
+		return () =>
+			mediaQuery.removeEventListener("change", handleMediaChange);
+	}, []);
 
 	const filteredEvents = allEvents.filter((event) => {
 		// Only show events matching the selected upcoming/past tab.
@@ -110,8 +123,8 @@ export default function EventGridClient({
 	};
 
 	return (
-		<div className="flex min-h-[400px] w-full flex-col lg:h-[620px]">
-			<div className="mb-8 flex flex-row items-stretch justify-end gap-2">
+		<div className="flex h-full w-full flex-col">
+			<div className="mb-8 flex shrink-0 flex-row items-stretch justify-end gap-2">
 				{/* Search */}
 				<div
 					className={`relative flex items-center overflow-hidden rounded-md bg-acm-darker-blue transition-all duration-300 ease-in-out ${
@@ -190,14 +203,55 @@ export default function EventGridClient({
 			</div>
 
 			{filteredEvents.length === 0 ? (
-				<div className="flex w-full flex-1 items-center justify-center rounded-2xl border-2 border-dashed border-acm-darker-blue/30 px-4 text-center font-mono text-2xl font-semibold text-acm-darker-blue">
-					{searchQuery
-						? `No ${activeTab} events match "${searchQuery}".`
-						: `No ${activeTab} events found.`}
+				<div className="relative flex w-full flex-1 flex-col">
+					{/* The visible empty state UI */}
+					<div className="absolute inset-0 z-10 flex w-full items-center justify-center rounded-2xl border-2 border-dashed border-acm-darker-blue/30 px-4 text-center font-mono text-2xl font-semibold text-acm-darker-blue">
+						{searchQuery
+							? `No ${activeTab} events match "${searchQuery}".`
+							: `No ${activeTab} events found.`}
+					</div>
+
+					{/* The invisible skeleton forcing the dynamic height to stay stable */}
+					<div
+						className="pointer-events-none flex min-h-0 w-full flex-1 select-none flex-col items-center overflow-hidden opacity-0"
+						aria-hidden="true"
+					>
+						<div className="relative flex min-h-0 w-full shrink-0 items-start">
+							<div className="mx-auto grid w-full max-w-sm grid-cols-2 content-start justify-items-center gap-4 lg:max-w-none lg:grid-cols-3 lg:gap-6">
+								{Array.from({ length: eventsPerPage }).map(
+									(_, index) => (
+										<div
+											key={index}
+											className="flex w-full min-w-0 flex-col"
+										>
+											<div className="mx-auto flex w-full flex-col gap-1">
+												<div className="relative aspect-square w-full rounded-2xl" />
+												<div className="flex flex-col">
+													<h2 className="truncate font-calsans font-bold">
+														&nbsp;
+													</h2>
+													<p className="font-calsans text-sm">
+														&nbsp;
+													</p>
+													<p className="font-calsans text-sm">
+														&nbsp;
+													</p>
+												</div>
+											</div>
+										</div>
+									),
+								)}
+							</div>
+						</div>
+						{/* Invisible pagination space to keep the bottom gap identical */}
+						<div className="flex w-full shrink-0 items-end justify-center gap-4 pb-2 pt-8">
+							<div className="h-5 w-5" />
+						</div>
+					</div>
 				</div>
 			) : (
-				<div className="flex w-full flex-1 flex-col items-center overflow-hidden">
-					<div className="relative flex min-h-0 w-full flex-1 items-start">
+				<div className="flex min-h-0 w-full flex-1 flex-col items-center overflow-hidden">
+					<div className="relative flex min-h-0 w-full shrink-0 items-start">
 						{/* Event carousel */}
 						<div
 							ref={carouselRef}
@@ -209,7 +263,7 @@ export default function EventGridClient({
 									key={pageIndex}
 									className="w-full shrink-0 snap-center"
 								>
-									<div className="grid w-full grid-cols-1 content-start justify-items-center gap-6 sm:grid-cols-2 lg:grid-cols-3">
+									<div className="mx-auto grid w-full max-w-sm grid-cols-2 content-start justify-items-center gap-4 lg:max-w-none lg:grid-cols-3 lg:gap-6">
 										{pageEvents.map((event) => (
 											<EventCard
 												key={event.id}
@@ -226,7 +280,7 @@ export default function EventGridClient({
 					</div>
 
 					{/* Carousel navigation */}
-					<div className="flex w-full shrink-0 items-end justify-center gap-4 pb-2 pt-8">
+					<div className="flex w-full shrink-0 items-end justify-center gap-4">
 						{pages.length > 1 && (
 							<>
 								<button
@@ -238,10 +292,7 @@ export default function EventGridClient({
 									className="flex cursor-pointer items-center justify-center text-acm-darker-blue transition-opacity duration-300 hover:opacity-70 disabled:pointer-events-none disabled:opacity-0"
 									aria-label="Previous page of events"
 								>
-									<ChevronLeft
-										strokeWidth={3}
-										size={20}
-									/>
+									<ChevronLeft strokeWidth={3} size={20} />
 								</button>
 
 								<div className="flex h-4 items-center justify-center">
@@ -278,13 +329,11 @@ export default function EventGridClient({
 											} else {
 												const distanceFromCurrentPage =
 													Math.abs(
-														pageIndex -
-															currentPage,
+														pageIndex - currentPage,
 													);
 
 												if (
-													distanceFromCurrentPage >
-													2
+													distanceFromCurrentPage > 2
 												) {
 													dotClasses =
 														"w-0 mx-0 opacity-0 scale-0 pointer-events-none";
@@ -323,16 +372,11 @@ export default function EventGridClient({
 									onClick={() =>
 										scrollToPage(currentPage + 1)
 									}
-									disabled={
-										currentPage === pages.length - 1
-									}
+									disabled={currentPage === pages.length - 1}
 									className="flex cursor-pointer items-center justify-center text-acm-darker-blue transition-opacity duration-300 hover:opacity-70 disabled:pointer-events-none disabled:opacity-0"
 									aria-label="Next page of events"
 								>
-									<ChevronRight
-										strokeWidth={3}
-										size={20}
-									/>
+									<ChevronRight strokeWidth={3} size={20} />
 								</button>
 							</>
 						)}
