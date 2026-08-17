@@ -269,6 +269,12 @@ function CalendarCell({
 			</div>
 
 			<div className="flex w-full flex-1 flex-col gap-1 overflow-hidden px-1.5 pb-1.5 pt-0.5 sm:px-2 sm:pb-2">
+				{visibleEvents.length === 0 && (
+					<div aria-hidden className="invisible w-full shrink-0">
+						<CalendarEventPill title="placeholder" isPast={false} />
+					</div>
+				)}
+
 				{visibleEvents.map((event: any) => (
 					<button
 						key={event.id}
