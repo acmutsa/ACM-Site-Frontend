@@ -585,6 +585,7 @@ export default function OrbitCarousel({
               stopOpacity="0"
             />
           </radialGradient>
+
           <filter
             id={orbitGlowId}
             x="-50%"
@@ -716,8 +717,7 @@ export default function OrbitCarousel({
                 }
               }}
               style={{
-                transform: `translate(${profile.point.x}px, ${profile.point.y}px) scale(${profile.scale})`,
-                transformOrigin: "0 0",
+                transform: `translate(${profile.point.x.toFixed(4)}px, ${profile.point.y.toFixed(4)}px) scale(${profile.scale})`, transformOrigin: "0 0",
                 opacity: profile.opacity,
                 transition:
                   "transform 700ms cubic-bezier(.22,.61,.36,1), opacity 500ms ease",
@@ -866,31 +866,31 @@ function SocialLinks({
   const socialItems = [
     socials?.linkedin
       ? {
-          key: "linkedin",
-          href: socials.linkedin,
-          label: "in",
-        }
+        key: "linkedin",
+        href: socials.linkedin,
+        label: "in",
+      }
       : null,
     socials?.github
       ? {
-          key: "github",
-          href: socials.github,
-          label: "gh",
-        }
+        key: "github",
+        href: socials.github,
+        label: "gh",
+      }
       : null,
     socials?.instagram
       ? {
-          key: "instagram",
-          href: socials.instagram,
-          label: "ig",
-        }
+        key: "instagram",
+        href: socials.instagram,
+        label: "ig",
+      }
       : null,
     socials?.website
       ? {
-          key: "website",
-          href: socials.website,
-          label: "web",
-        }
+        key: "website",
+        href: socials.website,
+        label: "web",
+      }
       : null,
   ].filter(
     (
