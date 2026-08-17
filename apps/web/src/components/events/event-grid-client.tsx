@@ -89,18 +89,15 @@ export default function EventGridClient({
 		<div className="flex h-full w-full flex-col">
 			{events.length === 0 ? (
 				<div className="relative flex w-full flex-1 flex-col">
-					{/* The visible empty state UI */}
 					<div className="absolute inset-0 z-10 flex w-full items-center justify-center rounded-2xl border-2 border-dashed border-acm-darker-blue/30 px-4 text-center font-mono text-2xl font-semibold text-acm-darker-blue">
 						No events found.
 					</div>
 
-					{/* The invisible skeleton forcing the dynamic height to stay stable */}
 					<div
 						className="pointer-events-none flex min-h-0 w-full flex-1 select-none flex-col items-center overflow-hidden opacity-0"
 						aria-hidden="true"
 					>
 						<div className="relative flex min-h-0 w-full shrink-0 items-start">
-							{/* CHANGED: Removed max-w-sm, mx-auto, and justify-items-center so it scales perfectly with the calendar */}
 							<div className="grid w-full grid-cols-2 content-start gap-4 lg:grid-cols-3 lg:gap-6">
 								{Array.from({ length: eventsPerPage }).map(
 									(_, index) => (
@@ -147,7 +144,6 @@ export default function EventGridClient({
 									key={pageIndex}
 									className="w-full shrink-0 snap-center"
 								>
-									{/* CHANGED: Removed max-w-sm, mx-auto, and justify-items-center so it scales perfectly with the calendar */}
 									<div className="grid w-full grid-cols-2 content-start gap-4 lg:grid-cols-3 lg:gap-6">
 										{pageEvents.map((event) => (
 											<EventCard
@@ -165,7 +161,7 @@ export default function EventGridClient({
 					</div>
 
 					{/* Carousel navigation */}
-					<div className="flex w-full shrink-0 items-end justify-center gap-4 pb-2 pt-8">
+					<div className="flex w-full shrink-0 items-end justify-center gap-4">
 						{pages.length > 1 && (
 							<>
 								<button

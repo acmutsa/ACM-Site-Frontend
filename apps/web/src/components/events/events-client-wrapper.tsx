@@ -68,7 +68,7 @@ export default function EventsClientWrapper({ allEvents }: Props) {
 
 	return (
 		<>
-			<div className="mx-auto mt-12 flex w-full max-w-screen-xl flex-col pb-24">
+			<div className="mx-auto mt-12 flex w-full max-w-screen-xl flex-col pb-8">
 				{/* Unified Responsive Header */}
 				{/* CHANGED: Flex row on mobile, 2-column Grid on desktop to match the layout below */}
 				<div className="mb-8 flex w-full flex-row items-center justify-between gap-2 sm:gap-4 lg:grid lg:grid-cols-2 lg:gap-8">
