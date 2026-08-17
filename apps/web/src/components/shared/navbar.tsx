@@ -47,7 +47,7 @@ export default async function Navbar({ siteRegion, showBorder }: NavbarProps) {
 				<Sheet>
 					<SheetTrigger asChild>
 						<button type="button" aria-label="Open menu">
-							<Menu />
+							<Menu color="#266BE8" strokeWidth={2.5} />
 						</button>
 					</SheetTrigger>
 					<SheetContent className="flex max-w-[40%] flex-col-reverse items-center justify-center gap-y-1">
@@ -140,7 +140,7 @@ export function HeroNav({
 					<Sheet>
 						<SheetTrigger asChild>
 							<button type="button" aria-label="Open menu">
-								<Menu />
+								<Menu color="#266BE8" strokeWidth={2.5} />
 							</button>
 						</SheetTrigger>
 						<SheetContent className="h-[100dvh] w-[90%] max-w-sm overflow-y-auto">
