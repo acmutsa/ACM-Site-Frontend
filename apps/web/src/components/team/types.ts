@@ -1,5 +1,5 @@
 export type TeamKey =
-  | "faculty_sponsor"
+  | "faculty_sponsors"
   | "acm_general"
   | "acm-w"
   | "rowdy_creators"

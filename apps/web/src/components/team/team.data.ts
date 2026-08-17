@@ -2,6 +2,17 @@ import type { TeamGroup } from "./types";
 
 export const TEAM_GROUPS: TeamGroup[] = [
   {
+    key:"faculty_sponsors",
+    label: "faculty sponsors",
+    members: [
+      {
+        id: "dr-heaps",
+        name: "Dr. Heaps",
+        imageUrl: "/img/officer_photos/faculty_sponsors/dr-heaps.jpg",
+      },
+    ]
+  },
+  {
     key: "acm_general",
     label: "acm",
     members: [
