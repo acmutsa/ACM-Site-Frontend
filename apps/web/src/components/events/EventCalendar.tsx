@@ -4,21 +4,21 @@ import React, { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import { EventType } from "@/components/events/types";
 
-// TODO: button to go back to current day?
-// TODO: idk if i want the blur and blue behind the popup - ask
-
 interface EventCalendarProps {
 	allEvents: EventType[];
 	onEventClick: (event: EventType) => void;
+	currentDate: Date;
+	setCurrentDate: (date: Date) => void;
 }
 
 // main calendar
 export default function EventCalendar({
 	allEvents,
 	onEventClick,
+	currentDate,
+	setCurrentDate,
 }: EventCalendarProps) {
 	const [isMounted, setIsMounted] = useState(false);
-	const [currentDate, setCurrentDate] = useState(new Date());
 
 	const [popupCell, setPopupCell] = useState<any | null>(null);
 	const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -176,19 +176,25 @@ export default function EventCalendar({
 			)}
 
 			{/* calendar months header */}
-			<div className="mb-6 flex shrink-0 items-center justify-between px-2 text-white">
-				<button
-					onClick={handlePrev}
-					className="flex cursor-pointer items-center justify-center transition-opacity hover:opacity-70"
-				>
-					<ChevronLeft strokeWidth={2.5} size={28} />
-				</button>
-				<h2 className="font-calsans text-2xl font-bold sm:text-3xl">
+			<div className="relative mb-6 flex shrink-0 items-center justify-between px-2 text-white">
+				<div className="relative z-10 flex items-center gap-3 sm:gap-4">
+					<button
+						onClick={handlePrev}
+						className="flex cursor-pointer items-center justify-center transition-opacity hover:opacity-70"
+						aria-label="Previous month"
+					>
+						<ChevronLeft strokeWidth={2.5} size={28} />
+					</button>
+				</div>
+
+				<h2 className="pointer-events-none absolute inset-x-0 text-center font-calsans text-2xl font-bold sm:text-3xl">
 					{monthName} {year}
 				</h2>
+
 				<button
 					onClick={handleNext}
-					className="flex cursor-pointer items-center justify-center transition-opacity hover:opacity-70"
+					className="relative z-10 flex cursor-pointer items-center justify-center transition-opacity hover:opacity-70"
+					aria-label="Next month"
 				>
 					<ChevronRight strokeWidth={2.5} size={28} />
 				</button>

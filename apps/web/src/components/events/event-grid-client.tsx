@@ -3,29 +3,23 @@
 import React, { useEffect, useRef, useState } from "react";
 import EventCard from "@/components/events/EventCard";
 import type { EventType } from "@/components/events/types";
-import { ChevronLeft, ChevronRight, Search, X } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 interface EventGridProps {
-	allEvents: EventType[];
+	events: EventType[];
 	onEventClick: (event: EventType) => void;
 }
 
 export default function EventGridClient({
-	allEvents,
+	events,
 	onEventClick,
 }: EventGridProps) {
-	const [activeTab, setActiveTab] = useState<"upcoming" | "past">("upcoming");
 	const [currentPage, setCurrentPage] = useState(0);
 
 	// 4 per page (2x2) below lg, 6 per page (3x2) at lg and up - maybe add md later?
 	const [eventsPerPage, setEventsPerPage] = useState(4);
 
 	const carouselRef = useRef<HTMLDivElement>(null);
-
-	// Search state
-	const [isSearchExpanded, setIsSearchExpanded] = useState(false);
-	const [searchQuery, setSearchQuery] = useState("");
-	const searchInputRef = useRef<HTMLInputElement>(null);
 
 	// flip the page size at the lg breakpoint and snap back to the first page when it changes
 	useEffect(() => {
@@ -46,48 +40,16 @@ export default function EventGridClient({
 			mediaQuery.removeEventListener("change", handleMediaChange);
 	}, []);
 
-	const filteredEvents = allEvents.filter((event) => {
-		// Only show events matching the selected upcoming/past tab.
-		if (event.status !== activeTab) {
-			return false;
-		}
-
-		// Search by event title.
-		if (
-			searchQuery &&
-			!event.title.toLowerCase().includes(searchQuery.toLowerCase())
-		) {
-			return false;
-		}
-
-		return true;
-	});
+	useEffect(() => {
+		setCurrentPage(0);
+		carouselRef.current?.scrollTo({ left: 0, behavior: "auto" });
+	}, [events]);
 
 	const pages: EventType[][] = [];
 
-	for (let index = 0; index < filteredEvents.length; index += eventsPerPage) {
-		pages.push(filteredEvents.slice(index, index + eventsPerPage));
+	for (let index = 0; index < events.length; index += eventsPerPage) {
+		pages.push(events.slice(index, index + eventsPerPage));
 	}
-
-	const handleTabSwitch = (tab: "upcoming" | "past") => {
-		setActiveTab(tab);
-		setCurrentPage(0);
-
-		carouselRef.current?.scrollTo({
-			left: 0,
-			behavior: "auto",
-		});
-	};
-
-	const handleSearchChange = (value: string) => {
-		setSearchQuery(value);
-		setCurrentPage(0);
-
-		carouselRef.current?.scrollTo({
-			left: 0,
-			behavior: "auto",
-		});
-	};
 
 	const handleScroll = () => {
 		if (!carouselRef.current) {
@@ -124,91 +86,11 @@ export default function EventGridClient({
 
 	return (
 		<div className="flex h-full w-full flex-col">
-			<div className="mb-8 flex shrink-0 flex-row items-stretch justify-end gap-2">
-				{/* Search */}
-				<div
-					className={`relative flex items-center overflow-hidden rounded-md bg-acm-darker-blue transition-all duration-300 ease-in-out ${
-						isSearchExpanded ? "w-full" : "w-[38px]"
-					}`}
-				>
-					<button
-						type="button"
-						onClick={() => {
-							if (!isSearchExpanded) {
-								setIsSearchExpanded(true);
-
-								setTimeout(() => {
-									searchInputRef.current?.focus();
-								}, 100);
-							}
-						}}
-						className="flex aspect-square h-full w-[38px] shrink-0 items-center justify-center p-2 text-white"
-						aria-label="Search events"
-					>
-						<Search strokeWidth={2.5} size={20} />
-					</button>
-
-					<input
-						ref={searchInputRef}
-						type="text"
-						placeholder="Search events..."
-						value={searchQuery}
-						onChange={(event) =>
-							handleSearchChange(event.target.value)
-						}
-						className="h-full w-full bg-transparent py-0 pr-2 font-calsans text-sm leading-normal text-white placeholder-white/70 outline-none"
-					/>
-
-					{isSearchExpanded && (
-						<button
-							type="button"
-							onClick={() => {
-								setIsSearchExpanded(false);
-								handleSearchChange("");
-							}}
-							className="flex shrink-0 items-center justify-center pr-2 text-white/70 hover:text-white"
-							aria-label="Close event search"
-						>
-							<X size={16} strokeWidth={2.5} />
-						</button>
-					)}
-				</div>
-
-				{/* Upcoming/past tabs */}
-				<div className="flex shrink-0 overflow-hidden rounded-md border-2 border-acm-darker-blue font-calsans text-sm font-bold">
-					<button
-						type="button"
-						onClick={() => handleTabSwitch("upcoming")}
-						className={`px-6 py-2 transition-colors ${
-							activeTab === "upcoming"
-								? "bg-acm-darker-blue text-white"
-								: "bg-white text-acm-darker-blue hover:bg-acm-darker-blue/10"
-						}`}
-					>
-						Upcoming
-					</button>
-
-					<button
-						type="button"
-						onClick={() => handleTabSwitch("past")}
-						className={`px-6 py-2 transition-colors ${
-							activeTab === "past"
-								? "bg-acm-darker-blue text-white"
-								: "bg-white text-acm-darker-blue hover:bg-acm-darker-blue/10"
-						}`}
-					>
-						Past
-					</button>
-				</div>
-			</div>
-
-			{filteredEvents.length === 0 ? (
+			{events.length === 0 ? (
 				<div className="relative flex w-full flex-1 flex-col">
 					{/* The visible empty state UI */}
 					<div className="absolute inset-0 z-10 flex w-full items-center justify-center rounded-2xl border-2 border-dashed border-acm-darker-blue/30 px-4 text-center font-mono text-2xl font-semibold text-acm-darker-blue">
-						{searchQuery
-							? `No ${activeTab} events match "${searchQuery}".`
-							: `No ${activeTab} events found.`}
+						No events found.
 					</div>
 
 					{/* The invisible skeleton forcing the dynamic height to stay stable */}
