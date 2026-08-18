@@ -22,22 +22,24 @@ export default function EventsClientWrapper({ allEvents }: Props) {
 
 	const [currentDate, setCurrentDate] = useState(new Date());
 
-	const filteredEvents = allEvents.filter((event) => {
-		// Filter by tab
-		if (event.status !== activeTab) {
-			return false;
-		}
+	const filteredEvents = allEvents
+    .filter((event) => {
+        if (event.status !== activeTab) return false;
 
-		// Filter by search query
-		if (
-			searchQuery &&
-			!event.title.toLowerCase().includes(searchQuery.toLowerCase())
-		) {
-			return false;
-		}
+        if (
+            searchQuery &&
+            !event.title.toLowerCase().includes(searchQuery.toLowerCase())
+        ) {
+            return false;
+        }
 
-		return true;
-	});
+        return true;
+    })
+    .sort((a, b) => {
+        const aTime = a.date ? new Date(a.date).getTime() : 0;
+        const bTime = b.date ? new Date(b.date).getTime() : 0;
+        return activeTab === "past" ? bTime - aTime : aTime - bTime;
+    });
 
 	// navigation for popup
 	const handleNext = () => {
