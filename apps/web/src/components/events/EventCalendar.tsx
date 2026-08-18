@@ -9,7 +9,9 @@ const ROWS = 5;
 const DAYS_IN_VIEW = ROWS * 7;
 
 // every cell reserves this many pill rows no matter what's in it, so an empty month is exactly as tall as a busy one and card stops resizing
-const PILL_SLOTS = 2;
+// new: 1 row below sm so the calendar doesn't run so long on a phone, 2 from sm up
+const PILL_SLOTS_MOBILE = 1;
+const PILL_SLOTS_DESKTOP = 2;
 
 interface EventCalendarProps {
 	allEvents: EventType[];
@@ -74,8 +76,30 @@ export default function EventCalendar({
 		null,
 	);
 
+	// new: the slot count drives slice() and the "+n more" math, so it has to be state, not a css breakpoint
+	const [pillSlots, setPillSlots] = useState(PILL_SLOTS_DESKTOP);
+
 	useEffect(() => {
 		setIsMounted(true);
+	}, []);
+
+	// new: flip the slot count at the sm breakpoint, same pattern as the event grid
+	useEffect(() => {
+		const mediaQuery = window.matchMedia("(min-width: 640px)");
+
+		const handleMediaChange = (
+			event: MediaQueryList | MediaQueryListEvent,
+		) => {
+			setPillSlots(
+				event.matches ? PILL_SLOTS_DESKTOP : PILL_SLOTS_MOBILE,
+			);
+		};
+
+		handleMediaChange(mediaQuery);
+		mediaQuery.addEventListener("change", handleMediaChange);
+
+		return () =>
+			mediaQuery.removeEventListener("change", handleMediaChange);
 	}, []);
 
 	useEffect(() => {
@@ -264,6 +288,7 @@ export default function EventCalendar({
 					<CalendarCell
 						key={dayKey(cell.dateObj)}
 						cell={cell}
+						pillSlots={pillSlots}
 						onEventClick={onEventClick}
 						onOpenPopup={() => setPopupCell(cell)}
 					/>
@@ -276,21 +301,23 @@ export default function EventCalendar({
 // calendar cells
 function CalendarCell({
 	cell,
+	pillSlots,
 	onEventClick,
 	onOpenPopup,
 }: {
 	cell: CalendarCellData;
+	pillSlots: number;
 	onEventClick: (e: EventType) => void;
 	onOpenPopup: () => void;
 }) {
-	const showExpandPill = cell.events.length > PILL_SLOTS;
+	const showExpandPill = cell.events.length > pillSlots;
 	const visibleEvents = showExpandPill
-		? cell.events.slice(0, PILL_SLOTS - 1)
+		? cell.events.slice(0, pillSlots - 1)
 		: cell.events;
 
 	// pad out whatever the events didn't use so the row height never changes
 	const emptySlots =
-		PILL_SLOTS - visibleEvents.length - (showExpandPill ? 1 : 0);
+		pillSlots - visibleEvents.length - (showExpandPill ? 1 : 0);
 
 	return (
 		<div

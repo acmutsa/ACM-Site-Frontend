@@ -161,7 +161,7 @@ export default function EventGridClient({
 					</div>
 
 					{/* Carousel navigation */}
-					<div className="mt-auto flex w-full shrink-0 items-end justify-center gap-4">
+					<div className="mt-auto flex w-full shrink-0 items-end justify-center gap-4 pt-6 sm:pt-4">
 						{pages.length > 1 && (
 							<>
 								<button
