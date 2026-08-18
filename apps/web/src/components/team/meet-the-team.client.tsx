@@ -51,7 +51,7 @@ export default function MeetTheTeamClient() {
             type="button"
             onClick={() => setActiveTab(tab)}
             className={`transition-colors ${activeTab === tab
-                ? "text-acm-blue"
+                ? "text-acm-darker-blue"
                 : "text-acm-darker-blue/35 hover:text-acm-darker-blue/60"
               }`}
           >

@@ -3,8 +3,6 @@ import MeetTheTeamClient from "@/components/team/meet-the-team.client";
 export default function TeamPage() {
 	return (
 		<>
-			<div className="h-28 w-full" />
-
 			<main className="mx-auto w-full max-w-screen-xl px-10 pb-24">
 				<h1 className="font-chillax text-6xl font-black tracking-tight text-acm-darker-blue md:text-8xl">
 					meet our team.
