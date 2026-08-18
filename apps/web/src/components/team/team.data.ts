@@ -46,11 +46,6 @@ export const TEAM_GROUPS: TeamGroup[] = [
         name: "Vian Chen",
         role: "Technical Officer",
         imageUrl: "/img/officer_photos/acm_general/vian-chen.jpg",
-        socials: {
-          linkedin: "www.linkedin.com/in/miguel-oseguera-0b5306281",
-          github: "https://github.com/Mystery335",
-          instagram: "https://www.instagram.com/_vi.vanilla_/",
-        }
       },
       {
         id: "keziah-muyna",

@@ -94,8 +94,7 @@ export function HeroNav({
 		<div
 			className={`absolute left-1/2 top-0 z-50 grid h-24 w-full max-w-screen-xl -translate-x-1/2 grid-cols-4 rounded-lg px-10 py-4 transition-all duration-300 ${variant[navVariant].wrapper}`}
 		>
-			<div className="col-span-3 flex items-center gap-x-5">
-				<Link href="/">
+			<Link href="/"className="relative top-4">
 					<Image
 						src="/img/logos/acm.svg"
 						alt="ACM UTSA"
@@ -104,7 +103,8 @@ export function HeroNav({
 						className="mr-5"
 					/>
 				</Link>
-
+			<div className="col-span-3 flex items-center gap-x-5">
+				<div className=""></div>
 				<div className="hidden items-center gap-x-5 md:flex">
 					<NavLink linkStyles={linkStyles} href="/events">
 						Events
