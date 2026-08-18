@@ -64,33 +64,6 @@ export default function EventsClientWrapper({ allEvents }: Props) {
 			return activeTab === "past" ? bTime - aTime : aTime - bTime;
 		});
 
-	// navigation for popup
-	const handleNext = () => {
-		if (!selectedEvent) return;
-		const currentIndex = allEvents.findIndex(
-			(e) => e.id === selectedEvent.id,
-		);
-		if (currentIndex < allEvents.length - 1) {
-			setSelectedEvent(allEvents[currentIndex + 1]);
-		}
-	};
-
-	const handlePrev = () => {
-		if (!selectedEvent) return;
-		const currentIndex = allEvents.findIndex(
-			(e) => e.id === selectedEvent.id,
-		);
-		if (currentIndex > 0) {
-			setSelectedEvent(allEvents[currentIndex - 1]);
-		}
-	};
-
-	const currentIndex = selectedEvent
-		? allEvents.findIndex((e) => e.id === selectedEvent.id)
-		: -1;
-	const hasNext = currentIndex !== -1 && currentIndex < allEvents.length - 1;
-	const hasPrev = currentIndex > 0;
-
 	return (
 		<>
 			<div className="mx-auto mt-12 flex w-full max-w-screen-xl flex-col pb-8">
@@ -238,10 +211,6 @@ export default function EventsClientWrapper({ allEvents }: Props) {
 			<EventPopup
 				event={selectedEvent}
 				onClose={() => setSelectedEvent(null)}
-				onNext={handleNext}
-				onPrev={handlePrev}
-				hasNext={hasNext}
-				hasPrev={hasPrev}
 			/>
 		</>
 	);

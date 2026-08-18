@@ -15,21 +15,9 @@ import { Calendar, MapPin, Play, X } from "lucide-react";
 interface EventPopupProps {
 	event: EventType | null;
 	onClose: () => void;
-	onNext: () => void;
-	onPrev: () => void;
-	hasNext: boolean;
-	hasPrev: boolean;
 }
 
-// TODO: be able to drag to next page too - swiper.js?
-export default function EventPopup({
-	event,
-	onClose,
-	onNext,
-	onPrev,
-	hasNext,
-	hasPrev,
-}: EventPopupProps) {
+export default function EventPopup({ event, onClose }: EventPopupProps) {
 	// for animation
 	const [isOpen, setIsOpen] = useState(false);
 	const [displayEvent, setDisplayEvent] = useState<EventType | null>(null);
@@ -47,17 +35,15 @@ export default function EventPopup({
 		}
 	}, [event]);
 
-	// keyboard navigation
+	// close on escape
 	useEffect(() => {
 		const handleKeyDown = (e: KeyboardEvent) => {
 			if (!isOpen) return;
-			if (e.key === "ArrowRight" && hasNext) onNext();
-			if (e.key === "ArrowLeft" && hasPrev) onPrev();
 			if (e.key === "Escape") onClose();
 		};
 		window.addEventListener("keydown", handleKeyDown);
 		return () => window.removeEventListener("keydown", handleKeyDown);
-	}, [isOpen, hasNext, hasPrev, onNext, onPrev, onClose]);
+	}, [isOpen, onClose]);
 
 	// vertical scrolling
 	const vertScrollRef = useRef<HTMLDivElement>(null);
