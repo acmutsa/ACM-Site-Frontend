@@ -1,93 +1,167 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import { EventType } from "@/components/events/types";
 
-// TODO: button to go back to current day?
-// TODO: idk if i want the blur and blue behind the popup - ask
+// 5 rows always starts on the week of the 1st, so a month can only ever spill 1-2 days, and those land as dimmed cells at the top of the next month
+const ROWS = 5;
+const DAYS_IN_VIEW = ROWS * 7;
+
+// every cell reserves this many pill rows no matter what's in it, so an empty month is exactly as tall as a busy one and card stops resizing
+const PILL_SLOTS_MOBILE = 1;
+const PILL_SLOTS_DESKTOP = 2;
 
 interface EventCalendarProps {
 	allEvents: EventType[];
 	onEventClick: (event: EventType) => void;
+	currentDate: Date;
+	setCurrentDate: (date: Date) => void;
+}
+
+// cell
+interface CalendarCellData {
+	day: number;
+	dateObj: Date;
+	isToday: boolean;
+	isCurrentMonth: boolean;
+	isPast: boolean;
+	events: EventType[];
+}
+
+// date helpers, all local time and normalized to midnight
+const addDays = (date: Date, amount: number) =>
+	new Date(date.getFullYear(), date.getMonth(), date.getDate() + amount);
+
+const startOfDay = (date: Date) =>
+	new Date(date.getFullYear(), date.getMonth(), date.getDate());
+
+const dayKey = (date: Date) =>
+	`${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
+
+// date-only strings parse as utc midnight and land a day early here, so parse those as local
+function parseEventDate(value: string | number | Date): Date | null {
+	if (value instanceof Date) {
+		return Number.isNaN(value.getTime()) ? null : value;
+	}
+
+	if (typeof value === "string") {
+		const dateOnly = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value.trim());
+		if (dateOnly) {
+			return new Date(
+				Number(dateOnly[1]),
+				Number(dateOnly[2]) - 1,
+				Number(dateOnly[3]),
+			);
+		}
+	}
+
+	const parsed = new Date(value);
+	return Number.isNaN(parsed.getTime()) ? null : parsed;
 }
 
 // main calendar
 export default function EventCalendar({
 	allEvents,
 	onEventClick,
+	currentDate,
+	setCurrentDate,
 }: EventCalendarProps) {
 	const [isMounted, setIsMounted] = useState(false);
-	const [currentDate, setCurrentDate] = useState(new Date());
 
-	const [popupCell, setPopupCell] = useState<any | null>(null);
+	const [popupCell, setPopupCell] = useState<CalendarCellData | null>(null);
 	const [isPopupOpen, setIsPopupOpen] = useState(false);
-	const [displayCell, setDisplayCell] = useState<any | null>(null);
+	const [displayCell, setDisplayCell] = useState<CalendarCellData | null>(
+		null,
+	);
+
+	const [pillSlots, setPillSlots] = useState(PILL_SLOTS_DESKTOP);
 
 	useEffect(() => {
 		setIsMounted(true);
 	}, []);
 
 	useEffect(() => {
+		const mediaQuery = window.matchMedia("(min-width: 640px)");
+
+		const handleMediaChange = (
+			event: MediaQueryList | MediaQueryListEvent,
+		) => {
+			setPillSlots(
+				event.matches ? PILL_SLOTS_DESKTOP : PILL_SLOTS_MOBILE,
+			);
+		};
+
+		handleMediaChange(mediaQuery);
+		mediaQuery.addEventListener("change", handleMediaChange);
+
+		return () =>
+			mediaQuery.removeEventListener("change", handleMediaChange);
+	}, []);
+
+	useEffect(() => {
 		if (popupCell) {
 			setDisplayCell(popupCell);
-			setTimeout(() => setIsPopupOpen(true), 10);
-		} else {
-			setIsPopupOpen(false);
-			const timer = setTimeout(() => setDisplayCell(null), 150);
-			return () => clearTimeout(timer);
+			const openTimer = setTimeout(() => setIsPopupOpen(true), 10);
+			return () => clearTimeout(openTimer);
 		}
+
+		setIsPopupOpen(false);
+		const clearTimer = setTimeout(() => setDisplayCell(null), 150);
+		return () => clearTimeout(clearTimer);
 	}, [popupCell]);
 
-	if (!isMounted) {
-		return (
-			<div className="h-full min-h-[300px] w-full rounded-2xl bg-acm-darker-blue"></div>
-		);
-	}
-
-	const actualToday = new Date();
 	const year = currentDate.getFullYear();
 	const month = currentDate.getMonth();
 	const firstDayOfMonth = new Date(year, month, 1);
 
-	const startOfView = new Date(
-		firstDayOfMonth.getFullYear(),
-		firstDayOfMonth.getMonth(),
-		firstDayOfMonth.getDate() - firstDayOfMonth.getDay(),
+	// bucket events once instead of scanning allEvents inside every cell
+	const eventsByDay = useMemo(() => {
+		const map = new Map<string, EventType[]>();
+
+		for (const event of allEvents) {
+			if (!event.date) continue;
+
+			const eventDate = parseEventDate(event.date);
+			if (!eventDate) continue;
+
+			const key = dayKey(eventDate);
+			const bucket = map.get(key);
+			if (bucket) bucket.push(event);
+			else map.set(key, [event]);
+		}
+
+		return map;
+	}, [allEvents]);
+
+	// back up to the sunday of the week holding the 1st
+	const startOfView = useMemo(
+		() => new Date(year, month, 1 - new Date(year, month, 1).getDay()),
+		[year, month],
 	);
 
-	const calendarCells = [];
-	for (let i = 0; i < 28; i++) {
-		const cellDate = new Date(
-			startOfView.getFullYear(),
-			startOfView.getMonth(),
-			startOfView.getDate() + i,
+	const calendarCells = useMemo<CalendarCellData[]>(() => {
+		const actualToday = startOfDay(new Date());
+
+		return Array.from({ length: DAYS_IN_VIEW }, (_, index) => {
+			const cellDate = addDays(startOfView, index);
+
+			return {
+				day: cellDate.getDate(),
+				dateObj: cellDate,
+				isToday: cellDate.getTime() === actualToday.getTime(),
+				isCurrentMonth: cellDate.getMonth() === month,
+				// calculate if event has already past
+				isPast: cellDate.getTime() < actualToday.getTime(),
+				events: eventsByDay.get(dayKey(cellDate)) ?? [],
+			};
+		});
+	}, [startOfView, month, eventsByDay]);
+
+	if (!isMounted) {
+		return (
+			<div className="h-full min-h-[360px] w-full rounded-2xl bg-acm-darker-blue"></div>
 		);
-
-		const isToday =
-			cellDate.getDate() === actualToday.getDate() &&
-			cellDate.getMonth() === actualToday.getMonth() &&
-			cellDate.getFullYear() === actualToday.getFullYear();
-
-		const isCurrentMonth = cellDate.getMonth() === month;
-
-		const eventsOnThisDay = allEvents.filter((event) => {
-			if (!event.date) return false;
-			const eventDate = new Date(event.date);
-			return (
-				eventDate.getFullYear() === cellDate.getFullYear() &&
-				eventDate.getMonth() === cellDate.getMonth() &&
-				eventDate.getDate() === cellDate.getDate()
-			);
-		});
-
-		calendarCells.push({
-			day: cellDate.getDate(),
-			dateObj: cellDate,
-			isToday: isToday,
-			isCurrentMonth: isCurrentMonth,
-			events: eventsOnThisDay,
-		});
 	}
 
 	const handlePrev = () => {
@@ -137,6 +211,7 @@ export default function EventCalendar({
 							<button
 								onClick={() => setPopupCell(null)}
 								className="absolute right-3 top-3 text-acm-darker-blue/50 transition-colors hover:text-acm-darker-blue"
+								aria-label="Close"
 							>
 								<X size={20} strokeWidth={2.5} />
 							</button>
@@ -144,51 +219,49 @@ export default function EventCalendar({
 
 						{/* popup events */}
 						<div className="flex flex-1 flex-col gap-2 overflow-y-auto p-4 no-scrollbar">
-							{displayCell.events.map((event: any) => {
-								// calculate if event has already past
-								const today = new Date();
-								today.setHours(0, 0, 0, 0);
-								const isCellInPast =
-									displayCell.dateObj < today;
-
-								return (
-									<button
-										key={event.id}
-										onClick={() => {
-											setPopupCell(null);
-											onEventClick(event);
-										}}
-										className="w-full text-left"
-									>
-										<CalendarEventPill
-											title={event.title}
-											isPast={
-												isCellInPast ||
-												event.status === "past"
-											}
-										/>
-									</button>
-								);
-							})}
+							{displayCell.events.map((event) => (
+								<button
+									key={event.id}
+									onClick={() => {
+										setPopupCell(null);
+										onEventClick(event);
+									}}
+									className="w-full text-left"
+								>
+									<CalendarEventPill
+										title={event.title}
+										isPast={
+											displayCell.isPast ||
+											event.status === "past"
+										}
+									/>
+								</button>
+							))}
 						</div>
 					</div>
 				</div>
 			)}
 
 			{/* calendar months header */}
-			<div className="mb-6 flex shrink-0 items-center justify-between px-2 text-white">
-				<button
-					onClick={handlePrev}
-					className="flex cursor-pointer items-center justify-center transition-opacity hover:opacity-70"
-				>
-					<ChevronLeft strokeWidth={2.5} size={28} />
-				</button>
-				<h2 className="font-calsans text-2xl font-bold sm:text-3xl">
+			<div className="relative mb-6 flex shrink-0 items-center justify-between px-2 text-white">
+				<div className="relative z-10 flex items-center gap-3 sm:gap-4">
+					<button
+						onClick={handlePrev}
+						className="flex cursor-pointer items-center justify-center transition-opacity hover:opacity-70"
+						aria-label="Previous month"
+					>
+						<ChevronLeft strokeWidth={2.5} size={28} />
+					</button>
+				</div>
+
+				<h2 className="pointer-events-none absolute inset-x-0 text-center font-calsans text-2xl font-bold sm:text-3xl">
 					{monthName} {year}
 				</h2>
+
 				<button
 					onClick={handleNext}
-					className="flex cursor-pointer items-center justify-center transition-opacity hover:opacity-70"
+					className="relative z-10 flex cursor-pointer items-center justify-center transition-opacity hover:opacity-70"
+					aria-label="Next month"
 				>
 					<ChevronRight strokeWidth={2.5} size={28} />
 				</button>
@@ -208,10 +281,11 @@ export default function EventCalendar({
 
 			{/* days grid */}
 			<div className="grid min-h-0 flex-1 auto-rows-fr grid-cols-7 gap-1.5 sm:gap-2">
-				{calendarCells.map((cell, index) => (
+				{calendarCells.map((cell) => (
 					<CalendarCell
-						key={index}
+						key={dayKey(cell.dateObj)}
 						cell={cell}
+						pillSlots={pillSlots}
 						onEventClick={onEventClick}
 						onOpenPopup={() => setPopupCell(cell)}
 					/>
@@ -224,22 +298,23 @@ export default function EventCalendar({
 // calendar cells
 function CalendarCell({
 	cell,
+	pillSlots,
 	onEventClick,
 	onOpenPopup,
 }: {
-	cell: any;
+	cell: CalendarCellData;
+	pillSlots: number;
 	onEventClick: (e: EventType) => void;
 	onOpenPopup: () => void;
 }) {
-	const showExpandPill = cell.events.length > 2;
+	const showExpandPill = cell.events.length > pillSlots;
 	const visibleEvents = showExpandPill
-		? cell.events.slice(0, 1)
+		? cell.events.slice(0, pillSlots - 1)
 		: cell.events;
 
-	// calculate if event has already past
-	const today = new Date();
-	today.setHours(0, 0, 0, 0);
-	const isCellInPast = cell.dateObj < today;
+	// pad out whatever the events didn't use so the row height never changes
+	const emptySlots =
+		pillSlots - visibleEvents.length - (showExpandPill ? 1 : 0);
 
 	return (
 		<div
@@ -250,12 +325,12 @@ function CalendarCell({
 		>
 			<div className="flex w-full shrink-0 justify-start p-1 pb-0 sm:p-1.5 sm:pb-0">
 				<span
-					className={`flex items-center justify-center rounded text-sm sm:text-base ${
+					className={`flex h-6 w-6 items-center justify-center rounded text-xs sm:h-7 sm:w-7 sm:text-sm ${
 						cell.isToday
-							? "h-7 w-7 bg-acm-darker-blue text-white sm:h-8 sm:w-8"
+							? "bg-acm-darker-blue text-white"
 							: cell.isCurrentMonth
-								? "h-7 w-7 text-acm-darker-blue sm:h-8 sm:w-8"
-								: "h-7 w-7 text-acm-darker-blue/50 sm:h-8 sm:w-8"
+								? "text-acm-darker-blue"
+								: "text-acm-darker-blue/50"
 					}`}
 				>
 					{cell.day}
@@ -263,7 +338,7 @@ function CalendarCell({
 			</div>
 
 			<div className="flex w-full flex-1 flex-col gap-1 overflow-hidden px-1.5 pb-1.5 pt-0.5 sm:px-2 sm:pb-2">
-				{visibleEvents.map((event: any) => (
+				{visibleEvents.map((event) => (
 					<button
 						key={event.id}
 						onClick={(e) => {
@@ -274,7 +349,7 @@ function CalendarCell({
 					>
 						<CalendarEventPill
 							title={event.title}
-							isPast={isCellInPast || event.status === "past"}
+							isPast={cell.isPast || event.status === "past"}
 						/>
 					</button>
 				))}
@@ -287,9 +362,20 @@ function CalendarCell({
 						}}
 						className="w-full shrink-0 truncate rounded bg-acm-darker-blue/10 px-1.5 py-0.5 text-center text-[10px] font-bold text-acm-darker-blue/60 transition-colors hover:bg-acm-darker-blue/20 sm:text-xs"
 					>
-						+{cell.events.length - 1} more
+						{/* count off what's actually hidden instead of hardcoding length - 1 */}
+						+{cell.events.length - visibleEvents.length} more
 					</button>
 				)}
+
+				{Array.from({ length: emptySlots }, (_, index) => (
+					<div
+						key={`slot-${index}`}
+						aria-hidden
+						className="invisible w-full shrink-0"
+					>
+						<CalendarEventPill title="placeholder" isPast={false} />
+					</div>
+				))}
 			</div>
 		</div>
 	);

@@ -11,18 +11,21 @@ export default function EventCard({ event, onClick }: EventCardProps) {
 	const { title, date, location, imageUrl } = event;
 
 	return (
-		<div onClick={onClick} className="group flex cursor-pointer flex-col w-full min-w-0">
-			<div className="mx-auto flex w-full flex-col gap-1 hover:underline hover:underline-offset-2 hover:decoration-2 hover:decoration-acm-darker-blue/50">
+		<div
+			onClick={onClick}
+			className="group flex w-full min-w-0 cursor-pointer flex-col"
+		>
+			<div className="mx-auto flex w-full flex-col gap-1 hover:underline hover:decoration-acm-darker-blue/50 hover:decoration-2 hover:underline-offset-2">
 				{/* image */}
-				<div className="relative aspect-square w-full overflow-hidden rounded-2xl">
+				<div className="relative aspect-[8/9] w-full overflow-hidden rounded-2xl">
 					{imageUrl ? (
 						<img
 							src={imageUrl}
 							alt={title}
-							className="aspect-square h-full w-full object-cover"
+							className="h-full w-full object-cover"
 						/>
 					) : (
-						<div className="flex h-full w-full items-center justify-center px-4 text-center font-mono text-xs font-bold bg-gray-400 text-gray-600">
+						<div className="flex h-full w-full items-center justify-center bg-gray-400 px-4 text-center font-mono text-xs font-bold text-gray-600">
 							No Image Provided
 						</div>
 					)}
@@ -30,29 +33,37 @@ export default function EventCard({ event, onClick }: EventCardProps) {
 				</div>
 
 				{/* info */}
-				<div className="flex flex-col">
+				<div className="flex min-w-0 flex-col">
 					<h2 className="truncate font-calsans font-bold text-acm-darker-blue">
 						{title}
 					</h2>
-					<p className="flex items-center gap-x-1 font-calsans text-sm text-acm-darker-blue">
+					<p className="flex min-w-0 items-center gap-x-1 font-calsans text-sm text-acm-darker-blue">
 						<Calendar
 							strokeWidth={2.5}
 							size={15}
 							className="shrink-0"
 						/>
-						{date
-							? new Date(date).toLocaleString("en-US", {
-									timeZone: "America/Chicago",
-									month: "short",
-									day: "numeric",
-									hour: "numeric",
-									minute: "numeric",
-								}).replace(", ", " @ ")
-							: "TBD"}
+						<span className="truncate">
+							{date
+								? new Date(date)
+										.toLocaleString("en-US", {
+											timeZone: "America/Chicago",
+											month: "short",
+											day: "numeric",
+											hour: "numeric",
+											minute: "numeric",
+										})
+										.replace(", ", " @ ")
+								: "TBD"}
+						</span>
 					</p>
-					<p className="flex items-center gap-x-1 font-calsans text-sm text-acm-darker-blue">
-						<MapPin strokeWidth={2.5} size={15} />
-						{location || "TBD"}
+					<p className="flex min-w-0 items-center gap-x-1 font-calsans text-sm text-acm-darker-blue">
+						<MapPin
+							strokeWidth={2.5}
+							size={15}
+							className="shrink-0"
+						/>
+						<span className="truncate">{location || "TBD"}</span>
 					</p>
 				</div>
 			</div>
