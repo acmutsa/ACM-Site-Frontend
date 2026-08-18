@@ -13,7 +13,6 @@ export default function Page({ params }: { params: { slug: string } }) {
 
 	return (
 		<>
-			<div className="h-36 w-full"></div>
 			<SuborgHero
 				name={suborg.name}
 				shortDesc={suborg.shortDesc}
