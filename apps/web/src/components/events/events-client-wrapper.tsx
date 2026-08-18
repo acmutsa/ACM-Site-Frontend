@@ -11,6 +11,10 @@ interface Props {
 	allEvents: EventType[];
 }
 
+//  lowercase, spaces, and punctuation so "acmw", "ACM-W" and "acm w" all collapse to the same thing
+const normalize = (value: string) =>
+	value.toLowerCase().replace(/[^a-z0-9]/g, "");
+
 export default function EventsClientWrapper({ allEvents }: Props) {
 	const [selectedEvent, setSelectedEvent] = useState<EventType | null>(null);
 
@@ -22,24 +26,43 @@ export default function EventsClientWrapper({ allEvents }: Props) {
 
 	const [currentDate, setCurrentDate] = useState(new Date());
 
+	// split on spaces so word order doesn't matter, "beginner icpc" still finds "ICPC Beginner Meeting"
+	const searchTokens = searchQuery
+		.split(/\s+/)
+		.map(normalize)
+		.filter(Boolean);
+
 	const filteredEvents = allEvents
-    .filter((event) => {
-        if (event.status !== activeTab) return false;
+		.filter((event) => {
+			// Filter by tab
+			if (event.status !== activeTab) return false;
 
-        if (
-            searchQuery &&
-            !event.title.toLowerCase().includes(searchQuery.toLowerCase())
-        ) {
-            return false;
-        }
+			// Filter by search query
+			if (searchTokens.length > 0) {
+				// tags and location are searchable, so "acmw" finds events tagged ACM-W even when the title never says it, and "npb1114" matches "NPB 1.114"
+				const fields = [
+					event.title,
+					event.location,
+					...(event.tags?.map((tag) => tag.label) ?? []),
+				].filter(Boolean) as string[];
 
-        return true;
-    })
-    .sort((a, b) => {
-        const aTime = a.date ? new Date(a.date).getTime() : 0;
-        const bTime = b.date ? new Date(b.date).getTime() : 0;
-        return activeTab === "past" ? bTime - aTime : aTime - bTime;
-    });
+				const normalizedFields = fields.map(normalize);
+
+				// every token has to land somewhere but not all in the same field
+				const isMatch = searchTokens.every((token) =>
+					normalizedFields.some((field) => field.includes(token)),
+				);
+
+				if (!isMatch) return false;
+			}
+
+			return true;
+		})
+		.sort((a, b) => {
+			const aTime = a.date ? new Date(a.date).getTime() : 0;
+			const bTime = b.date ? new Date(b.date).getTime() : 0;
+			return activeTab === "past" ? bTime - aTime : aTime - bTime;
+		});
 
 	// navigation for popup
 	const handleNext = () => {
