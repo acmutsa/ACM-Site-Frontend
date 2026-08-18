@@ -70,15 +70,13 @@ export default function EventsClientWrapper({ allEvents }: Props) {
 		<>
 			<div className="mx-auto mt-12 flex w-full max-w-screen-xl flex-col pb-8">
 				{/* Unified Responsive Header */}
-				{/* CHANGED: Flex row on mobile, 2-column Grid on desktop to match the layout below */}
 				<div className="mb-8 flex w-full flex-row items-center justify-between gap-2 sm:gap-4 lg:grid lg:grid-cols-2 lg:gap-8">
 					{/* Left: Search */}
-					{/* flex-1 on mobile allows it to push against the tabs, lg:flex-none prevents that on desktop */}
 					<div className="flex h-11 min-w-0 flex-1 items-center justify-start lg:flex-none">
 						<div
-							className={`relative flex h-full w-full items-center overflow-hidden rounded-lg bg-acm-darker-blue transition-[max-width] duration-300 ease-in-out ${
+							className={`relative flex h-full w-full items-center overflow-hidden rounded-lg bg-acm-darker-blue transition-[max-width] duration-300 ease-out ${
 								isSearchExpanded
-									? "max-w-[1000px]"
+									? "max-w-[320px] md:max-w-[400px] lg:max-w-[750px]"
 									: "max-w-[44px]"
 							}`}
 						>
@@ -87,10 +85,10 @@ export default function EventsClientWrapper({ allEvents }: Props) {
 								onClick={() => {
 									if (!isSearchExpanded) {
 										setIsSearchExpanded(true);
-
+										// Wait for animation to mostly finish before focusing
 										setTimeout(() => {
 											searchInputRef.current?.focus();
-										}, 100);
+										}, 200);
 									} else {
 										setIsSearchExpanded(false);
 										setSearchQuery("");
@@ -110,22 +108,28 @@ export default function EventsClientWrapper({ allEvents }: Props) {
 								onChange={(event) =>
 									setSearchQuery(event.target.value)
 								}
-								className="h-full w-full bg-transparent py-0 pr-2 font-calsans text-sm leading-normal text-white placeholder-white/70 outline-none"
+								className={`h-full w-full bg-transparent py-0 pr-2 font-calsans text-sm leading-normal text-white placeholder-white/70 outline-none transition-opacity duration-300 ${
+									isSearchExpanded
+										? "opacity-100 delay-75"
+										: "pointer-events-none opacity-0"
+								}`}
 							/>
 
-							{isSearchExpanded && (
-								<button
-									type="button"
-									onClick={() => {
-										setIsSearchExpanded(false);
-										setSearchQuery("");
-									}}
-									className="flex shrink-0 items-center justify-center pr-3 text-white/70 hover:text-white"
-									aria-label="Close event search"
-								>
-									<X size={16} strokeWidth={2.5} />
-								</button>
-							)}
+							<button
+								type="button"
+								onClick={() => {
+									setIsSearchExpanded(false);
+									setSearchQuery("");
+								}}
+								className={`flex shrink-0 items-center justify-center pr-3 text-white/70 transition-opacity duration-300 hover:text-white ${
+									isSearchExpanded
+										? "opacity-100 delay-100"
+										: "pointer-events-none opacity-0"
+								}`}
+								aria-label="Close event search"
+							>
+								<X size={16} strokeWidth={2.5} />
+							</button>
 						</div>
 					</div>
 
