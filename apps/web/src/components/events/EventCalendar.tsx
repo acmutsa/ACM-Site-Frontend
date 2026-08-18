@@ -9,7 +9,6 @@ const ROWS = 5;
 const DAYS_IN_VIEW = ROWS * 7;
 
 // every cell reserves this many pill rows no matter what's in it, so an empty month is exactly as tall as a busy one and card stops resizing
-// new: 1 row below sm so the calendar doesn't run so long on a phone, 2 from sm up
 const PILL_SLOTS_MOBILE = 1;
 const PILL_SLOTS_DESKTOP = 2;
 
@@ -76,14 +75,12 @@ export default function EventCalendar({
 		null,
 	);
 
-	// new: the slot count drives slice() and the "+n more" math, so it has to be state, not a css breakpoint
 	const [pillSlots, setPillSlots] = useState(PILL_SLOTS_DESKTOP);
 
 	useEffect(() => {
 		setIsMounted(true);
 	}, []);
 
-	// new: flip the slot count at the sm breakpoint, same pattern as the event grid
 	useEffect(() => {
 		const mediaQuery = window.matchMedia("(min-width: 640px)");
 
