@@ -8,6 +8,13 @@ jiti("./src/env");
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+	serverExternalPackages: [
+        "@libsql/client",
+        "libsql",
+        "@libsql/hrana-client",
+        "@libsql/isomorphic-fetch",
+        "@libsql/isomorphic-ws",
+    ],
 	images: {
 		// fix image optmization
 		unoptimized: true,
@@ -31,6 +38,14 @@ const nextConfig = {
 			},
 		];
 	},
+	webpack: (config, { webpack }) => {
+        config.plugins.push(
+            new webpack.IgnorePlugin({
+                resourceRegExp: /\.(md|txt)$/,
+            })
+        );
+        return config;
+    },
 };
 if (process.env.NODE_ENV === "development") {
 	await setupDevPlatform();
