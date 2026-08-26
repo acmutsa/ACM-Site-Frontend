@@ -1,12 +1,14 @@
 import { SUBORGS } from "@/site.config";
 import SuborgHero from "./suborg-hero";
 import { notFound } from "next/navigation";
-import { useColorSlider } from "react-aria";
-import { UploadPartCopyOutput$ } from "@aws-sdk/client-s3";
 
-export default function Page({ params }: { params: { slug: string } }) {
-	const suborg = SUBORGS[params.slug];
-
+export default async function Page({
+    params,
+}: {
+    params: Promise<{ slug: string }>;
+}) {
+    const { slug } = await params;
+    const suborg = SUBORGS[slug];
 	if (!suborg) {
 		return notFound();
 	}
@@ -17,7 +19,7 @@ export default function Page({ params }: { params: { slug: string } }) {
 				name={suborg.name}
 				shortDesc={suborg.shortDesc}
 				leadingSentence={suborg.leadingSentence}
-				slug={params.slug}
+				slug={slug}
 				logoUrl={suborg.logoUrl}
 				colors={suborg.colors}
 				discordLink={suborg.discordLink}
