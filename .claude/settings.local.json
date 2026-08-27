@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(timeout 200 pnpm dlx knip --no-progress --directory apps/web --dependencies)"
+    ]
+  }
+}

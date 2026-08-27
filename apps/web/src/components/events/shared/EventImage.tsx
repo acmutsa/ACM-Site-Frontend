@@ -3,7 +3,7 @@
 import Image from "next/image";
 import type { EventImageProps } from "@/lib/types/events";
 import clsx from "clsx";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export default function EventImage(props: EventImageProps) {
