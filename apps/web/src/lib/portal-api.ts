@@ -3,6 +3,7 @@ import type { PortalEvent } from "@/components/events/types";
 const API_URLS = [
 	"https://api.portal.acmutsa.org",
 	"http://localhost:4000",
+	"https://newportalapi-production.up.railway.app",
 ];
 
 export async function getPortalEvents(): Promise<PortalEvent[]> {
