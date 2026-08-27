@@ -33,5 +33,3 @@ export async function GET(request: Request) {
 
 	return redirect(presignedViewingUrl);
 }
-
-export const runtime = "edge";
