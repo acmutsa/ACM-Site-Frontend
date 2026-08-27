@@ -1,7 +1,4 @@
-import type {
-	EventType,
-	PortalEvent,
-} from "@/components/events/types";
+import type { EventType, PortalEvent } from "@/components/events/types";
 
 /**
  * Supports timestamps supplied in either seconds or milliseconds.
@@ -10,9 +7,7 @@ function normalizeTimestamp(timestamp: number): number {
 	return timestamp < 10_000_000_000 ? timestamp * 1000 : timestamp;
 }
 
-export function portalEventToEventType(
-	event: PortalEvent,
-): EventType {
+export function portalEventToEventType(event: PortalEvent): EventType {
 	const startTimestamp = normalizeTimestamp(event.start);
 	const endTimestamp = normalizeTimestamp(event.end);
 

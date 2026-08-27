@@ -24,13 +24,11 @@ const calsans = localFont({
 	variable: "--font-calsans",
 });
 
-export default async function RootLayout(
-    {
-        children,
-    }: Readonly<{
-        children: React.ReactNode;
-    }>
-) {
+export default async function RootLayout({
+	children,
+}: Readonly<{
+	children: React.ReactNode;
+}>) {
 	const theme = (await cookies()).get("ck_theme")?.value || defaultTheme;
 	return (
 		<html

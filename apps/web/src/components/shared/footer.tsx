@@ -41,7 +41,10 @@ export default function Footer({ email, orgName }: FooterProps) {
 				<div className="hidden md:grid md:grid-cols-4 md:gap-10">
 					{/* Contacts */}
 					<div className="flex flex-col items-start justify-start">
-						<h3 id="contact_footer" className="pb-3 font-mono text-base font-bold text-white sm:text-lg md:text-lg lg:text-xl">
+						<h3
+							id="contact_footer"
+							className="pb-3 font-mono text-base font-bold text-white sm:text-lg md:text-lg lg:text-xl"
+						>
 							Contacts
 						</h3>
 						<br />
@@ -57,7 +60,7 @@ export default function Footer({ email, orgName }: FooterProps) {
 						{/* optional suborg email */}
 						{email && (
 							<>
-								<p className="p-0 mt-4 text-left font-calsans text-sm text-white sm:text-sm md:text-base lg:text-base">
+								<p className="mt-4 p-0 text-left font-calsans text-sm text-white sm:text-sm md:text-base lg:text-base">
 									{orgName} Email:
 								</p>
 								<FooterLink
@@ -100,12 +103,27 @@ export default function Footer({ email, orgName }: FooterProps) {
 						</h3>
 
 						<FooterLink text="ACM-W" href="/suborgs/acmw" />
-						<FooterLink text="Coding in Color" href="/suborgs/codingincolor" />
+						<FooterLink
+							text="Coding in Color"
+							href="/suborgs/codingincolor"
+						/>
 						<FooterLink text="ICPC" href="/suborgs/acmicpc" />
-						<FooterLink text="Rowdy Creators" href="/suborgs/rowdycreators" />
-						<FooterLink text="RowdyHacks" href="/suborgs/rowdyhacks" />
-						<FooterLink text="Code Quantum" href="https://cqhacks.org" />
-						<FooterLink text="Rowdy Datathon" href="https://rowdydatathon.org" />
+						<FooterLink
+							text="Rowdy Creators"
+							href="/suborgs/rowdycreators"
+						/>
+						<FooterLink
+							text="RowdyHacks"
+							href="/suborgs/rowdyhacks"
+						/>
+						<FooterLink
+							text="Code Quantum"
+							href="https://cqhacks.org"
+						/>
+						<FooterLink
+							text="Rowdy Datathon"
+							href="https://rowdydatathon.org"
+						/>
 					</div>
 
 					{/* Social */}
@@ -205,12 +223,30 @@ export default function Footer({ email, orgName }: FooterProps) {
 						<AccordionContent className="">
 							<div className="flex flex-col items-start justify-start gap-2">
 								<FooterLink text="ACM-W" href="/suborgs/acmw" />
-								<FooterLink text="Coding in Color" href="/suborgs/codingincolor" />
-								<FooterLink text="ICPC" href="/suborgs/acmicpc" />
-								<FooterLink text="Rowdy Creators" href="/suborgs/rowdycreators" />
-								<FooterLink text="RowdyHacks" href="/suborgs/rowdyhacks" />
-								<FooterLink text="Code Quantum" href="https://cqhacks.org" />
-								<FooterLink text="Rowdy Datathon" href="https://rowdydatathon.org" />
+								<FooterLink
+									text="Coding in Color"
+									href="/suborgs/codingincolor"
+								/>
+								<FooterLink
+									text="ICPC"
+									href="/suborgs/acmicpc"
+								/>
+								<FooterLink
+									text="Rowdy Creators"
+									href="/suborgs/rowdycreators"
+								/>
+								<FooterLink
+									text="RowdyHacks"
+									href="/suborgs/rowdyhacks"
+								/>
+								<FooterLink
+									text="Code Quantum"
+									href="https://cqhacks.org"
+								/>
+								<FooterLink
+									text="Rowdy Datathon"
+									href="https://rowdydatathon.org"
+								/>
 							</div>
 						</AccordionContent>
 					</AccordionItem>
