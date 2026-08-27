@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Button, variantItems } from "@/components/ui/button";
+import Contact from "@/components/shared/contact";
 
 import c from "config";
 import { Menu } from "lucide-react";
@@ -9,6 +10,7 @@ import {
 	SheetContent,
 	SheetTitle,
 	SheetTrigger,
+	SheetClose,
 } from "@/components/ui/sheet";
 
 type NavbarProps = {
@@ -135,9 +137,7 @@ export function HeroNav({
 						Donate
 					</NavLink>
 
-					<NavLink linkStyles={linkStyles} href="#contact_footer">
-						Contact
-					</NavLink>
+					<Contact linkStyles={linkStyles} />
 
 					<ResourcesDropdown
 						linkStyles={linkStyles}
@@ -165,40 +165,45 @@ export function HeroNav({
 								<SheetTitle className="sr-only">
 									NavBar
 								</SheetTitle>
-								<NavLink
-									linkStyles="text-acm-darker-blue"
-									href="/events"
-								>
-									Events
-								</NavLink>
-								<NavLink
-									linkStyles="text-acm-darker-blue"
-									href="/team"
-								>
-									Team
-								</NavLink>
+								<SheetClose asChild>
+									<NavLink
+										linkStyles="text-acm-darker-blue"
+										href="/events"
+									>
+										Events
+									</NavLink>
+								</SheetClose>
+								<SheetClose asChild>
+									<NavLink
+										linkStyles="text-acm-darker-blue"
+										href="/team"
+									>
+										Team
+									</NavLink>
+								</SheetClose>
 								<SuborgsDropdown
 									linkStyles="text-acm-darker-blue"
 									navVariant={navVariant}
 								/>
-								<NavLink
-									linkStyles="text-acm-darker-blue"
-									href="/sponsorship"
-								>
-									Sponsor
-								</NavLink>
-								<NavLink
-									linkStyles="text-acm-darker-blue"
-									href="/donate"
-								>
-									Donate
-								</NavLink>
-								<NavLink
-									linkStyles="text-acm-darker-blue"
-									href="#contact_footer"
-								>
-									Contact
-								</NavLink>
+								<SheetClose asChild>
+									<NavLink
+										linkStyles="text-acm-darker-blue"
+										href="/sponsor"
+									>
+										Sponsor
+									</NavLink>
+								</SheetClose>
+								<SheetClose asChild>
+									<NavLink
+										linkStyles="text-acm-darker-blue"
+										href="/donate"
+									>
+										Donate
+									</NavLink>
+								</SheetClose>
+								<SheetClose asChild>
+									<Contact linkStyles={linkStyles} />
+								</SheetClose>
 								<ResourcesDropdown
 									linkStyles="text-acm-darker-blue"
 									navVariant={navVariant}
@@ -251,9 +256,8 @@ function NavLink({
 	return (
 		<Link
 			href={href}
-			className={`text-md font-semibold hover:underline lg:text-lg ${
-				isCustomColor ? "" : linkStyles
-			}`}
+			className={`text-md font-semibold hover:underline lg:text-lg ${isCustomColor ? "" : linkStyles
+				}`}
 			style={isCustomColor ? { color: linkStyles } : undefined}
 		>
 			{children}
@@ -273,9 +277,8 @@ function ResourcesDropdown({
 		linkStyles.startsWith("#") ||
 		linkStyles.startsWith("hsl");
 
-	const triggerClass = `text-md lg:text-lg whitespace-nowrap font-semibold hover:underline ${
-		isCustomColor ? "" : linkStyles
-	}`;
+	const triggerClass = `text-md lg:text-lg whitespace-nowrap font-semibold hover:underline ${isCustomColor ? "" : linkStyles
+		}`;
 
 	const resources = [
 		{ name: "Feedback", href: "/feedback" },
@@ -365,9 +368,8 @@ function SuborgsDropdown({
 		linkStyles.startsWith("#") ||
 		linkStyles.startsWith("hsl");
 
-	const triggerClass = `text-md lg:text-lg whitespace-nowrap font-semibold hover:underline ${
-		isCustomColor ? "" : linkStyles
-	}`;
+	const triggerClass = `text-md lg:text-lg whitespace-nowrap font-semibold hover:underline ${isCustomColor ? "" : linkStyles
+		}`;
 
 	// Only slugs matter since routes are /suborgs/[suborg]
 	const suborgs: Array<{ name: string; slug: string }> = [
