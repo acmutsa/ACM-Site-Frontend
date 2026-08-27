@@ -274,6 +274,9 @@ importers:
       autoprefixer:
         specifier: ^10.0.1
         version: 10.4.23(postcss@8.5.6)
+      opennextjs-cloudflare:
+        specifier: ^1.0.0
+        version: 1.0.0
       postcss:
         specifier: ^8
         version: 8.5.6
@@ -6843,6 +6846,10 @@ packages:
   /object-hash@3.0.0:
     resolution: {integrity: sha512-RSn9F68PjH9HqtltsSnqYC1XXoWe9Bju5+213R98cNGttag9q9yAOTzdbsqvIa7aNm5WffBZFpWYr2aWrklWAw==}
     engines: {node: '>= 6'}
+
+  /opennextjs-cloudflare@1.0.0:
+    resolution: {integrity: sha512-udcoJaxZyMUp+uYt5Lumz0b+uuCsbnQP8jG7kexZltHaO9ANxfPBhrju4MzkrUPUb3ePox9nQ7Bo2e9Wbeux9g==}
+    dev: true
 
   /package-manager-manager@0.2.0:
     resolution: {integrity: sha512-V02gl0bafXJ2gcY6j+5IHM7UdnYwmF+2OsFZuqVcha6iMSStD4dpIOBOsypnUIwOi4jLcPz6RQuyifmAE3mG8g==}
