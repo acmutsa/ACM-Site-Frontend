@@ -8,7 +8,6 @@
     "start": "pnpm with-env next start",
     "lint": "next lint",
     "with-env": "dotenv -e ../../.env --",
-    "pages:build": "pnpm dlx @cloudflare/next-on-pages",
     "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
     "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
     "upload": "opennextjs-cloudflare build && opennextjs-cloudflare upload",
@@ -93,17 +92,17 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
-    "@cloudflare/next-on-pages": "^1.13.10",
     "@cloudflare/workers-types": "^4.20250313.0",
+    "@opennextjs/cloudflare": "^1.20.3",
     "@tailwindcss/line-clamp": "^0.4.4",
     "@types/node": "^20",
     "@types/react": "19.1.0",
     "@types/react-dom": "19.1.1",
     "autoprefixer": "^10.0.1",
-    "opennextjs-cloudflare": "^1.0.0",
     "postcss": "^8",
     "tailwindcss": "^3.4.16",
-    "typescript": "^5"
+    "typescript": "^5",
+    "wrangler": "^4.126.0"
   },
   "pnpm": {
     "overrides": {

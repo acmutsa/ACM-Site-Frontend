@@ -1,6 +1,6 @@
 import { fileURLToPath } from "node:url";
 import createJiti from "jiti";
-import { setupDevPlatform } from "@cloudflare/next-on-pages/next-dev";
+import { initOpenNextCloudflareForDev } from "@opennextjs/cloudflare";
 const jiti = createJiti(fileURLToPath(import.meta.url));
 
 // Import env here to validate during build. Using jiti we can import .ts files :)
@@ -47,7 +47,6 @@ const nextConfig = {
         return config;
     },
 };
-if (process.env.NODE_ENV === "development") {
-	await setupDevPlatform();
-}
 export default nextConfig;
+
+initOpenNextCloudflareForDev();
