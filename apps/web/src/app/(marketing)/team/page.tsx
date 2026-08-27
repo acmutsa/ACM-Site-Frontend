@@ -13,7 +13,7 @@ export default function TeamPage() {
 					and our major events.
 				</p>
 
-				<div className="mt-10">
+				<div className="">
 					<MeetTheTeamClient />
 				</div>
 			</main>

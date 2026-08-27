@@ -120,10 +120,10 @@ export default function Footer({ email, orgName }: FooterProps) {
 							text="Code Quantum"
 							href="https://cqhacks.org"
 						/>
-						<FooterLink
+						{/* <FooterLink
 							text="Rowdy Datathon"
 							href="https://rowdydatathon.org"
-						/>
+						/> */}
 					</div>
 
 					{/* Social */}
@@ -243,10 +243,10 @@ export default function Footer({ email, orgName }: FooterProps) {
 									text="Code Quantum"
 									href="https://cqhacks.org"
 								/>
-								<FooterLink
+								{/* <FooterLink
 									text="Rowdy Datathon"
 									href="https://rowdydatathon.org"
-								/>
+								/> */}
 							</div>
 						</AccordionContent>
 					</AccordionItem>

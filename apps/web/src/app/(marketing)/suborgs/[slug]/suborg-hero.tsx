@@ -59,7 +59,7 @@ export default function SuborgHero(suborg: Suborg) {
 					}}
 				>
 					<h1
-						className="text-left font-calsans text-3xl font-bold leading-tight tracking-wide sm:text-3xl md:text-4xl lg:text-5xl"
+						className="text-left font-calsans text-2xl font-bold leading-tight tracking-wide sm:text-3xl md:text-4xl lg:text-5xl"
 						style={{
 							color: colors.poppy,
 						}}
@@ -107,7 +107,7 @@ export default function SuborgHero(suborg: Suborg) {
 					}}
 				>
 					<h1
-						className="text-center font-chillax text-5xl font-black sm:text-5xl md:text-7xl lg:text-9xl "
+						className="text-center font-chillax text-4xl font-black sm:text-5xl md:text-7xl lg:text-9xl "
 						style={{
 							borderColor: modifyColor(colors.poppy, 0.5),
 							color: colors.poppy,
@@ -179,7 +179,7 @@ export default function SuborgHero(suborg: Suborg) {
 					}}
 				>
 					<h1
-						className="text-center font-chillax text-5xl font-black sm:text-5xl md:text-7xl lg:text-9xl "
+						className="text-center font-chillax text-4xl font-black sm:text-5xl md:text-7xl lg:text-9xl "
 						style={{
 							color: colors.poppy,
 							borderColor: modifyColor(colors.poppy, 0.5),
@@ -190,14 +190,13 @@ export default function SuborgHero(suborg: Suborg) {
 				</div>
 
 				<div
-					className="col-span-5 grid grid-cols-3 gap-4 border text-center font-chillax font-bold sm:text-lg md:text-xl lg:text-2xl "
-					style={{
+					className="col-span-5 grid grid-cols-1 md:grid-cols-3 border text-center font-chillax font-bold text-base sm:text-lg md:text-xl lg:text-2xl" style={{
 						color: colors.poppy,
 						borderColor: modifyColor(colors.poppy, 0.5),
 					}}
 				>
 					<div
-						className="border-r p-10"
+						className="border-b md:border-b-0 md:border-r p-6 lg:p-10 "
 						style={{
 							borderColor: modifyColor(colors.poppy, 0.5),
 						}}
@@ -208,7 +207,7 @@ export default function SuborgHero(suborg: Suborg) {
 						<p>{mPhrase1}</p>
 					</div>
 					<div
-						className="border-r p-10"
+						className="border-b md:border-b-0 md:border-r p-6 lg:p-10 "
 						style={{
 							borderColor: modifyColor(colors.poppy, 0.5),
 						}}
@@ -219,7 +218,7 @@ export default function SuborgHero(suborg: Suborg) {
 						<p>{mPhrase2}</p>
 					</div>
 					<div
-						className="p-10"
+						className=" p-6 lg:p-10 "
 						style={{
 							borderColor: modifyColor(colors.poppy, 0.5),
 						}}
@@ -248,9 +247,9 @@ export default function SuborgHero(suborg: Suborg) {
 						<span className="underline">Join</span> {name}
 					</h1>
 				</div>
-				<div className=" relative col-span-3 flex flex-col items-start justify-center p-5">
+				<div className=" relative col-span-3 flex flex-col items-start justify-center py-5 pl-0">
 					<Image
-						className="h-auto w-[140px] object-contain opacity-90 sm:w-[180px] md:w-[220px] lg:w-[280px]"
+						className="h-auto w-[75px] object-contain opacity-90 sm:w-[180px] md:w-[220px] lg:w-[280px] "
 						src={
 							logoUrl.includes("icpc")
 								? "/img/logos/suborgs/icpc-white.png"
@@ -294,7 +293,7 @@ export default function SuborgHero(suborg: Suborg) {
 						background: colors.poppy,
 					}}
 				>
-					<div className="relative border-r border-white p-20 text-2xl text-white sm:text-3xl md:text-5xl lg:text-7xl">
+					<div className="relative border-r border-white py-20 px-5 text-2xl text-white sm:text-3xl md:text-5xl lg:text-7xl">
 						<a
 							href={discordLink}
 							target="_blank"
@@ -312,7 +311,7 @@ export default function SuborgHero(suborg: Suborg) {
 						/>
 					</div>
 
-					<div className=" p-20 text-2xl text-white sm:text-3xl md:text-5xl lg:text-7xl">
+					<div className=" py-20 text-2xl text-white sm:text-3xl md:text-5xl lg:text-7xl">
 						<a
 							href="/events"
 							target="_blank"

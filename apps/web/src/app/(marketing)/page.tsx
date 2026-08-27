@@ -34,7 +34,7 @@ export default function Page() {
 		<>
 			<main className="bg-fit relative flex h-full min-h-[calc(100vh-100px)] w-full flex-col items-center justify-center overflow-hidden bg-acm-darker-blue bg-[url('/img/landing/noise.png')] bg-center text-white">
 				<div className="flex h-full w-full flex-col items-center justify-start">
-					<h1 className="text-center font-chillax text-9xl font-black max-sm:text-7xl">
+					<h1 className="text-center font-chillax text-9xl font-black max-sm:text-4xl">
 						acm utsa
 					</h1>
 					<h2 className="text-md max-w-[600px] text-center font-mono font-semibold">
@@ -51,7 +51,7 @@ export default function Page() {
 				<div className="mx-auto flex max-w-screen-xl flex-col px-10 pt-36">
 					<div className=" grid grid-cols-4 border border-acm-darker-blue/50">
 						<div className="col-span-2 row-span-2 flex flex-col border border-acm-darker-blue/50 p-10">
-							<h1 className="text-left font-calsans text-5xl font-bold leading-tight tracking-wide text-acm-darker-blue max-sm:text-4xl">
+							<h1 className="text-left font-calsans text-5xl font-bold leading-tight tracking-wide text-acm-darker-blue max-sm:text-xl">
 								We are the Association for Computing Machinery
 								at{" "}
 								<span className="rounded-md bg-[#0C2340] pl-3 pr-4 font-inter font-bold leading-[60px] tracking-[-0.1em] text-[#F15A22]">
@@ -70,16 +70,18 @@ export default function Page() {
 								</p>
 							</div>
 						</div>
-						<Suspense fallback={<div>Loading...</div>}>
-							<WeArePhotoGrid />
-						</Suspense>
+						<div className="col-span-2 row-span-2 grid grid-cols-2 grid-rows-2 border border-acm-darker-blue/50">
+							<Suspense fallback={<div className="h-full w-full min-h-[300px] animate-pulse bg-acm-darker-blue/10" />}>
+								<WeArePhotoGrid />
+							</Suspense>
+						</div>
 					</div>
 					<div className="h-10 w-full border border-x-2 border-acm-darker-blue/50" />
 					<div className=" grid grid-cols-5 border border-acm-darker-blue/50">
 						<div className="flex flex-col items-center justify-center gap-y-2 border border-acm-darker-blue/50 p-10">
 							<BracesIcon
 								className="text-acm-darker-blue"
-								size={75}
+								size={50}
 							/>
 							<PlusIcon
 								className="text-acm-darker-blue"
@@ -87,24 +89,27 @@ export default function Page() {
 							/>
 							<UsersIcon
 								className="text-acm-darker-blue"
-								size={75}
+								size={50}
 							/>
 							<EqualIcon
 								className="text-acm-darker-blue"
 								size={25}
 							/>
-							<Image
-								src="/img/logos/acm-blue.png"
-								alt="ACM Blue Logo"
-								width={75}
-								height={75}
-							/>
+							<div className="h-[50px] w-[50px] shrink-0">
+								<Image
+									src="/img/logos/acm-blue.png"
+									alt="ACM Blue Logo"
+									width={75}
+									height={75}
+									className="h-full w-full object-contain"
+								/>
+							</div>
 						</div>
 						<div className="col-span-4 flex flex-col gap-y-5 border border-acm-darker-blue/50 p-10">
-							<h2 className="text-left font-calsans text-5xl font-bold leading-tight tracking-wide text-acm-darker-blue max-sm:text-4xl">
+							<h2 className="text-left font-calsans text-5xl font-bold leading-tight tracking-wide text-acm-darker-blue max-sm:text-2xl">
 								Mission
 							</h2>
-							<p className="text-balance text-left font-calsans text-2xl font-bold leading-loose tracking-wide text-acm-darker-blue">
+							<p className="text-balance text-left font-calsans text-lg font-bold leading-loose tracking-wide text-acm-darker-blue">
 								At
 								<Pill
 									icon={
@@ -136,40 +141,40 @@ export default function Page() {
 					<div className="h-10 w-full border border-x-2 border-acm-darker-blue/50" />
 					<div className=" grid grid-cols-3 border border-acm-darker-blue/50">
 						<div className="relative flex aspect-square flex-col items-center justify-center overflow-hidden border border-acm-darker-blue/50 p-10 font-calsans text-acm-darker-blue">
-							<h3 className="text-7xl font-bold max-sm:text-5xl">
+							<h3 className="text-7xl font-bold max-sm:text-2xl">
 								1000+
 							</h3>
 							<h4 className="text-xl font-bold">Members</h4>
-							<p className="absolute bottom-10 right-10 font-mono text-xs max-sm:bottom-4 max-sm:right-4">
+							<p className="absolute bottom-10 right-10 font-mono text-xs max-sm:bottom-2 max-sm:right-4">
 								Fig. 3
 							</p>
 						</div>
 						<div className="relative flex aspect-square flex-col items-center justify-center overflow-hidden border border-acm-darker-blue/50 p-10 font-calsans text-acm-darker-blue">
-							<h3 className="text-7xl font-bold max-sm:text-5xl">
+							<h3 className="text-7xl font-bold max-sm:text-2xl">
 								4
 							</h3>
-							<h4 className="text-xl font-bold">
-								Sub-organizations
+							<h4 className="text-xl font-bold ">
+								Sub-orgs
 							</h4>
-							<p className="absolute bottom-10 right-10 font-mono text-xs max-sm:bottom-4 max-sm:right-4">
+							<p className="absolute bottom-10 right-10 font-mono text-xs max-sm:bottom-2 max-sm:right-4">
 								Fig. 4
 							</p>
 						</div>
 						<div className="relative flex aspect-square flex-col items-center justify-center overflow-hidden border border-acm-darker-blue/50 p-10 font-calsans text-acm-darker-blue">
-							<h3 className="text-7xl font-bold max-sm:text-5xl">
+							<h3 className="text-7xl font-bold max-sm:text-2xl">
 								3
 							</h3>
 							<h4 className="text-xl font-bold">
 								Annual Hackathons
 							</h4>
-							<p className="absolute bottom-10 right-10 font-mono text-xs max-sm:bottom-4 max-sm:right-4">
+							<p className="absolute bottom-10 right-10 font-mono text-xs max-sm:bottom-2 max-sm:right-4">
 								Fig. 5
 							</p>
 						</div>
 					</div>
 					<div className="h-10 w-full border-t border-acm-darker-blue/50" />
 					<div className="flex h-96 flex-col bg-acm-darker-blue p-10 text-white">
-						<h1 className="pb-5 font-calsans text-8xl font-black max-sm:text-7xl">
+						<h1 className="pb-5 font-calsans text-8xl font-black max-sm:text-4xl">
 							acm is for{" "}
 							<span className="underline">everyone.</span>
 						</h1>
@@ -179,7 +184,7 @@ export default function Page() {
 						<div className="mt-auto flex items-end justify-between justify-self-end">
 							<p className="font-mono text-xs">Fig. 6</p>
 							<Link
-								className="font-calsans text-4xl transition-all hover:underline"
+								className="font-calsans text-4xl max-sm:text-2xl transition-all hover:underline"
 								href={"https://portal.acmutsa.org/"}
 								target="_blank"
 							>
@@ -189,7 +194,7 @@ export default function Page() {
 					</div>
 					<div className="h-10 w-full border-t border-acm-darker-blue/50" />
 					<div className="flex h-10 w-full items-center justify-center rounded border-2 border-dashed border-acm-darker-blue">
-						<p className="text-start font-mono text-sm font-semibold text-acm-darker-blue">
+						<p className="text-center font-mono text-sm font-semibold text-acm-darker-blue">
 							Not sure yet or just want to learn more? Read more
 							below!
 						</p>
@@ -197,7 +202,7 @@ export default function Page() {
 					<div className="h-10 w-full border-acm-darker-blue/50" />
 					<div className="grid min-h-[32rem] grid-cols-4 grid-rows-[auto_minmax(0,1fr)] border-2 border-acm-darker-blue/50">
 						<div className="relative col-span-4 flex h-full flex-col justify-center p-10">
-							<h1 className="text-left font-calsans text-8xl font-bold leading-none tracking-wide text-acm-darker-blue max-sm:text-7xl">
+							<h1 className="text-left font-calsans text-8xl font-bold leading-none tracking-wide text-acm-darker-blue max-sm:text-5xl">
 								Suborgs
 							</h1>
 							<h2 className="text-md text-balance pt-10 text-start font-mono font-semibold text-acm-darker-blue">
@@ -216,6 +221,8 @@ export default function Page() {
 								alt="ACM Logo"
 								width={150}
 								height={150}
+								className="h-auto max-h-16 w-auto max-w-[90px] object-contain sm:max-h-24 sm:max-w-[150px]"
+
 							/>
 						</Link>
 						<Link
@@ -228,6 +235,8 @@ export default function Page() {
 								alt="ACM Logo"
 								width={175}
 								height={175}
+								className="h-auto max-h-16 w-auto max-w-[90px] object-contain sm:max-h-24 sm:max-w-[150px]"
+
 							/>
 						</Link>
 						<Link
@@ -240,6 +249,8 @@ export default function Page() {
 								alt="ACM Logo"
 								width={175}
 								height={175}
+								className="h-auto max-h-16 w-auto max-w-[90px] object-contain sm:max-h-24 sm:max-w-[150px]"
+
 							/>
 						</Link>
 						<Link
@@ -252,13 +263,15 @@ export default function Page() {
 								alt="ACM Logo"
 								width={175}
 								height={175}
+								className="h-auto max-h-16 w-auto max-w-[90px] object-contain sm:max-h-24 sm:max-w-[150px]"
+
 							/>
 						</Link>
 					</div>
 					<div className="h-10 w-full border-x-2 border-acm-darker-blue/50" />
 					<div className="grid min-h-[32rem] grid-cols-4 grid-rows-[auto_minmax(0,1fr)] border-2 border-acm-darker-blue/50">
 						<div className="relative col-span-4 flex h-full flex-col items-end justify-center p-10">
-							<h1 className="text-right font-calsans text-8xl font-bold leading-none tracking-wide text-acm-darker-blue max-sm:text-7xl">
+							<h1 className="text-right font-calsans text-8xl font-bold leading-none tracking-wide text-acm-darker-blue max-sm:text-5xl">
 								Hackathons
 							</h1>
 							<h2 className="text-md text-balance pt-10 text-right font-mono font-semibold text-acm-darker-blue">
@@ -274,9 +287,10 @@ export default function Page() {
 						>
 							<Image
 								src="/img/logos/hackathons/rh-blue.png"
-								alt="ACM Logo"
+								alt="RowdyHacks Logo"
 								width={150}
 								height={150}
+								className="h-auto max-h-16 w-auto max-w-[90px] object-contain sm:max-h-24 sm:max-w-[150px]"
 							/>
 						</Link>
 						<Link
@@ -290,6 +304,9 @@ export default function Page() {
 								alt="ACM Logo"
 								width={150}
 								height={150}
+								className="h-auto max-h-16 w-auto max-w-[90px] object-contain sm:max-h-24 sm:max-w-[150px]"
+
+
 							/>
 						</Link>
 						<div className="flex h-full min-h-[12rem] flex-col items-center justify-center border-l-2 border-t-2 border-acm-darker-blue/50 p-10">
@@ -298,6 +315,8 @@ export default function Page() {
 								alt="ACM Logo"
 								width={150}
 								height={150}
+								className="h-auto max-h-16 w-auto max-w-[90px] object-contain sm:max-h-24 sm:max-w-[150px]"
+
 							/>
 						</div>
 						<Link
@@ -311,6 +330,8 @@ export default function Page() {
 								alt="ACM Logo"
 								width={200}
 								height={200}
+								className="h-auto max-h-16 w-auto max-w-[90px] object-contain sm:max-h-24 sm:max-w-[150px]"
+
 							/>
 						</Link>
 					</div>
@@ -419,7 +440,7 @@ function SponsorsSection() {
 	return (
 		<div className="grid min-h-[32rem] grid-cols-5 grid-rows-[auto_minmax(0,1fr)] border-2 border-acm-darker-blue/50">
 			<div className="relative col-span-5 flex h-full flex-col items-center justify-center p-10">
-				<h1 className="text-center font-calsans text-8xl font-bold leading-none tracking-wide text-acm-darker-blue max-sm:text-7xl">
+				<h1 className="text-center font-calsans text-8xl font-bold leading-none tracking-wide text-acm-darker-blue max-sm:text-5xl">
 					Sponsors
 				</h1>
 				<h2 className="text-md max-w-[600px] text-balance pt-10 text-center font-mono font-semibold text-acm-darker-blue">
@@ -433,16 +454,15 @@ function SponsorsSection() {
 					href={sponsor.link}
 					target="_blank"
 					rel="noopener noreferrer"
-					className={`flex h-full min-h-[12rem] flex-col items-center justify-center border-t-2 border-acm-darker-blue/50 p-10 transition-all hover:bg-acm-darker-blue/5 ${
-						index > 0 ? "border-l-2" : ""
-					}`}
+					className={`flex h-full min-h-[12rem] flex-col items-center justify-center border-t-2 border-acm-darker-blue/50 p-10 transition-all hover:bg-acm-darker-blue/5 ${index > 0 ? "border-l-2" : ""
+						}`}
 				>
 					<Image
 						src={sponsor.logo}
 						alt={`${sponsor.name} Logo`}
 						width={150}
 						height={150}
-						className="object-contain"
+						className="h-auto max-h-14 w-auto max-w-[70px] object-contain sm:max-h-20 sm:max-w-[150px]"
 					/>
 				</Link>
 			))}
@@ -453,9 +473,9 @@ function SponsorsSection() {
 				<div className="flex flex-col items-center justify-center gap-4">
 					<HeartHandshake
 						className="text-acm-darker-blue"
-						size={75}
+						size={35}
 					/>
-					<span className="text-center font-calsans text-xl font-bold text-acm-darker-blue">
+					<span className="text-center font-calsans text-md md:text-xl font-bold text-acm-darker-blue">
 						Become a Sponsor
 					</span>
 				</div>

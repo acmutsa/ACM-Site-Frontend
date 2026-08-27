@@ -7,7 +7,7 @@ export function SponsorsSection() {
 	return (
 		<div className="grid min-h-[32rem] grid-cols-5 grid-rows-[auto_minmax(0,1fr)] border-2 border-acm-darker-blue/50">
 			<div className="relative col-span-5 flex h-full flex-col items-center justify-center p-10">
-				<h1 className="text-center font-calsans text-8xl font-bold leading-none tracking-wide text-acm-darker-blue max-sm:text-7xl">
+				<h1 className="text-center font-calsans text-8xl font-bold leading-none tracking-wide text-acm-darker-blue max-sm:text-5xl">
 					Sponsors
 				</h1>
 				<h2 className="text-md max-w-[600px] text-balance pt-10 text-center font-mono font-semibold text-acm-darker-blue">
@@ -30,7 +30,7 @@ export function SponsorsSection() {
 						alt={`${sponsor.name} Logo`}
 						width={150}
 						height={150}
-						className="object-contain"
+						className="h-auto max-h-14 w-auto max-w-[70px] object-contain sm:max-h-20 sm:max-w-[150px]"
 					/>
 				</Link>
 			))}
@@ -41,9 +41,9 @@ export function SponsorsSection() {
 				<div className="flex flex-col items-center justify-center gap-4">
 					<HeartHandshake
 						className="text-acm-darker-blue"
-						size={75}
+						size={50}
 					/>
-					<span className="text-center font-calsans text-xl font-bold text-acm-darker-blue">
+					<span className="text-center font-calsans text-md md:text-xl font-bold text-acm-darker-blue">
 						Become a Sponsor
 					</span>
 				</div>
