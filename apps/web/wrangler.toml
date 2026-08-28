@@ -3,8 +3,6 @@ main = ".open-next/worker.js"
 name = 'acm-site-frontend'
 # Set this to today's date
 compatibility_date = "2026-08-26"
-compatibility_flags = [ "nodejs_compat" ]
-
 compatibility_flags = ["global_fetch_strictly_public"]
 
 
