@@ -264,7 +264,7 @@ export default function SuborgHero(suborg: Suborg) {
 					<a
 						href="https://portal.acmutsa.org/"
 						target="_blank"
-						className="absolute bottom-0 right-0 cursor-pointer whitespace-nowrap font-calsans text-2xl font-bold tracking-wide text-white hover:underline sm:text-3xl md:text-4xl lg:text-6xl"
+						className="absolute bottom-0 right-0 cursor-pointer whitespace-nowrap font-calsans text-lg font-bold tracking-wide text-white hover:underline sm:text-3xl md:text-4xl lg:text-6xl"
 					>
 						{"Become a Member >"}
 					</a>
@@ -301,14 +301,6 @@ export default function SuborgHero(suborg: Suborg) {
 						>
 							{"Join Our Discord >"}
 						</a>
-						<Image
-							className="lg:left-15 lg:w-18 absolute left-12 top-10 h-8 w-10 sm:left-9 sm:top-9  
-						sm:h-10 sm:w-12 md:left-12 md:top-9 md:h-12 md:w-16 lg:top-12 lg:h-14"
-							src="/img/other/Discord Logo.png"
-							alt="Discord Logo"
-							width={75}
-							height={57}
-						/>
 					</div>
 
 					<div className=" py-20 text-2xl text-white sm:text-3xl md:text-5xl lg:text-7xl">

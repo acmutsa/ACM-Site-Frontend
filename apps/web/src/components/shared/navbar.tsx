@@ -101,8 +101,7 @@ export function HeroNav({
 
 	return (
 		<div
-			className={`absolute left-1/2 top-0 z-50 grid h-24 w-full max-w-screen-xl -translate-x-1/2 grid-cols-4 rounded-lg px-10 py-4 transition-all duration-300 ${variant[navVariant].wrapper}`}
-		>
+			className={`absolute left-1/2 top-0 z-50 grid h-24 w-full max-w-screen-xl -translate-x-1/2 grid-cols-[auto_1fr] rounded-lg px-10 py-4 transition-all duration-300 ${variant[navVariant].wrapper}`}		>
 			<Link href="/" className="relative top-4">
 				<Image
 					src="/img/logos/acm.svg"
@@ -112,8 +111,7 @@ export function HeroNav({
 					className="mr-5"
 				/>
 			</Link>
-			<div className="col-span-3 flex items-center gap-x-5">
-				<div className=""></div>
+			<div className="col-span-3 flex flex-wrap items-center justify-end gap-x-5 gap-y-2">				<div className=""></div>
 				<div className="hidden items-center gap-x-5 md:flex">
 					<NavLink linkStyles={linkStyles} href="/events">
 						Events
@@ -145,11 +143,8 @@ export function HeroNav({
 					/>
 				</div>
 
-				<div className="flex items-center justify-end gap-x-3">
-					<PortalButton
-						navVariant={navVariant}
-						customColor={customColor}
-					/>
+				<div className="items-center justify-end gap-x-3">
+					<PortalButton navVariant={navVariant} customColor={customColor} />
 				</div>
 
 				<div className="flex items-center justify-end gap-2 md:hidden">
@@ -227,7 +222,7 @@ async function PortalButton({
 	return (
 		<Link href={process.env.PORTAL_URL || "https://portal.acmutsa.org"}>
 			<Button
-				className="text-md"
+				className="text-sm"
 				variant={variant[navVariant].buttonVariant}
 				style={
 					customColor ? { backgroundColor: customColor } : undefined
@@ -256,7 +251,7 @@ function NavLink({
 	return (
 		<Link
 			href={href}
-			className={`text-md font-semibold hover:underline lg:text-lg ${isCustomColor ? "" : linkStyles
+			className={`text-sm font-semibold hover:underline lg:text-lg ${isCustomColor ? "" : linkStyles
 				}`}
 			style={isCustomColor ? { color: linkStyles } : undefined}
 		>
@@ -277,7 +272,7 @@ function ResourcesDropdown({
 		linkStyles.startsWith("#") ||
 		linkStyles.startsWith("hsl");
 
-	const triggerClass = `text-md lg:text-lg whitespace-nowrap font-semibold hover:underline ${isCustomColor ? "" : linkStyles
+	const triggerClass = `text-sm lg:text-lg whitespace-nowrap font-semibold hover:underline ${isCustomColor ? "" : linkStyles
 		}`;
 
 	const resources = [
@@ -368,7 +363,7 @@ function SuborgsDropdown({
 		linkStyles.startsWith("#") ||
 		linkStyles.startsWith("hsl");
 
-	const triggerClass = `text-md lg:text-lg whitespace-nowrap font-semibold hover:underline ${isCustomColor ? "" : linkStyles
+	const triggerClass = `text-sm lg:text-lg whitespace-nowrap font-semibold hover:underline ${isCustomColor ? "" : linkStyles
 		}`;
 
 	// Only slugs matter since routes are /suborgs/[suborg]

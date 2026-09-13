@@ -53,16 +53,8 @@ export default function SponsorHero() {
 							</h1>
 						</div>
 						<div className="relative col-span-3 border border-acm-darker-blue p-10">
-							<h1 className="text-right font-chillax text-2xl md:text-3xl font-black text-black">
-								Check out our<br></br>
-								<a
-									className="text-xl md:text-4xl text-acm-darker-blue hover:underline"
-									href="/img/other/sponsorship-packet.pdf"
-									target="_blank"
-									rel="noopener noreferrer"
-								>
-									{"Sponsorship Packet >"}
-								</a>
+							<h1 className="text-right font-chillax text-2xl md:text-3xl font-black text-acm-darker-blue">
+								Get in Touch!<br></br>
 							</h1>
 							<div className="p-10"></div>
 							<a

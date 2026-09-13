@@ -17,26 +17,25 @@ type FooterProps = {
 export default function Footer({ email, orgName }: FooterProps) {
 	return (
 		<div className="p-10 pt-0">
-			<footer className="grid min-h-[50vh] grid-cols-[auto_1fr] gap-10 rounded-xl bg-acm-darker-blue bg-[url('/img/landing/noise.png')] bg-center p-10">
-				<div className="flex flex-col items-start justify-start">
-					<h1 className="text-balance text-left font-calsans text-2xl font-black leading-none tracking-wide text-white sm:text-3xl md:text-3xl lg:text-4xl">
-						The Association
-						<br />
-						for Computing
-						<br />
-						Machinery
-						<br />
-						at UTSA
-					</h1>
-
-					<Image
-						src="/img/logos/acm.svg"
-						alt="ACM Logo"
-						width={50}
-						height={50}
-						className="mt-auto justify-self-end"
-					/>
-				</div>
+			<footer className="grid min-h-[50vh] grid-cols-1 gap-10 rounded-xl bg-acm-darker-blue bg-[url('/img/landing/noise.png')] bg-center p-10 md:grid-cols-[auto_1fr]">				<div className="flex flex-col items-start justify-start">
+				<h1 className="text-balance text-left font-calsans text-lg font-black leading-none tracking-wide text-white sm:text-lg md:text-xl lg:text-4xl">
+					The Association
+					<br />
+					for Computing
+					<br />
+					Machinery
+					<br />
+					at UTSA
+				</h1>
+				<br></br>
+				<Image
+					src="/img/logos/acm.svg"
+					alt="ACM Logo"
+					width={50}
+					height={50}
+					className="mt-auto justify-self-end"
+				/>
+			</div>
 
 				<div className="hidden md:grid md:grid-cols-4 md:gap-10">
 					{/* Contacts */}
@@ -53,7 +52,7 @@ export default function Footer({ email, orgName }: FooterProps) {
 							ACM UTSA Email:
 						</p>
 						<FooterLink
-							text="team@acmutsa.org"
+							text={<>team<br />@acmutsa.org</>}
 							href={`mailto:team@acmutsa.org?subject=Inquiry about ACM UTSA`}
 						/>
 
@@ -296,7 +295,7 @@ function FooterLink({
 	href,
 	target,
 }: {
-	text: string;
+	text: React.ReactNode;
 	href: string;
 	target?: string;
 }) {
