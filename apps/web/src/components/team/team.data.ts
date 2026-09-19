@@ -22,8 +22,7 @@ export const TEAM_GROUPS: TeamGroup[] = [
 				role: "President",
 				imageUrl: "/img/officer_photos/acm_general/eric-lee.jpg",
 				socials:{
-					linkedin:"https://www.linkedin.com/in/eric-lee-sunghyun/",
-					github:"https://github.com/Eric1305"
+					linkedin:"https://www.linkedin.com/in/eric-lee-sunghyun/"
 				}
 			},
 			{
@@ -121,6 +120,7 @@ export const TEAM_GROUPS: TeamGroup[] = [
 				imageUrl: "/img/officer_photos/acm_general/martin-llano.jpg",
 				socials:{
 					linkedin:"https://www.linkedin.com/in/martin-llano-b10239291/",
+					github:"https://github.com/Martin0484"
 				}
 			},
 		],
@@ -145,7 +145,8 @@ export const TEAM_GROUPS: TeamGroup[] = [
 				role: "Vice President",
 				imageUrl: "/img/officer_photos/acm_w/layla-mendiola.jpg",
 				socials:{
-					linkedin:"https://www.linkedin.com/in/layla-mendiola-144013381/"
+					linkedin:"https://www.linkedin.com/in/layla-mendiola-144013381/",
+					github:"https://github.com/exopara"
 				}
 			},
 			{
@@ -221,7 +222,7 @@ export const TEAM_GROUPS: TeamGroup[] = [
 				role: "Public Relations Officer",
 				imageUrl: "/img/officer_photos/rowdy_creators/neil-parker.jpg",
 				socials:{
-
+					linkedin:"https://www.linkedin.com/in/reginald-parker-404ab7381/"
 				}
 			},
 		],
@@ -247,7 +248,8 @@ export const TEAM_GROUPS: TeamGroup[] = [
 				imageUrl:
 					"/img/officer_photos/coding_in_color/shaun-hernandez.jpg",
 				socials:{
-					linkedin:"https://www.linkedin.com/in/shaun-ph/"
+					linkedin:"https://www.linkedin.com/in/shaun-ph/",
+					github:"https://github.com/shaunph22"
 				}
 			},
 			{
@@ -292,7 +294,8 @@ export const TEAM_GROUPS: TeamGroup[] = [
 				role: "Director",
 				imageUrl: "/img/officer_photos/rowdy_hacks/zander-brysch.jpg",
 				socials:{
-					linkedin:"https://www.linkedin.com/in/zander-brysch/"
+					linkedin:"https://www.linkedin.com/in/zander-brysch/",
+					github:"https://github.com/xhilgerz"
 				}
 			},
 			{
