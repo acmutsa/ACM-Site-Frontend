@@ -22,7 +22,7 @@ export default function Contact({
 	return (
 		<Link
 			href="#contact_footer"
-			className={`text-md font-semibold hover:underline lg:text-lg ${
+			className={`text-sm font-semibold hover:underline lg:text-lg ${
 				isCustomColor ? "" : linkStyles
 			}`}
 			style={isCustomColor ? { color: linkStyles } : undefined}
