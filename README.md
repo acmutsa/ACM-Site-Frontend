@@ -10,7 +10,7 @@ OpenNext.
 - **TypeScript 5**
 - **Tailwind CSS 3** with shadcn/ui (Radix primitives), `lucide-react` icons
 - **nuqs** for URL search-param state
-- \**pnpm** packege manager
+- \*\*pnpm\*\* packege manager
 - **Cloudflare Workers** deploy via **`@opennextjs/cloudflare`** + **Wrangler**
   (`apps/web/wrangler.toml`)
 
@@ -31,11 +31,11 @@ pnpm dev
 
 Other scripts (run from the repo root):
 
-| Command | What it does |
-| --- | --- |
-| `pnpm build` | Production build of every workspace (`turbo build`) |
-| `pnpm lint` | Lint every workspace |
-| `pnpm format` | Prettier write across the repo |
+| Command       | What it does                                        |
+| ------------- | --------------------------------------------------- |
+| `pnpm build`  | Production build of every workspace (`turbo build`) |
+| `pnpm lint`   | Lint every workspace                                |
+| `pnpm format` | Prettier write across the repo                      |
 
 ## Deploying to Cloudflare
 
