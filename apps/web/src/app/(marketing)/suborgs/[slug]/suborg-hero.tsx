@@ -1,7 +1,6 @@
 import Image from "next/image";
 import type { RGBColor, Suborg } from "@/site.config";
-import { Suspense, cloneElement, Fragment } from "react";
-import { _Object$ } from "@aws-sdk/client-s3";
+import { Suspense, Fragment } from "react";
 import Footer from "@/components/shared/footer";
 
 function modifyColor(color: RGBColor, alpha: number): string {
@@ -53,7 +52,7 @@ export default function SuborgHero(suborg: Suborg) {
 					</h2>
 				</div>
 				<div
-					className="col-span-3 flex min-h-[350px] flex-col border p-10"
+					className="relative col-span-5 flex min-h-[350px] flex-col border p-10 pb-12 sm:col-span-3"
 					style={{
 						borderColor: modifyColor(colors.poppy, 0.5),
 					}}
@@ -66,19 +65,17 @@ export default function SuborgHero(suborg: Suborg) {
 					>
 						{leadingSentence}
 					</h1>
-					<div className="mt-auto flex items-end justify-start justify-self-end">
-						<p
-							className="ml-auto justify-self-end  font-mono text-xs "
-							style={{
-								color: colors.poppy,
-							}}
-						>
-							Fig. 1
-						</p>
-					</div>
+					<p
+						className="absolute bottom-3 right-4 whitespace-nowrap font-mono text-xs lg:bottom-6 lg:right-6"
+						style={{
+							color: colors.poppy,
+						}}
+					>
+						Fig. 1
+					</p>
 				</div>
 				<div
-					className="col-span-2 flex flex-col items-center justify-center border p-10"
+					className="col-span-5 flex flex-col items-center justify-center border p-10 sm:col-span-2"
 					style={{
 						borderColor: modifyColor(colors.poppy, 0.5),
 					}}
@@ -92,6 +89,7 @@ export default function SuborgHero(suborg: Suborg) {
 						alt={name}
 						width={300}
 						height={300}
+						className="h-auto w-40 sm:w-auto"
 					/>
 				</div>
 				<div
@@ -129,33 +127,13 @@ export default function SuborgHero(suborg: Suborg) {
 							color: colors.poppy,
 						}}
 					>
-						<Pill
-							icon={
-								<Image
-									src={logoUrl}
-									alt={name + "Logo"}
-									width={30}
-									height={30}
-								/>
-							}
-							bgColor={modifyColor(colors.poppy, 0.25)}
-						>
+						<Pill bgColor={modifyColor(colors.poppy, 0.25)}>
 							<span className="font-bold sm:text-lg md:text-xl lg:text-3xl ">
 								{name}
 							</span>
 						</Pill>{" "}
 						{aboutUs_One}
-						<Pill
-							icon={
-								<Image
-									src={logoUrl}
-									alt={name + "Logo"}
-									width={30}
-									height={30}
-								/>
-							}
-							bgColor={modifyColor(colors.poppy, 0.25)}
-						>
+						<Pill bgColor={modifyColor(colors.poppy, 0.25)}>
 							<span className="font-bold sm:text-lg md:text-xl lg:text-3xl ">
 								{name}
 							</span>
@@ -190,13 +168,14 @@ export default function SuborgHero(suborg: Suborg) {
 				</div>
 
 				<div
-					className="col-span-5 grid grid-cols-1 md:grid-cols-3 border text-center font-chillax font-bold text-base sm:text-lg md:text-xl lg:text-2xl" style={{
+					className="col-span-5 grid grid-cols-1 border text-center font-chillax text-base font-bold sm:text-lg md:grid-cols-3 md:text-xl lg:text-2xl"
+					style={{
 						color: colors.poppy,
 						borderColor: modifyColor(colors.poppy, 0.5),
 					}}
 				>
 					<div
-						className="border-b md:border-b-0 md:border-r p-6 lg:p-10 "
+						className="border-b p-6 md:border-b-0 md:border-r lg:p-10 "
 						style={{
 							borderColor: modifyColor(colors.poppy, 0.5),
 						}}
@@ -207,7 +186,7 @@ export default function SuborgHero(suborg: Suborg) {
 						<p>{mPhrase1}</p>
 					</div>
 					<div
-						className="border-b md:border-b-0 md:border-r p-6 lg:p-10 "
+						className="border-b p-6 md:border-b-0 md:border-r lg:p-10 "
 						style={{
 							borderColor: modifyColor(colors.poppy, 0.5),
 						}}
@@ -287,13 +266,13 @@ export default function SuborgHero(suborg: Suborg) {
 
 			<div className="mx-auto grid w-[90%] max-w-screen-xl grid-cols-5">
 				<div
-					className="col-span-5 grid grid-cols-2 gap-4 border text-center font-chillax text-2xl font-bold "
+					className="col-span-5 grid grid-cols-1 border text-center font-chillax text-2xl font-bold sm:grid-cols-2"
 					style={{
 						borderColor: modifyColor(colors.poppy, 0.5),
 						background: colors.poppy,
 					}}
 				>
-					<div className="relative border-r border-white py-20 px-5 text-2xl text-white sm:text-3xl md:text-5xl lg:text-7xl">
+					<div className="flex items-center justify-center border-b border-white px-5 py-20 text-2xl text-white sm:border-b-0 sm:border-r sm:text-3xl md:text-5xl lg:text-7xl">
 						<a
 							href={discordLink}
 							target="_blank"
@@ -303,7 +282,7 @@ export default function SuborgHero(suborg: Suborg) {
 						</a>
 					</div>
 
-					<div className=" py-20 text-2xl text-white sm:text-3xl md:text-5xl lg:text-7xl">
+					<div className="flex items-center justify-center px-5 py-20 text-2xl text-white sm:text-3xl md:text-5xl lg:text-7xl">
 						<a
 							href="/events"
 							target="_blank"
@@ -327,28 +306,20 @@ export default function SuborgHero(suborg: Suborg) {
 }
 
 function Pill({
-	icon,
 	children,
 	bgColor,
-	className,
 }: {
-	icon: React.ReactNode;
 	children: React.ReactNode;
 	bgColor?: string;
-	className?: string;
 }) {
 	return (
 		<span
-			className={`inline-flex h-6 items-center rounded-full px-2 md:h-8 lg:h-10 lg:px-3`}
+			className="inline-flex h-6 items-center rounded-full px-2 md:h-8 lg:h-10 lg:px-3"
 			style={{
 				backgroundColor: bgColor,
 			}}
 		>
-			{cloneElement(icon as React.ReactElement<any>, {
-				size: 20,
-				className: "h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 lg:h-7 lg:w-7",
-			})}
-			<span className="ml-2">{children}</span>
+			{children}
 		</span>
 	);
 }

@@ -17,27 +17,28 @@ type FooterProps = {
 export default function Footer({ email, orgName }: FooterProps) {
 	return (
 		<div className="p-10 pt-0">
-			<footer className="grid min-h-[50vh] grid-cols-1 gap-10 rounded-xl bg-acm-darker-blue bg-[url('/img/landing/noise.png')] bg-center p-10 md:grid-cols-[auto_1fr]">				<div className="flex flex-col items-start justify-start">
-				<h1 className="text-balance text-left font-calsans text-lg font-black leading-none tracking-wide text-white sm:text-lg md:text-xl lg:text-4xl">
-					The Association
-					<br />
-					for Computing
-					<br />
-					Machinery
-					<br />
-					at UTSA
-				</h1>
-				<br></br>
-				<Image
-					src="/img/logos/acm.svg"
-					alt="ACM Logo"
-					width={50}
-					height={50}
-					className="mt-auto justify-self-end"
-				/>
-			</div>
-
-				<div className="hidden md:grid md:grid-cols-4 md:gap-10">
+			<footer className="grid min-h-[50vh] grid-cols-1 gap-10 rounded-xl bg-acm-darker-blue bg-[url('/img/landing/noise.png')] bg-center p-10 lg:grid-cols-[auto_1fr]">
+				{" "}
+				<div className="flex flex-col items-start justify-start">
+					<h1 className="text-balance text-left font-calsans text-lg font-black leading-none tracking-wide text-white sm:text-lg md:text-xl lg:text-4xl">
+						The Association
+						<br />
+						for Computing
+						<br />
+						Machinery
+						<br />
+						at UTSA
+					</h1>
+					<br></br>
+					<Image
+						src="/img/logos/acm-white.png"
+						alt="ACM Logo"
+						width={50}
+						height={50}
+						className="mt-auto justify-self-end"
+					/>
+				</div>
+				<div className="hidden lg:grid lg:grid-cols-2 lg:gap-10 xl:grid-cols-4">
 					{/* Contacts */}
 					<div className="flex flex-col items-start justify-start">
 						<h3
@@ -52,7 +53,7 @@ export default function Footer({ email, orgName }: FooterProps) {
 							ACM UTSA Email:
 						</p>
 						<FooterLink
-							text={<>team<br />@acmutsa.org</>}
+							text={<>team@acmutsa.org</>}
 							href={`mailto:team@acmutsa.org?subject=Inquiry about ACM UTSA`}
 						/>
 
@@ -160,8 +161,7 @@ export default function Footer({ email, orgName }: FooterProps) {
 						/>
 					</div>
 				</div>
-
-				<Accordion type="single" collapsible className="md:hidden">
+				<Accordion type="single" collapsible className="lg:hidden">
 					<AccordionItem value="contacts" className="border-b-0">
 						<AccordionTrigger className="py-3 font-chillax text-sm font-bold text-white sm:text-base md:text-base">
 							Contacts
