@@ -53,7 +53,7 @@ export default function Page() {
 							<h1 className="text-left font-calsans text-3xl font-bold leading-tight tracking-wide text-acm-darker-blue md:text-4xl lg:text-5xl">
 								We are the Association for Computing Machinery
 								at{" "}
-								<span className="rounded-md bg-[#0C2340] pl-3 pr-4 font-inter font-bold tracking-[-0.1em] text-[#F15A22] lg:leading-[60px]">
+								<span className=" font-inter font-bold tracking-[-0.1em] text-[#F15A22] lg:leading-[60px]">
 									UTSA
 								</span>
 							</h1>
