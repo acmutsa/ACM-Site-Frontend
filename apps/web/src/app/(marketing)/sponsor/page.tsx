@@ -2,7 +2,7 @@ import SponsorHero from "./sponsor-hero";
 
 export default function Page() {
 	return (
-		<div className="flex w-full flex-col items-center text-white">
+		<div className="flex w-full flex-col text-white">
 			<SponsorHero />
 		</div>
 	);

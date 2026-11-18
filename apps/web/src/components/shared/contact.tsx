@@ -3,14 +3,14 @@
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 
-export default function Contact({
-	linkStyles,
-}: {
-	linkStyles: string;
-}) {
+export default function Contact({ linkStyles }: { linkStyles: string }) {
 	const pathname = usePathname();
 
-	if (pathname === "/donate" || pathname === "/feedback" || pathname === "/team") {
+	if (
+		pathname === "/donate" ||
+		pathname === "/feedback" ||
+		pathname === "/team"
+	) {
 		return null;
 	}
 
@@ -22,7 +22,7 @@ export default function Contact({
 	return (
 		<Link
 			href="#contact_footer"
-			className={`text-md font-semibold hover:underline lg:text-lg ${
+			className={`text-sm font-semibold hover:underline lg:text-lg ${
 				isCustomColor ? "" : linkStyles
 			}`}
 			style={isCustomColor ? { color: linkStyles } : undefined}

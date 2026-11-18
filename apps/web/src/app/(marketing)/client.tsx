@@ -60,7 +60,8 @@ export function WeArePhotoGrid() {
 						nextIndices[i] = (nextIndices[i] + 1) % totalPhotos;
 						for (let j = 0; j < i; j++) {
 							if (nextIndices[i] === nextIndices[j]) {
-								nextIndices[i] = (nextIndices[i] + 1) % totalPhotos;
+								nextIndices[i] =
+									(nextIndices[i] + 1) % totalPhotos;
 								j = -1;
 							}
 						}
@@ -79,7 +80,7 @@ export function WeArePhotoGrid() {
 			{[0, 1, 2, 3].map((i) => (
 				<div
 					key={i}
-					className="relative h-full w-full min-h-0 min-w-0 overflow-hidden border border-acm-darker-blue/50"
+					className="relative aspect-[4/3] h-full min-h-0 w-full min-w-0 overflow-hidden border border-acm-darker-blue/50 sm:aspect-auto"
 				>
 					<AnimatePresence initial={false}>
 						<motion.div

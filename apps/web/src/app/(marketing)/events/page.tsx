@@ -12,8 +12,8 @@ export default async function EventsPage() {
 		<>
 			<HeroNav navVariant="blueForeground" />
 
-			<div className="mx-auto w-full max-w-screen-xl px-10 pb-24">
-				<h1 className="font-chillax text-6xl font-black tracking-tight text-acm-darker-blue md:text-8xl">
+			<div className="mx-auto w-full max-w-screen-xl px-6 pb-24 sm:px-10">
+				<h1 className="font-chillax text-4xl font-black tracking-tight text-acm-darker-blue sm:text-6xl md:text-8xl">
 					see what's happening.
 				</h1>
 
